@@ -16,6 +16,9 @@ public class Passenger {
     private static final int BOOKING_LENGTH = 6;
 
     public Passenger(Airline airline, String booking, Flight flight) {
+        if(airline == null || booking == null || flight == null) {
+            throw new IllegalArgumentException("Arguments can't be null");
+        }
         if (booking.length() != BOOKING_LENGTH) {
             throw new IllegalArgumentException("Length of code must be " + BOOKING_LENGTH);
         }
@@ -29,20 +32,21 @@ public class Passenger {
         this.status = Status.NONE;
     }
 
-    public synchronized void setCounter(Counter counter) {
+    public synchronized void checkIn(Counter counter) {
         this.counter = counter;
+        this.status = Status.CHEKED;
     }
 
-    public synchronized void getCounter() {
-        this.counter = null;
-    }
-
-    public synchronized void setStatus(Status status) {
-        this.status = status;
+    public synchronized void enqueue() {
+        this.status = Status.WAITING;
     }
 
     public synchronized Status getStatus() {
         return this.status;
+    }
+
+    public synchronized Counter getCounter() {
+        return this.counter;
     }
 
     @Override
