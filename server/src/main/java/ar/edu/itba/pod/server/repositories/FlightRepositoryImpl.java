@@ -20,8 +20,8 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Flight createFlight(String flightNumber) {
-        Flight flight = new Flight(flightNumber);
+    public Flight createFlight(final String flightNumber,final Airline airline) {
+        Flight flight = new Flight(flightNumber,airline);
         Flight possibleFlight =  flights.putIfAbsent(flightNumber,flight);
         if (possibleFlight != null)
             throw new FlightAlreadyExistsException();
@@ -29,8 +29,8 @@ public class FlightRepositoryImpl implements FlightRepository {
     }
 
     @Override
-    public Flight createFlightIfAbsent(String flightNumber) {
-        Flight flight = new Flight(flightNumber);
+    public Flight createFlightIfAbsent(final String flightNumber,final Airline airline) {
+        Flight flight = new Flight(flightNumber,airline);
         return Optional.ofNullable(flights.putIfAbsent(flightNumber,flight)).orElse(flight);
     }
 }
