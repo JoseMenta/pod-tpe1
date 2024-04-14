@@ -30,7 +30,7 @@ public class Airline {
      * @return the message queue to be used by the subscriber
      * @throws AirlineMultiSubscriptionException if the airline has already a subscriptor
      */
-    public BlockingQueue<LogMessage> subscribe() {
+    public synchronized BlockingQueue<LogMessage> subscribe() {
         if (messageQueue != null) {
             final AirlineMultiSubscriptionException e = new AirlineMultiSubscriptionException(name);
             LOGGER.error("Airline {} has already a subscriptor", name, e);
@@ -46,7 +46,7 @@ public class Airline {
      *
      * @throws AirlineNullSubscriptionException if the airline has no subscriptor
      */
-    public void unsubscribe() {
+    public synchronized void unsubscribe() {
         if (messageQueue == null) {
             final AirlineNullSubscriptionException e = new AirlineNullSubscriptionException(name);
             LOGGER.error("Airline {} has no subscriptor", name, e);
@@ -63,7 +63,7 @@ public class Airline {
      *
      * @return true if the message was logged, false otherwise
      */
-    public boolean log(LogMessage message) {
+    public synchronized boolean log(LogMessage message) {
         if (messageQueue == null){
             return false;
         }
