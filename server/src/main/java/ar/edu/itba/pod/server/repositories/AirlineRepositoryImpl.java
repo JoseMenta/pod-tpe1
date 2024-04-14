@@ -20,7 +20,7 @@ public class AirlineRepositoryImpl implements AirlineRepository {
 
     @Override
     public Airline createAirline(String name) {
-        Airline airline = new Airline();
+        Airline airline = new Airline(name);
         Airline possibleAirline =  airlines.putIfAbsent(name,airline);
         if (possibleAirline != null)
             throw new AirlineAlreadyExistsException();
@@ -29,7 +29,7 @@ public class AirlineRepositoryImpl implements AirlineRepository {
 
     @Override
     public Airline createAirlineIfAbsent(String name) {
-        Airline airline = new Airline();
+        Airline airline = new Airline(name);
         return Optional.ofNullable(airlines.putIfAbsent(name,airline)).orElse(airline);
     }
 }
