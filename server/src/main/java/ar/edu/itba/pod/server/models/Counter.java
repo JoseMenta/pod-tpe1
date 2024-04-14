@@ -33,7 +33,7 @@ public class Counter implements Comparable<Counter> {
      * @param sector the sector where the passenger is checking in
      */
     public void checkIn(Passenger passenger, Sector sector) {
-        // passenger.checkIn(this);
+        passenger.checkIn(this);
         // checkInHistory.add(passenger, sector, this);
         // LOGGER.info("Passenger {} checked in at counter {} in sector {}", passenger.getBooking(), id, sector.getName());
     }
