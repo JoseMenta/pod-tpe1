@@ -22,7 +22,7 @@ public class PassengerRepositoryImpl implements PassengerRepository {
 
     @Override
     public Passenger createPassenger(String bookingId, Airline airline, Flight flight) {
-        Passenger passenger = new Passenger();
+        Passenger passenger = new Passenger(airline,bookingId,flight);
         Passenger possiblePassenger =  passengers.putIfAbsent(bookingId,passenger);
         if (possiblePassenger != null)
             throw new PassengerAlreadyExistsException();
@@ -31,7 +31,7 @@ public class PassengerRepositoryImpl implements PassengerRepository {
 
     @Override
     public Passenger createPassengerIfAbsent(String bookingId, Airline airline, Flight flight) {
-        Passenger passenger = new Passenger();
+        Passenger passenger = new Passenger(airline,bookingId,flight);
         return Optional.ofNullable(passengers.putIfAbsent(bookingId,passenger)).orElse(passenger);
     }
 }
