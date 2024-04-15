@@ -6,8 +6,8 @@ import java.util.List;
 
 public enum AdminActions {
     ADDSECTOR("addSector", new AddSectorAction(List.of(AddSectorAction.SECTOR))),
-    ADDCOUNTER("addCounters", new AddCounterAction(List.of("sector", "counters"))),
-    MANIFEST("manifest", new ManifestAction(List.of("inPath")));
+    ADDCOUNTER("addCounters", new AddCounterAction(List.of(AddCounterAction.SECTOR, AddCounterAction.COUNTERS))),
+    MANIFEST("manifest", new ManifestAction(List.of(ManifestAction.INPATH)));
 
     private final String actionName;
 
