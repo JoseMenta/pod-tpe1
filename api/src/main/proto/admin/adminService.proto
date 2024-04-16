@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+
+option java_package = "ar.edu.itba.pod.grpc.admin";
+option java_multiple_files = true;
+
+service AdminService {
+  rpc AddSector(SectorRequest) returns (SectorResponse);
+}
+
+message SectorRequest {
+  string sector = 1;
+}
+
+message SectorResponse{
+  bool ready = 1;
+}
