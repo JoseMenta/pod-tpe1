@@ -1,4 +1,62 @@
 package ar.edu.itba.pod.server.models;
 
+import ar.edu.itba.pod.server.models.ds.RangeList;
+import lombok.Getter;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 public class Sector {
+    @Getter
+    private final String name;
+    private final ConcurrentLinkedQueue<RequestRange> pendingRequests;
+    private HistoryCheckIn historyCheckIn;
+    private RangeList rangeList;
+
+    public Sector(String name, HistoryCheckIn historyCheckIn) {
+        if(historyCheckIn == null || name == null){
+            throw new IllegalArgumentException("HistoryCheckIn can't be null");
+        }
+        if(name.contains(" ")){
+            throw new IllegalArgumentException("Name can't contain spaces");
+        }
+        this.name = name;
+        this.pendingRequests = new ConcurrentLinkedQueue<>();
+        this.historyCheckIn = historyCheckIn;
+    }
+
+    // TODO: Agregar el historyCheckIn al book
+    public synchronized void book(int start, int end, List<Flight> flightList, Airline airline){
+        if(start < 0 || end < 0 || start > end || flightList == null || airline == null){
+            throw new IllegalArgumentException("Invalid arguments");
+        }
+        Optional<Range> range = this.rangeList.book(start, end, flightList, airline);
+        if(range.isEmpty()){
+            this.pendingRequests.add(new RequestRange(start, end, flightList, airline));
+            return;
+        }
+        Airline.log(range.get());
+    }
+
+    public synchronized void free(int start) {
+        if (!this.rangeList.free(start) || start < 0) {
+            throw new IllegalArgumentException("Invalid start");
+        }
+        boolean flag = true;
+        while (flag) {
+            RequestRange requestRange = this.pendingRequests.peek();
+            if (requestRange == null) {
+                flag = false;
+            } else {
+                Optional<Range> range = this.rangeList.book(requestRange.getStart(), requestRange.getEnd(), requestRange.getFlightList(), requestRange.getAirline());
+                if (range.isPresent()) {
+                    this.pendingRequests.poll();
+                    Airline.log(range.get());
+                }else{
+                    flag = false;
+                }
+            }
+        }
+    }
 }
