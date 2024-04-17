@@ -1,6 +1,5 @@
 package ar.edu.itba.pod.server.services;
 
-import ar.edu.itba.pod.grpc.admin.RangeRequest;
 import ar.edu.itba.pod.server.exceptions.InvalidRangeException;
 import ar.edu.itba.pod.server.exceptions.InvalidSectorException;
 import ar.edu.itba.pod.server.exceptions.FlightAssignedToOtherAirlineException;
