@@ -1,7 +1,8 @@
 package ar.edu.itba.pod.server.services;
 
 import ar.edu.itba.pod.grpc.admin.RangeRequest;
-import ar.edu.itba.pod.server.exceptions.SectorMissingException;
+import ar.edu.itba.pod.server.exceptions.InvalidRangeException;
+import ar.edu.itba.pod.server.exceptions.InvalidSectorException;
 import ar.edu.itba.pod.server.interfaces.repositories.*;
 import ar.edu.itba.pod.server.interfaces.services.AirportService;
 import ar.edu.itba.pod.server.models.*;
@@ -40,15 +41,15 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public Range addCountersToSector(String sectorName, int amount) {
-        if (amount <= 0) {
-            final IllegalArgumentException e = new IllegalArgumentException("Amount must be greater than 0");
-            LOGGER.error("Amount must be greater than 0", e);
+        if(amount <= 0) {
+            InvalidRangeException e = new InvalidRangeException();
+            LOGGER.error("Amount must be greater than 0: {}", amount, e);
             throw e;
         }
-        final Optional<Sector> maybeSector = sectorRepository.getSectorById(sectorName);
-        if (maybeSector.isEmpty()) {
-            final SectorMissingException e = new SectorMissingException(sectorName);
-            LOGGER.error("Sector {} does not exist", sectorName, e);
+        Optional<Sector> maybeSector = sectorRepository.getSectorById(sectorName);
+        if(maybeSector.isEmpty()) {
+            InvalidSectorException e = new InvalidSectorException();
+            LOGGER.error("Sector not found: {}", sectorName, e);
             throw e;
         }
         Sector sector = maybeSector.get();
