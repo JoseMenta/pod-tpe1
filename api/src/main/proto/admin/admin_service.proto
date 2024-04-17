@@ -9,9 +9,9 @@ import "commons/error.proto";
 package admin; //TODO: revisar
 
 service AdminService {
-  rpc AddSector(SectorRequest) returns (SectorResponse);
-  rpc AddRange(RangeRequest) returns (RangeResponse);
-  rpc AddFlights(stream FlightMessage) returns (stream FlightResponse);//TODO: ver si hacer único, y manejarlo en el cliente
+  rpc AddSector(SectorRequest) returns (SectorResponse); //1
+  rpc AddRange(RangeRequest) returns (RangeResponse); //2,3
+  rpc AddFlights(stream FlightMessage) returns (stream FlightResponse);//1,4 //TODO: ver si hacer único, y manejarlo en el cliente
 }
 
 message SectorRequest {
