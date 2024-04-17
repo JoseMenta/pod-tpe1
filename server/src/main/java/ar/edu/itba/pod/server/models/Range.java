@@ -15,6 +15,7 @@ public class Range implements Comparable<Range>{
     private final List<Counter> counters;
     private final List<Flight> flights;
     private final Queue<Passenger> passengerQueue;
+    private final Airline airline;
 
     private static final Comparator<Range> comparator = Comparator.comparing(Range::getStart).thenComparing(Range::getEnd);
 
@@ -28,9 +29,10 @@ public class Range implements Comparable<Range>{
         this.counters = new ArrayList<>(counters);
         this.flights = Collections.emptyList();
         this.passengerQueue = new ArrayDeque<>(); //TODO: ver si hay algo parecido a Collections.emptyList()
+        this.airline = null;
     }
 
-    private Range(int start, int end,Sector sector, List<Counter> counters, List<Flight> flights){
+    private Range(int start, int end,Sector sector, List<Counter> counters, List<Flight> flights, Airline airline) {
         //Ojo, aca se asignan directamente las colecciones
         //Cuando se usa este metodo, se deben crear antes
         this.start = start;
@@ -39,6 +41,7 @@ public class Range implements Comparable<Range>{
         this.counters = counters;
         this.flights = flights;
         this.passengerQueue = new ArrayDeque<>(); //TODO: ver si hay algo parecido a Collections.emptyList()
+        this.airline = airline;
     }
 
     public boolean canMerge(final Range next){
@@ -65,7 +68,7 @@ public class Range implements Comparable<Range>{
         }
         List<Counter> newCounters = new ArrayList<>(counters);
         newCounters.addAll(next.counters);
-        return new Range(this.start, next.end,this.sector,newCounters,Collections.emptyList());
+        return new Range(this.start, next.end,this.sector,newCounters,Collections.emptyList(), null);
     }
 
     public int size(){
@@ -80,19 +83,21 @@ public class Range implements Comparable<Range>{
     /**
      * Books a sub-range of the sector returning two or one ranges, the first one of length counters and the second one of size() - length elements if size() - length >0
      * @param length: the length of the first Range
+     * @param flights: the list of flights
+     * @param airline: the airline of the flights
      * @return a list of the resulting ranges, with two non-empty ranges or one empty range
      * @throws IllegalArgumentException if length is negative or zero
      */
-    public synchronized List<Range> book(final int length, final SequencedCollection<Flight> flights){
+    public synchronized List<Range> book(final int length, final SequencedCollection<Flight> flights, final Airline airline) {
         if(length<=0){
             throw new IllegalArgumentException();
         }
         if(length == size()){
-            final Range ans = new Range(this.start, this.end, this.sector, new ArrayList<>(counters),new ArrayList<>(flights));
+            final Range ans = new Range(this.start, this.end, this.sector, new ArrayList<>(counters),new ArrayList<>(flights), airline);
             return List.of(ans);
         }
         //return the two sub ranges
-        final Range first = new Range(this.start, this.start + length-1, this.sector,new ArrayList<>(this.counters.subList(0,length)),new ArrayList<>(flights));
+        final Range first = new Range(this.start, this.start + length-1, this.sector,new ArrayList<>(this.counters.subList(0,length)),new ArrayList<>(flights), airline);
         final Range last = new Range(this.start + length, this.end, this.sector, this.counters.subList(length,counters.size()));//use safe constructor
         return List.of(first,last);
     }

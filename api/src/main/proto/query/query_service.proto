@@ -24,7 +24,7 @@ message CheckInHistoryResponse{
 }
 
 message CheckInHistoryRequest{
-   oneof filter{
+   any filter{
      string sector = 1;
      string airline = 2;
      google.protobuf.Empty empty = 3;

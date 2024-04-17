@@ -21,7 +21,7 @@ service CounterService{
 
 //ListPendingAssignments
 message ListPendingRequest{
-  string name = 1;
+  string sector = 1;
 }
 
 message PendingRangeInfo{
@@ -41,10 +41,10 @@ message CounterRequest{
 }
 
 message RangeInfo{
-  RangeMessage range = 1;
-  optional string airline = 2;
-  repeated string flights = 3; //optional no se puede con repeated, pero repeated acepta 0 valores
-  optional int32 waitingCount = 4;
+  oneof result{
+    RangeMessage assignedRange = 1;
+    int32 pendingCount = 2;
+  }
 }
 
 message RangeBookingRequest{

@@ -17,8 +17,9 @@ public class RangeListTest {
     //TODO: revisar static
     private static final Counter COUNTER = new Counter(1);
     private static final SequencedCollection<Counter> COUNTERS = List.of(COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER);
-    private static final Sector SECTOR = new Sector();//TODO: change after merge
+    private static final Sector SECTOR = new Sector("A",new HistoryCheckIn());//TODO: change after merge
     private static final SequencedCollection<Flight> FLIGHTS = List.of(new Flight("AAAAA",new Airline("A")));
+    private static final Airline AIRLINE = new Airline("air");
     private static final Range RANGE11 = new Range(1,1,SECTOR,COUNTERS);
     private static final Range RANGE12 = new Range(1,2,SECTOR,COUNTERS);
     private static final Range RANGE13 = new Range(1,3,SECTOR,COUNTERS);
@@ -128,7 +129,7 @@ public class RangeListTest {
     @Test
     public void testBookEmpty(){
 
-        Optional<Range> ans = rangeList.bookRange(1,FLIGHTS);
+        Optional<Range> ans = rangeList.bookRange(1,FLIGHTS, AIRLINE);
 
         Assertions.assertTrue(ans.isEmpty());
     }
@@ -137,7 +138,7 @@ public class RangeListTest {
     public void testBookNotEnough(){
         list.add(RANGE130);
 
-        Optional<Range> ans = rangeList.bookRange(40,FLIGHTS);
+        Optional<Range> ans = rangeList.bookRange(40,FLIGHTS, AIRLINE);
 
         Assertions.assertTrue(ans.isEmpty());
     }
@@ -146,7 +147,7 @@ public class RangeListTest {
     public void testBookAllRange(){
         list.add(RANGE16);
 
-        Optional<Range> ans = rangeList.bookRange(6,FLIGHTS);
+        Optional<Range> ans = rangeList.bookRange(6,FLIGHTS, AIRLINE);
 
         Assertions.assertTrue(ans.isPresent());
         Assertions.assertEquals(RANGE16,ans.get());
@@ -157,7 +158,7 @@ public class RangeListTest {
     public void testBookPartialRange(){
         list.add(RANGE130);
 
-        Optional<Range> ans = rangeList.bookRange(9,FLIGHTS);
+        Optional<Range> ans = rangeList.bookRange(9,FLIGHTS, AIRLINE);
 
         Range expected = new Range(1,9,SECTOR,COUNTERS);
         Assertions.assertTrue(ans.isPresent());
@@ -167,10 +168,10 @@ public class RangeListTest {
 
     @Test
     public void testBookPartialRangeAfterBooked(){
-        list.add(RANGE16.book(6,FLIGHTS).getFirst());
+        list.add(RANGE16.book(6,FLIGHTS, AIRLINE).getFirst());
         list.add(new Range(7,20,SECTOR,COUNTERS));
 
-        Optional<Range> ans = rangeList.bookRange(1,FLIGHTS);
+        Optional<Range> ans = rangeList.bookRange(1,FLIGHTS, AIRLINE);
 
         Range expected = new Range(7,7,SECTOR,COUNTERS);
         Assertions.assertTrue(ans.isPresent());
@@ -180,7 +181,7 @@ public class RangeListTest {
 
     @Test
     public void testFreeOnlyRange(){
-        list.add(RANGE16.book(6,FLIGHTS).getFirst());
+        list.add(RANGE16.book(6,FLIGHTS, AIRLINE).getFirst());
 
         rangeList.freeRange(1);
 
@@ -191,7 +192,7 @@ public class RangeListTest {
     @Test
     public void testFreeLastWithoutMerge(){
         list.add(RANGE12);
-        list.add(RANGE45.book(2,FLIGHTS).getFirst());
+        list.add(RANGE45.book(2,FLIGHTS, AIRLINE).getFirst());
 
         rangeList.freeRange(4);
 
@@ -200,8 +201,8 @@ public class RangeListTest {
 
     @Test
     public void testFreeLastPrevOccupied(){
-        list.add(RANGE23.book(2,FLIGHTS).getFirst());
-        list.add(RANGE45.book(2,FLIGHTS).getFirst());
+        list.add(RANGE23.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE45.book(2,FLIGHTS, AIRLINE).getFirst());
 
         rangeList.freeRange(4);
 
@@ -211,7 +212,7 @@ public class RangeListTest {
     @Test
     public void testFreeLastMerge(){
         list.add(RANGE23);
-        list.add(RANGE45.book(2,FLIGHTS).getFirst());
+        list.add(RANGE45.book(2,FLIGHTS, AIRLINE).getFirst());
 
         rangeList.freeRange(4);
 
@@ -220,7 +221,7 @@ public class RangeListTest {
 
     @Test
     public void testFreeFirstWithoutMerge(){
-        list.add(RANGE11.book(1,FLIGHTS).getFirst());
+        list.add(RANGE11.book(1,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE45);
 
         rangeList.freeRange(1);
@@ -230,8 +231,8 @@ public class RangeListTest {
 
     @Test
     public void testFreeFirstNextOccupied(){
-        list.add(RANGE12.book(2,FLIGHTS).getFirst());
-        list.add(RANGE34.book(2,FLIGHTS).getFirst());
+        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
 
         rangeList.freeRange(1);
 
@@ -240,7 +241,7 @@ public class RangeListTest {
 
     @Test
     public void testFreeFirstMerge(){
-        list.add(RANGE12.book(2,FLIGHTS).getFirst());
+        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE34);
 
         rangeList.freeRange(1);
@@ -251,7 +252,7 @@ public class RangeListTest {
     @Test
     public void testFreeMiddleWithoutMerge(){
         list.add(RANGE11);
-        list.add(RANGE34.book(2,FLIGHTS).getFirst());
+        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE66);
 
         rangeList.freeRange(3);
@@ -262,8 +263,8 @@ public class RangeListTest {
     @Test
     public void testFreeMiddleNextOccupied(){
         list.add(RANGE11);
-        list.add(RANGE34.book(2,FLIGHTS).getFirst());
-        list.add(RANGE56.book(2,FLIGHTS).getFirst());
+        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE56.book(2,FLIGHTS, AIRLINE).getFirst());
 
         rangeList.freeRange(3);
 
@@ -273,7 +274,7 @@ public class RangeListTest {
     @Test
     public void testFreeMiddleMergeNext(){
         list.add(RANGE11);
-        list.add(RANGE34.book(2,FLIGHTS).getFirst());
+        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE56);
 
         rangeList.freeRange(3);
@@ -283,8 +284,8 @@ public class RangeListTest {
 
     @Test
     public void testFreeMiddlePrevOccupied(){
-        list.add(RANGE12.book(2,FLIGHTS).getFirst());
-        list.add(RANGE34.book(2,FLIGHTS).getFirst());
+        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE66);
 
         rangeList.freeRange(3);
@@ -294,7 +295,7 @@ public class RangeListTest {
     @Test
     public void testFreeMiddleMergePrev(){
         list.add(RANGE12);
-        list.add(RANGE34.book(2,FLIGHTS).getFirst());
+        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE66);
 
         rangeList.freeRange(3);
@@ -305,7 +306,7 @@ public class RangeListTest {
     @Test
     public void testFreeMiddleMergePrevAndNext(){
         list.add(RANGE12);
-        list.add(RANGE34.book(2,FLIGHTS).getFirst());
+        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE56);
 
         rangeList.freeRange(3);
@@ -315,9 +316,9 @@ public class RangeListTest {
 
     @Test
     public void testFreeMiddleOccupiedPrevAndNext(){
-        list.add(RANGE12.book(2,FLIGHTS).getFirst());
-        list.add(RANGE34.book(2,FLIGHTS).getFirst());
-        list.add(RANGE56.book(2,FLIGHTS).getFirst());
+        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE56.book(2,FLIGHTS, AIRLINE).getFirst());
 
         rangeList.freeRange(3);
 

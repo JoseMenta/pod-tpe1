@@ -1,5 +1,6 @@
 package ar.edu.itba.pod.server.models.ds;
 
+import ar.edu.itba.pod.server.models.Airline;
 import ar.edu.itba.pod.server.models.Flight;
 import ar.edu.itba.pod.server.models.Range;
 
@@ -62,10 +63,11 @@ public class RangeList {
      * Tries to book a range of length counters for flights, returning the booked length if possible (but not removing the range)
      * @param length: the length of the wanted range
      * @param flights: the flights booked for the range
+     * @param airline: the airline of the flights
      * @return an optional with the booked range if one was found
      * @throws IllegalArgumentException if length <= 0 or flights is null or empty
      */
-    public synchronized Optional<Range> bookRange(final int length, final SequencedCollection<Flight> flights){
+    public synchronized Optional<Range> bookRange(final int length, final SequencedCollection<Flight> flights, final Airline airline) {
         if(length<=0 || flights == null || flights.isEmpty()){
             throw new IllegalArgumentException();
         }
@@ -81,7 +83,7 @@ public class RangeList {
             return Optional.empty();
         }
         //curr can Book length
-        List<Range> splitRanges = curr.book(length,flights);
+        List<Range> splitRanges = curr.book(length,flights, airline);
         if(splitRanges.size()==1){
             //All the range was booked
             iterator.set(splitRanges.getFirst());

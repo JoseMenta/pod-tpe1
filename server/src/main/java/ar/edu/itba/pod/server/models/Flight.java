@@ -1,9 +1,13 @@
 package ar.edu.itba.pod.server.models;
 
+import lombok.Getter;
+
 public class Flight {
+    @Getter
     private final String code;
     private Range range;
 
+    @Getter
     private final Airline airline;
     private static final int CODE_LENGTH = 5;
 
@@ -17,9 +21,7 @@ public class Flight {
         this.airline = airline;
         this.range= null;
     }
-    public Airline getAirline(){
-        return airline;
-    }
+
     public synchronized void setRange(Range range) {
         this.range = range;
     }
@@ -28,7 +30,4 @@ public class Flight {
         return this.range;
     }
 
-    public String getCode() {
-        return code;
-    }
 }

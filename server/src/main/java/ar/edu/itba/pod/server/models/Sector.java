@@ -27,20 +27,20 @@ public class Sector {
     }
 
     // TODO: Agregar el historyCheckIn al book
-    public synchronized void book(int start, int end, List<Flight> flightList, Airline airline){
-        if(start < 0 || end < 0 || start > end || flightList == null || airline == null){
+    public synchronized void book(int length, List<Flight> flightList, Airline airline){
+        if(length <= 0 || flightList == null || airline == null){
             throw new IllegalArgumentException("Invalid arguments");
         }
-        Optional<Range> range = this.rangeList.book(start, end, flightList, airline);
+        Optional<Range> range = this.rangeList.bookRange(length, flightList, airline);
         if(range.isEmpty()){
-            this.pendingRequests.add(new RequestRange(start, end, flightList, airline));
+            this.pendingRequests.add(new RequestRange(length, flightList, airline));
             return;
         }
-        Airline.log(range.get());
+//        Airline.log(range.get());
     }
 
     public synchronized void free(int start) {
-        if (!this.rangeList.free(start) || start < 0) {
+        if (!this.rangeList.freeRange(start) || start < 0) {
             throw new IllegalArgumentException("Invalid start");
         }
         boolean flag = true;
@@ -49,10 +49,10 @@ public class Sector {
             if (requestRange == null) {
                 flag = false;
             } else {
-                Optional<Range> range = this.rangeList.book(requestRange.getStart(), requestRange.getEnd(), requestRange.getFlightList(), requestRange.getAirline());
+                Optional<Range> range = this.rangeList.bookRange(requestRange.length(), requestRange.flightList(), requestRange.airline());
                 if (range.isPresent()) {
                     this.pendingRequests.poll();
-                    Airline.log(range.get());
+//                    Airline.log(range.get());
                 }else{
                     flag = false;
                 }
