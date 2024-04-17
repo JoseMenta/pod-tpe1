@@ -39,7 +39,7 @@ public interface AirportService {
     Pair<List<Passenger>,List<Counter>> checkInCounters(final String sector, final int counterFrom, final String airline);
 
     //2.6
-    List<RangeRequest> listPendingAssignments(final String sector);
+    List<RequestRange> listPendingAssignments(final String sector);
 
 
     //3 CheckIn service

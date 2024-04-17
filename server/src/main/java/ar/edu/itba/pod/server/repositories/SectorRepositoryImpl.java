@@ -2,7 +2,9 @@ package ar.edu.itba.pod.server.repositories;
 
 import ar.edu.itba.pod.server.exceptions.SectorAlreadyExistsException;
 import ar.edu.itba.pod.server.interfaces.repositories.SectorRepository;
+import ar.edu.itba.pod.server.models.HistoryCheckIn;
 import ar.edu.itba.pod.server.models.Sector;
+import lombok.Getter;
 import org.slf4j.Logger;
 
 import java.util.Optional;
@@ -20,9 +22,9 @@ public class SectorRepositoryImpl implements SectorRepository {
     }
 
     @Override
-    public Sector createSector(String sectorId) {
-        Sector sector = new Sector();
-        Sector possibleSector =  sectors.putIfAbsent(sectorId,sector);
+    public Sector createSector(String sectorId, HistoryCheckIn historyCheckIn) {
+        Sector sector = new Sector(sectorId, historyCheckIn);
+        Sector possibleSector = sectors.putIfAbsent(sectorId,sector);
         if (possibleSector != null) {
             LOGGER.error("Sector with id {} already exists",sectorId);
             throw new SectorAlreadyExistsException();
@@ -32,9 +34,13 @@ public class SectorRepositoryImpl implements SectorRepository {
     }
 
     @Override
-    public Sector createSectorIfAbsent(String sectorId) {
+    public Sector createSectorIfAbsent(String sectorId, HistoryCheckIn historyCheckIn) {
         LOGGER.info("Create sector ifAbsent with id {}",sectorId);
-        Sector sector = new Sector();
+        Sector sector = new Sector(sectorId, historyCheckIn);
         return Optional.ofNullable(sectors.putIfAbsent(sectorId,sector)).orElse(sector);
+    }
+
+    public ConcurrentHashMap<String, Sector> getSectors() {
+        return sectors;
     }
 }

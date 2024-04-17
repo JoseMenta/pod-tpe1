@@ -24,6 +24,11 @@ public class Sector {
         this.name = name;
         this.pendingRequests = new ConcurrentLinkedQueue<>();
         this.historyCheckIn = historyCheckIn;
+        this.rangeList = new RangeList();
+    }
+
+    public synchronized void addRange(Range range){
+        this.rangeList.addRange(range);
     }
 
     // TODO: Agregar el historyCheckIn al book
