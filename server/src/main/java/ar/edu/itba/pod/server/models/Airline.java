@@ -2,6 +2,7 @@ package ar.edu.itba.pod.server.models;
 
 import ar.edu.itba.pod.server.exceptions.AirlineMultiSubscriptionException;
 import ar.edu.itba.pod.server.exceptions.AirlineNullSubscriptionException;
+import ar.edu.itba.pod.server.interfaces.Notification;
 import ar.edu.itba.pod.server.models.ds.LogMessage;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -17,7 +18,7 @@ public class Airline {
 
     @Getter
     private final String name;
-    private BlockingQueue<LogMessage> messageQueue;
+    private BlockingQueue<Notification> messageQueue;
 
     public Airline(String name) {
         this.name = name;
@@ -30,7 +31,7 @@ public class Airline {
      * @return the message queue to be used by the subscriber
      * @throws AirlineMultiSubscriptionException if the airline has already a subscriptor
      */
-    public synchronized BlockingQueue<LogMessage> subscribe() {
+    public synchronized BlockingQueue<Notification> subscribe() {
         if (messageQueue != null) {
             final AirlineMultiSubscriptionException e = new AirlineMultiSubscriptionException(name);
             LOGGER.error("Airline {} has already a subscriptor", name, e);
@@ -63,7 +64,7 @@ public class Airline {
      *
      * @return true if the message was logged, false otherwise
      */
-    public synchronized boolean log(LogMessage message) {
+    public synchronized boolean log(Notification message) {
         if (messageQueue == null){
             return false;
         }

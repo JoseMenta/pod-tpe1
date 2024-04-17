@@ -1,6 +1,8 @@
 package ar.edu.itba.pod.server.services;
 
 import ar.edu.itba.pod.grpc.admin.RangeRequest;
+import ar.edu.itba.pod.server.exceptions.AirlineNotFoundException;
+import ar.edu.itba.pod.server.interfaces.Notification;
 import ar.edu.itba.pod.server.interfaces.repositories.*;
 import ar.edu.itba.pod.server.interfaces.services.AirportService;
 import ar.edu.itba.pod.server.models.*;
@@ -9,6 +11,7 @@ import ar.edu.itba.pod.server.repositories.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.BlockingQueue;
 
 public class AirportServiceImpl implements AirportService {
 
@@ -86,13 +89,13 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public void register(String airline) {
-
+    public BlockingQueue<Notification> register(String airline) {
+        return airlineRepository.getAirlineByName(airline).orElseThrow(() ->new AirlineNotFoundException(airline)).subscribe();
     }
 
     @Override
     public void unregister(String airline) {
-
+        airlineRepository.getAirlineByName(airline).orElseThrow(() ->new AirlineNotFoundException(airline)).unsubscribe();
     }
 
     @Override
