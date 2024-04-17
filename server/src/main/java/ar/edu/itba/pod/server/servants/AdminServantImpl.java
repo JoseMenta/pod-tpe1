@@ -2,7 +2,6 @@ package ar.edu.itba.pod.server.servants;
 
 import ar.edu.itba.pod.grpc.admin.AdminServiceGrpc;
 import ar.edu.itba.pod.grpc.admin.SectorRequest;
-import ar.edu.itba.pod.grpc.admin.SectorResponse;
 import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 
