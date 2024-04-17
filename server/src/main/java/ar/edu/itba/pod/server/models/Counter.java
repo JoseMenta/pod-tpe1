@@ -1,4 +1,4 @@
 package ar.edu.itba.pod.server.models;
 
-public class Counter {
+public record Counter (int id) {
 }

@@ -1,9 +1,6 @@
 package ar.edu.itba.pod;
 
-import ar.edu.itba.pod.server.models.Counter;
-import ar.edu.itba.pod.server.models.Flight;
-import ar.edu.itba.pod.server.models.Range;
-import ar.edu.itba.pod.server.models.Sector;
+import ar.edu.itba.pod.server.models.*;
 import ar.edu.itba.pod.server.models.ds.RangeList;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,10 +15,10 @@ import java.util.SequencedCollection;
 public class RangeListTest {
 
     //TODO: revisar static
-    private static final Counter COUNTER = new Counter();
+    private static final Counter COUNTER = new Counter(1);
     private static final SequencedCollection<Counter> COUNTERS = List.of(COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER);
     private static final Sector SECTOR = new Sector();//TODO: change after merge
-    private static final SequencedCollection<Flight> FLIGHTS = List.of(new Flight("A"));
+    private static final SequencedCollection<Flight> FLIGHTS = List.of(new Flight("AAAAA",new Airline("A")));
     private static final Range RANGE11 = new Range(1,1,SECTOR,COUNTERS);
     private static final Range RANGE12 = new Range(1,2,SECTOR,COUNTERS);
     private static final Range RANGE13 = new Range(1,3,SECTOR,COUNTERS);

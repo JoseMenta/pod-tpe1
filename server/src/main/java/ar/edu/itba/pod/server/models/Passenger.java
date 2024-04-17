@@ -34,7 +34,7 @@ public class Passenger {
 
     public synchronized void checkIn(Counter counter) {
         this.counter = counter;
-        this.status = Status.CHEKED;
+        this.status = Status.CHECKED;
     }
 
     public synchronized void enqueue() {
