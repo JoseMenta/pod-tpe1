@@ -26,6 +26,7 @@ public class Sector {
         this.historyCheckIn = historyCheckIn;
     }
 
+
     // TODO: Agregar el historyCheckIn al book
     public synchronized void book(int length, List<Flight> flightList, Airline airline){
         if(length <= 0 || flightList == null || airline == null){

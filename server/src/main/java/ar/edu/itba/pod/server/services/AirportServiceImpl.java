@@ -1,6 +1,8 @@
 package ar.edu.itba.pod.server.services;
 
 import ar.edu.itba.pod.grpc.admin.RangeRequest;
+import ar.edu.itba.pod.server.exceptions.InvalidRangeException;
+import ar.edu.itba.pod.server.exceptions.InvalidSectorException;
 import ar.edu.itba.pod.server.interfaces.repositories.*;
 import ar.edu.itba.pod.server.interfaces.services.AirportService;
 import ar.edu.itba.pod.server.models.*;
@@ -32,7 +34,14 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public Range addCountersToSector(String sector, int amount) {
-        return null;
+        Optional<Sector> sectorData = sectorRepository.getSectorById(sector);
+        if(sectorData.isEmpty()){
+            throw new InvalidSectorException();
+        }
+        if(amount <= 0){
+            throw new InvalidRangeException();
+        }
+        return rangeRepository.createRange(amount, sectorData.get());
     }
 
     @Override
