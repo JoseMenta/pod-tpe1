@@ -2,6 +2,8 @@ package ar.edu.itba.pod.server.models;
 
 import lombok.Getter;
 
+import java.util.Objects;
+
 public class Flight {
     @Getter
     private final String code;
@@ -30,4 +32,19 @@ public class Flight {
         return this.range;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(code);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == null){
+            return false;
+        }
+        if(obj instanceof Flight other){
+            return other.code.equals(code);
+        }
+        return false;
+    }
 }
