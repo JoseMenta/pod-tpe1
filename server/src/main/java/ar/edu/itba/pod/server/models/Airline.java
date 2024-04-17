@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Objects;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -18,6 +19,22 @@ public class Airline {
     @Getter
     private final String name;
     private BlockingQueue<LogMessage> messageQueue;
+
+    @Override
+    public boolean equals(Object o) {
+        if(o == null){
+            return false;
+        }
+        if(o instanceof Airline other){
+            return other.name.equals(name);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
 
     public Airline(String name) {
         this.name = name;
