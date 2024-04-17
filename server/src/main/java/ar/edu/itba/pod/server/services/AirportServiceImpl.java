@@ -11,6 +11,7 @@ import ar.edu.itba.pod.server.repositories.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,7 +72,7 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public List<Sector> listSectors() {
-        return null;
+        return new ArrayList<>(sectorRepository.getSectors().values());
     }
 
     @Override
