@@ -6,6 +6,7 @@ option java_multiple_files = true;
 
 import "google/protobuf/empty.proto";
 import "commons/error.proto";
+import "commons/range.proto";
 
 package counter; //TODO: revisar
 
@@ -13,16 +14,25 @@ service CounterService{
   rpc ListSectors(google.protobuf.Empty) returns (stream SectorResponse);//5
   rpc ListCounters(CounterRequest) returns (stream RangeInfo);//2,3
   rpc BookRange(RangeBookingRequest) returns (RangeInfo);//2,4,6,7,8,9
+  rpc FreeCounterRange(FreeRangeRequest) returns (FreeRangeResponse); //2,3,10,11
+  rpc CheckInCounters(CheckInCountersRequest) returns (CheckInCountersResponse); // 2,3,10
+  rpc ListPendingAssignments(ListPendingRequest) returns (stream PendingRangeInfo); // 2
+}
+
+//ListPendingAssignments
+message ListPendingRequest{
+  string name = 1;
+}
+
+message PendingRangeInfo{
+  optional string airline = 1;
+  repeated string flights = 2;
+  optional int32 size = 3;
 }
 
 message SectorResponse{
   string name = 1;
   repeated RangeMessage ranges = 2;
-}
-
-message RangeMessage{
-  int32 start = 1;
-  int32 end = 2;
 }
 
 message CounterRequest{
@@ -43,4 +53,31 @@ message RangeBookingRequest{
   repeated string flights = 3;
   int32 counterCount = 4;
 }
+
+message FreeRangeRequest{
+  string sector = 1;
+  int32 start = 2;
+  string airline = 3;
+}
+
+message FreeRangeResponse{
+  repeated string flights = 1;
+  RangeMessage range = 2;
+}
+
+message CheckInCountersRequest{
+  string sector  = 1;
+  int32 countFrom = 2;
+  string airline = 3;
+}
+message CheckInCounters{
+  string booking = 1;
+  string flight = 2;
+  int32 counter = 3;
+}
+message CheckInCountersResponse{
+  repeated CheckInCounters checkInCounters = 1;
+  repeated int32 emptyCounters = 2;
+}
+
 

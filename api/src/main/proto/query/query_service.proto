@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+
+option java_package = "ar.edu.itba.pod.grpc.query";
+option java_multiple_files = true;
+
+import "google/protobuf/empty.proto";
+import "commons/error.proto";
+import "commons/range.proto";
+
+package query; //TODO: revisar
+
+service QueryService{
+  rpc CheckInHistory(CheckInHistoryRequest) returns(stream CheckInHistoryResponse); // 5
+  rpc CheckInStatus(CheckInStatusRequest) returns(stream CheckInStatusResponse); // 15
+}
+
+message CheckInHistoryResponse{
+  string sector = 1;
+  int32 counter = 2;
+  string airline = 3;
+  string flight = 4;
+  string booking = 5;
+}
+
+message CheckInHistoryRequest{
+   oneof filter{
+     string sector = 1;
+     string airline = 2;
+     google.protobuf.Empty empty = 3;
+   }
+}
+
+message CheckInStatusRequest{
+  optional string sector = 1;
+}
+
+message CheckInStatusResponse{
+  string sector = 1;
+  RangeMessage range = 2;
+  optional string airline = 3;
+  repeated string flight = 4;
+  optional int32 waiting = 5;
+}
+

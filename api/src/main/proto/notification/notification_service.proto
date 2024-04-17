@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+
+option java_package = "ar.edu.itba.pod.grpc.notification";
+option java_multiple_files = true;
+
+import "google/protobuf/empty.proto";
+import "commons/error.proto";
+import "commons/range.proto";
+
+package notification; //TODO: revisar
+
+service NotificationService{
+  rpc SubscribeAirline(SubscriptionRequest) returns (stream SubscriptionResponse); //6, 17
+  rpc UnsubscribeAirline(UnRegisterRequest) returns (google.protobuf.Empty); // 16
+}
+
+message SubscriptionRequest{
+  string airline = 1;
+}
+
+message SubscriptionResponse{
+  oneof notification{
+    CounterAssignedNotification counterAssigned = 1;
+    PassengerQueuedNotification passengerQueued = 2;
+    CounterCheckInNotification counterCheckIn = 3;
+    CheckInEndedNotification checkInEnded = 4;
+    PendingAssignmentNotification pendingAssignment = 5;
+  }
+}
+
+message CounterAssignedNotification{
+  string sector = 1;
+  RangeMessage range = 2;
+  string airline = 3;
+  repeated string flights = 4;
+}
+
+message PassengerQueuedNotification{
+  string booking = 1;
+  string flight = 2;
+  string airline = 3;
+  RangeMessage range = 4;
+  string sector= 5;
+  int32 waitingCount = 6;
+}
+
+message CounterCheckInNotification{
+ string booking = 1;
+ string flight = 2;
+ int32 counter = 3;
+ string sector = 4;
+}
+
+message CheckInEndedNotification{
+  repeated string flights = 1;
+  RangeMessage range = 2;
+  string sector = 3;
+}
+
+message PendingAssignmentNotification{
+  int32 counterAmount = 1;
+  string sector = 2;
+  repeated string flights = 3;
+  int32 pendingAhead = 4;
+}
+
+
+
+message UnRegisterRequest{
+  string airline = 1;
+}
+
