@@ -28,7 +28,7 @@ public class RangeRepositoryImpl implements RangeRepository {
             throw new IllegalArgumentException();
         }
         LOGGER.info("Create range with quantity {} for the sector {}",quantity,sector);
-        List<Counter> counters = IntStream.range(lastId,lastId+quantity-1)
+        List<Counter> counters = IntStream.range(lastId,lastId+quantity)//end is exclusive
                 .mapToObj(Counter::new)
                 .toList();
         final Range ans =  new Range(lastId,lastId+quantity-1,sector,counters);

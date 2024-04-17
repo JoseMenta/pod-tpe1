@@ -4,8 +4,14 @@ syntax = "proto3";
 option java_package = "ar.edu.itba.pod.grpc.admin";
 option java_multiple_files = true;
 
+import "commons/error.proto";
+
+package admin; //TODO: revisar
+
 service AdminService {
   rpc AddSector(SectorRequest) returns (SectorResponse);
+  rpc AddRange(RangeRequest) returns (RangeResponse);
+  rpc AddFlights(stream FlightMessage) returns (stream FlightResponse);//TODO: ver si hacer único, y manejarlo en el cliente
 }
 
 message SectorRequest {
@@ -13,5 +19,30 @@ message SectorRequest {
 }
 
 message SectorResponse{
-  bool ready = 1;
+  string sector = 1;
 }
+
+message RangeRequest{
+  SectorRequest sector = 1; //TODO: ver si no conviene el string directo (si no en algunos es el string, en otros el message)
+  int32 count = 2;
+}
+
+message RangeResponse{
+  int32 start = 1;
+  int32 end = 2;
+  SectorResponse sector = 3;
+}
+
+message FlightMessage{
+  string booking = 1;
+  string airline = 2;
+  string flight = 3;
+}
+
+message FlightResponse{
+  oneof try{
+    FlightMessage flight = 1;
+    Error error = 2;
+  }
+}
+
