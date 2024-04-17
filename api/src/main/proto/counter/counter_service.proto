@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+
+option java_package = "ar.edu.itba.pod.grpc.counter";
+option java_multiple_files = true;
+
+import "google/protobuf/empty.proto";
+import "commons/error.proto";
+
+package counter; //TODO: revisar
+
+service CounterService{
+  rpc ListSectors(google.protobuf.Empty) returns (stream SectorResponse);//5
+  rpc ListCounters(CounterRequest) returns (stream RangeInfo);//2,3
+  rpc BookRange(RangeBookingRequest) returns (RangeInfo);//2,4,6,7,8,9
+}
+
+message SectorResponse{
+  string name = 1;
+  repeated RangeMessage ranges = 2;
+}
+
+message RangeMessage{
+  int32 start = 1;
+  int32 end = 2;
+}
+
+message CounterRequest{
+  string sector = 1;
+  RangeMessage range = 2;
+}
+
+message RangeInfo{
+  RangeMessage range = 1;
+  optional string airline = 2;
+  repeated string flights = 3; //optional no se puede con repeated, pero repeated acepta 0 valores
+  optional int32 waitingCount = 4;
+}
+
+message RangeBookingRequest{
+  string sector = 1;
+  string airline = 2;
+  repeated string flights = 3;
+  int32 counterCount = 4;
+}
+

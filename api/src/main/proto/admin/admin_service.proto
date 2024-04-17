@@ -8,6 +8,9 @@ import "commons/error.proto";
 
 package admin; //TODO: revisar
 
+//TODO: preguntar esto de devolver el Sector, es ineficiente mandar datos que ya conozco
+//Esta bien sacarlos del request?
+
 service AdminService {
   rpc AddSector(SectorRequest) returns (SectorResponse); //1
   rpc AddRange(RangeRequest) returns (RangeResponse); //2,3
