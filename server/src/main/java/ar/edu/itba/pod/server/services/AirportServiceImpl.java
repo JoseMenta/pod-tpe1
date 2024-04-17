@@ -9,6 +9,7 @@ import ar.edu.itba.pod.server.models.*;
 import ar.edu.itba.pod.server.models.ds.Pair;
 import ar.edu.itba.pod.server.repositories.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,12 +47,11 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public void addBooking(String booking, String flight, String airline) {
-
     }
 
     @Override
     public List<Sector> listSectors() {
-        return null;
+        return new ArrayList<>(sectorRepository.getSectors().values());
     }
 
     @Override
