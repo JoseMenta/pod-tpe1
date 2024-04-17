@@ -3,6 +3,7 @@ package ar.edu.itba.pod.server.services;
 import ar.edu.itba.pod.grpc.admin.RangeRequest;
 import ar.edu.itba.pod.server.exceptions.InvalidRangeException;
 import ar.edu.itba.pod.server.exceptions.InvalidSectorException;
+import ar.edu.itba.pod.server.exceptions.FlightAssignedToOtherAirlineException;
 import ar.edu.itba.pod.server.interfaces.repositories.*;
 import ar.edu.itba.pod.server.interfaces.services.AirportService;
 import ar.edu.itba.pod.server.models.*;
@@ -60,7 +61,13 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public void addBooking(String booking, String flight, String airline) {
-
+        final Airline airline1 = airlineRepository.createAirlineIfAbsent(airline);
+        final Optional<Flight> flightOptional = flightRepository.getFlightByFlightNumber(flight);
+        if (flightOptional.isPresent() && !airline1.equals(flightOptional.get().getAirline())){
+            throw new FlightAssignedToOtherAirlineException();
+        }
+        final Flight flight1 = flightRepository.createFlightIfAbsent(flight,airline1);
+        passengerRepository.createPassenger(booking,airline1,flight1);
     }
 
     @Override
@@ -89,7 +96,7 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public List<RangeRequest> listPendingAssignments(String sector) {
+    public List<RequestRange> listPendingAssignments(String sector) {
         return null;
     }
 
