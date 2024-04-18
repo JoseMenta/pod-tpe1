@@ -99,7 +99,7 @@ public class RangeList {
      * @param start: the start of the range
      * @return true if the range was found, false otherwise
      */
-    public synchronized boolean freeRange(final int start){
+    public synchronized boolean freeRange(final int start, final Airline airline){
         if(ranges.isEmpty()){
             return false;
         }
@@ -114,7 +114,7 @@ public class RangeList {
             return false;
         }
         //curr is the wanted range
-        Range newRange = curr.free();
+        Range newRange = curr.free(airline);
         iterator.remove();//remove the used range from the list
         if(iterator.hasNext()){
             //we try to merge with next Range
@@ -141,7 +141,44 @@ public class RangeList {
         return true;
     }
 
+
+    /**
+     *
+     * @return an unmodifiable list with the ranges
+     */
     public synchronized List<Range> getElements(){
         return Collections.unmodifiableList(ranges);
     }
+
+    public synchronized List<Range> getRangesInInterval(final int from, final int to){
+        return ranges.stream()
+                .filter(r -> r.isInInterval(from,to))
+                .toList();
+    }
+
+    public synchronized Optional<Range> getRangeByStart(final int start){
+        return ranges.stream()
+                .filter(r -> r.getStart() == start)
+                .findFirst();
+    }
+    /**
+     *
+     * @param from: the start of the range
+     * @return an optional with the range if it was found, empty otherwise
+     */
+    public synchronized Optional<Range> getRange(final int from){
+        if(ranges.isEmpty()){
+            return Optional.empty();
+        }
+        ListIterator<Range> iterator = ranges.listIterator();
+        Range curr = iterator.next();
+        while (iterator.hasNext() && curr.getStart()!=from){
+            curr = iterator.next();
+        }
+        if(curr.getStart() != from){
+            return Optional.empty();
+        }
+        return Optional.of(curr);
+    }
+
 }

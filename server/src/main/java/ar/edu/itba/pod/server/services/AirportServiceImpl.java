@@ -5,6 +5,9 @@ import ar.edu.itba.pod.server.exceptions.FlightAlreadyAssigned;
 import ar.edu.itba.pod.server.exceptions.InvalidRangeException;
 import ar.edu.itba.pod.server.exceptions.InvalidSectorException;
 import ar.edu.itba.pod.server.exceptions.FlightAssignedToOtherAirlineException;
+import ar.edu.itba.pod.server.exceptions.*;
+import ar.edu.itba.pod.server.interfaces.Notification;
+
 import ar.edu.itba.pod.server.interfaces.repositories.*;
 import ar.edu.itba.pod.server.interfaces.services.AirportService;
 import ar.edu.itba.pod.server.models.*;
@@ -17,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.BlockingQueue;
 
 public class AirportServiceImpl implements AirportService {
 
@@ -79,10 +83,12 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public List<Range> listCounters(String sector, int start, int end) {
-        Optional<Sector> sectorOptional = sectorRepository.getSectorById(sector);
-        // Preguntar a JOSE como recibir el rango o si tenemos que implementarlo
-        return null;
+    public List<Range> listCounters(String sector, int from, int to) {
+        if(to-from<=-1){
+            throw new InvalidRangeException();
+        }
+        final Sector sector1 = sectorRepository.getSectorById(sector).orElseThrow(InvalidSectorException::new);
+        return sector1.getRangesInInterval(from,to);
     }
 
     @Override
@@ -124,13 +130,33 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public void freeCounters(String sector, int counterFrom, String airline) {
-
+    public void freeCounters(String sectorName, int counterFrom, String airlineName) {
+        Optional<Sector> maybeSector = sectorRepository.getSectorById(sectorName);
+        if(maybeSector.isEmpty()) {
+            InvalidSectorException e = new InvalidSectorException();
+            LOGGER.error("Sector not found: {}", sectorName, e);
+            throw e;
+        }
+        Optional<Airline> maybeAirline = airlineRepository.getAirlineByName(airlineName);
+        if(maybeAirline.isEmpty()) {
+            InvalidSectorException e = new InvalidSectorException();
+            LOGGER.error("Airline not found: {}", airlineName, e);
+            throw e;
+        }
+        Sector sector = maybeSector.get();
+        Airline airline = maybeAirline.get();
+        try {
+            sector.free(counterFrom, airline);
+        } catch (Exception e) {
+            LOGGER.error("Error freeing counters: {}", e.getMessage(), e);
+            throw e;
+        }
     }
 
     @Override
     public Pair<List<Passenger>, List<Counter>> checkInCounters(String sector, int counterFrom, String airline) {
-        return null;
+        Airline airline1 = airlineRepository.getAirlineByName(airline).orElseThrow(AirlineNotInRangeException::new);
+        return sectorRepository.getSectorById(sector).orElseThrow(InvalidSectorException::new).checkInCounters(counterFrom,airline1);
     }
 
     @Override
@@ -138,14 +164,17 @@ public class AirportServiceImpl implements AirportService {
         return null;
     }
 
+    // TODO: Preguntar si la lista tiene que obtener el valor de la cantidad de gente antes o es li mismo.
     @Override
     public Flight fetchCounter(String booking) {
-        return null;
+        return passengerRepository.getPassengerByBookingId(booking).orElseThrow(InvalidPassengerException::new).getFlight();
     }
 
     @Override
     public Range addPassengerToQueue(String booking, String sector, int startCounter) {
-        return null;
+        final Passenger passenger = passengerRepository.getPassengerByBookingId(booking).orElseThrow(InvalidPassengerException::new);
+        final Sector sector1 = sectorRepository.getSectorById(sector).orElseThrow(InvalidSectorException::new);
+        return sector1.addPassengerToQueue(passenger,startCounter);
     }
 
     @Override
@@ -154,13 +183,13 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public void register(String airline) {
-
+    public BlockingQueue<Notification> register(String airline) {
+        return airlineRepository.getAirlineByName(airline).orElseThrow(() ->new AirlineNotFoundException(airline)).subscribe();
     }
 
     @Override
     public void unregister(String airline) {
-
+        airlineRepository.getAirlineByName(airline).orElseThrow(() ->new AirlineNotFoundException(airline)).unsubscribe();
     }
 
     @Override
@@ -169,7 +198,7 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public List<Passenger> queryCheckInHistory(Optional<String> sector, Optional<String> airline) {
-        return null;
+    public List<Passenger> queryCheckInHistory(String sector, String airline) {
+        return this.historyCheckIn.getHistoryCheckIn(sector,airline);
     }
 }

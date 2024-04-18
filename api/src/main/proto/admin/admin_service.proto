@@ -9,13 +9,11 @@ import "google/protobuf/empty.proto";
 
 package admin; //TODO: revisar
 
-//TODO: preguntar esto de devolver el Sector, es ineficiente mandar datos que ya conozco
-//Esta bien sacarlos del request?
 
 service AdminService {
   rpc AddSector(SectorRequest) returns (google.protobuf.Empty); //1
   rpc AddRange(RangeRequest) returns (RangeResponse); //2,3
-  rpc AddFlights(stream FlightMessage) returns (stream FlightResponse);//1,4 //TODO: ver si hacer único, y manejarlo en el cliente
+  rpc AddFlight(FlightMessage) returns (FlightResponse);//1,4
 }
 
 message SectorRequest {
@@ -23,7 +21,7 @@ message SectorRequest {
 }
 
 message RangeRequest{
-  string sector = 1; //TODO: ver si no conviene el string directo (si no en algunos es el string, en otros el message)
+  string sector = 1;
   int32 count = 2;
 }
 
