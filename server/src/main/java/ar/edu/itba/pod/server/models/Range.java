@@ -1,5 +1,6 @@
 package ar.edu.itba.pod.server.models;
 
+import ar.edu.itba.pod.server.models.ds.Pair;
 import lombok.Getter;
 
 import java.util.*;
@@ -86,7 +87,6 @@ public class Range implements Comparable<Range>{
      * @return the range that merges the two ranges
      * @throws IllegalArgumentException if the ranges are not contiguous
      */
-
     public synchronized Range merge(final Range next){
         if(!canMerge(next)){
             throw new IllegalArgumentException();
@@ -161,7 +161,21 @@ public class Range implements Comparable<Range>{
         this.passengerQueue.add(passenger);
     }
 
-    public synchronized void checkIn(){
-        //TODO: implementar
+    public synchronized Pair<List<Passenger>,List<Counter>> checkIn(final HistoryCheckIn historyCheckIn){
+        List<Passenger> checkedIn = new ArrayList<>();
+        List<Counter> countersFree = new ArrayList<>();
+        for(Counter counter: this.counters){
+            Passenger passenger = this.passengerQueue.poll();
+
+            if(passenger != null){
+                historyCheckIn.addCheckIn(passenger,counter);
+                checkedIn.add(passenger);
+            }else {
+                countersFree.add(counter);
+            }
+
+
+        }
+        return new Pair<>(checkedIn,countersFree);
     }
 }

@@ -1,8 +1,8 @@
 package ar.edu.itba.pod.server.models;
 
-import ar.edu.itba.pod.server.exceptions.FlightNotInRangeException;
+import ar.edu.itba.pod.server.exceptions.*;
 import ar.edu.itba.pod.server.exceptions.InvalidRangeException;
-import ar.edu.itba.pod.server.exceptions.PassengerAlreadyEnqueuedException;
+import ar.edu.itba.pod.server.models.ds.Pair;
 import ar.edu.itba.pod.server.models.ds.RangeList;
 import lombok.Getter;
 
@@ -70,6 +70,15 @@ public class Sector {
     //Va porque si se esta liberando uno, tiene que ser consistente lo que se muestra en el listado con lo que pasa (no se puede mostrar como ocupado y liberar o viceversa)
     public synchronized List<Range> getRangesInInterval(final int from, final int to){
         return rangeList.getRangesInInterval(from,to);
+    }
+
+    public synchronized Pair<List<Passenger>,List<Counter>> checkInCounters(final int from, final Airline airline){
+        Range range = rangeList.getRangeByStart(from).orElseThrow(InvalidRangeException::new);
+
+        if (!range.getAirline().orElseThrow(AirlineNotInRangeException::new).equals(airline)) {
+            throw new AirlineNotInRangeException();
+        }
+        return range.checkIn(this.historyCheckIn);
     }
 
     public synchronized void free(int start) {

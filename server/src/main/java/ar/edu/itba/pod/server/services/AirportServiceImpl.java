@@ -97,7 +97,8 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public Pair<List<Passenger>, List<Counter>> checkInCounters(String sector, int counterFrom, String airline) {
-        return null;
+        Airline airline1 = airlineRepository.getAirlineByName(airline).orElseThrow(AirlineNotInRangeException::new);
+        return sectorRepository.getSectorById(sector).orElseThrow(InvalidSectorException::new).checkInCounters(counterFrom,airline1);
     }
 
     @Override

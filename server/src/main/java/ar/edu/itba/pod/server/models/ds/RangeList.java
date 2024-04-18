@@ -141,6 +141,11 @@ public class RangeList {
         return true;
     }
 
+
+    /**
+     *
+     * @return an unmodifiable list with the ranges
+     */
     public synchronized List<Range> getElements(){
         return Collections.unmodifiableList(ranges);
     }
@@ -156,4 +161,24 @@ public class RangeList {
                 .filter(r -> r.getStart() == start)
                 .findFirst();
     }
+    /**
+     *
+     * @param from: the start of the range
+     * @return an optional with the range if it was found, empty otherwise
+     */
+    public synchronized Optional<Range> getRange(final int from){
+        if(ranges.isEmpty()){
+            return Optional.empty();
+        }
+        ListIterator<Range> iterator = ranges.listIterator();
+        Range curr = iterator.next();
+        while (iterator.hasNext() && curr.getStart()!=from){
+            curr = iterator.next();
+        }
+        if(curr.getStart() != from){
+            return Optional.empty();
+        }
+        return Optional.of(curr);
+    }
+
 }
