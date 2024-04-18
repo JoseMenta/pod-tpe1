@@ -80,8 +80,12 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public List<Range> listCounters(String sector, int start, int end) {
-        return null;
+    public List<Range> listCounters(String sector, int from, int to) {
+        if(to-from<=-1){
+            throw new InvalidRangeException();
+        }
+        final Sector sector1 = sectorRepository.getSectorById(sector).orElseThrow(InvalidSectorException::new);
+        return sector1.getRangesInInterval(from,to);
     }
 
     @Override

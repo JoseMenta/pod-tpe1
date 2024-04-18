@@ -144,4 +144,10 @@ public class RangeList {
     public synchronized List<Range> getElements(){
         return Collections.unmodifiableList(ranges);
     }
+
+    public synchronized List<Range> getRangesInInterval(final int from, final int to){
+        return ranges.stream()
+                .filter(r -> r.isInInterval(from,to))
+                .toList();
+    }
 }

@@ -44,6 +44,11 @@ public class Sector {
 //        Airline.log(range.get());
     }
 
+    //TODO: revisar synchronized aca, creo que puede no ir porque no estoy agregando un rango (entonces no se ven las pendientes)
+    public List<Range> getRangesInInterval(final int from, final int to){
+        return rangeList.getRangesInInterval(from,to);
+    }
+
     public synchronized void free(int start) {
         if (!this.rangeList.freeRange(start) || start < 0) {
             throw new IllegalArgumentException("Invalid start");

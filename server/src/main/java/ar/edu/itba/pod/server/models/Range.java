@@ -61,6 +61,16 @@ public class Range implements Comparable<Range>{
     }
 
     /**
+     * Checks if the range is in the interval defined by start and stop. A range is in the interval if start <= range.start and range.end <= end
+     * @param start: the start of the interval (inclusive)
+     * @param end: the end of the interval (inclusive)
+     * @return  true if the range is in the interval, false otherwise
+     */
+    public boolean isInInterval(final int start, final int end){
+        return start<=this.start && end<=this.end;
+    }
+
+    /**
      * Merges two contiguous ranges
      * @param next: the contiguous range to merge after this
      * @return the range that merges the two ranges
