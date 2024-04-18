@@ -1,11 +1,13 @@
 package ar.edu.itba.pod.server.interfaces.services;
 
 import ar.edu.itba.pod.grpc.admin.RangeRequest;
+import ar.edu.itba.pod.server.interfaces.Notification;
 import ar.edu.itba.pod.server.models.*;
 import ar.edu.itba.pod.server.models.ds.Pair;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.BlockingQueue;
 
 
 public interface AirportService {
@@ -52,7 +54,7 @@ public interface AirportService {
 
     //4 Notificaciones de Aerolínea
     //4.1
-    void register(final String airline);
+    BlockingQueue<Notification> register(final String airline);
 
     // 4.2
     void  unregister(final String airline);
@@ -62,6 +64,6 @@ public interface AirportService {
     List<Range> checkCountersStatus(Optional<String> sector);
 
     // 5.2
-    List<Passenger> queryCheckInHistory(final Optional<String> sector,final Optional<String> airline);
+    List<Passenger> queryCheckInHistory(final String sector,final String airline);
 }
 

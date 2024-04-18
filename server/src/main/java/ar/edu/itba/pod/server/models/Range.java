@@ -3,6 +3,7 @@ package ar.edu.itba.pod.server.models;
 import ar.edu.itba.pod.server.exceptions.AirlineCannotFreeRangeException;
 import ar.edu.itba.pod.server.exceptions.FreeNonBookedRangeException;
 import ar.edu.itba.pod.server.exceptions.RangeHasPassengersException;
+import ar.edu.itba.pod.server.models.ds.Pair;
 import lombok.Getter;
 
 import java.util.*;
@@ -14,10 +15,15 @@ public class Range implements Comparable<Range>{
 
     @Getter
     private final int end;
+
+    @Getter
     private final Sector sector;
     private final List<Counter> counters;
+
+    @Getter
     private final List<Flight> flights;
     private final Queue<Passenger> passengerQueue;
+    @Getter
     private final Airline airline;
 
     private static final Comparator<Range> comparator = Comparator.comparing(Range::getStart).thenComparing(Range::getEnd);
@@ -47,6 +53,15 @@ public class Range implements Comparable<Range>{
         this.airline = airline;
     }
 
+    //Not synchronized because flights is inmutable
+    public Optional<Airline> getAirline(){
+        return flights.stream().findFirst().map(Flight::getAirline);
+    }
+
+    public boolean hasFlight(final Flight flight){
+        return flights.stream().anyMatch(f -> f.equals(flight));
+    }
+
     public boolean canMerge(final Range next){
         if(next == null){
             return false;
@@ -54,8 +69,19 @@ public class Range implements Comparable<Range>{
         return this.end+1 == next.start && !this.isOccupied() && !next.isOccupied();
     }
 
-    public synchronized boolean isOccupied(){
+    //Not synchronized because flights is inmutable
+    public boolean isOccupied(){
         return !this.flights.isEmpty();
+    }
+
+    /**
+     * Checks if the range is in the interval defined by start and stop. A range is in the interval if start <= range.start and range.end <= end
+     * @param start: the start of the interval (inclusive)
+     * @param end: the end of the interval (inclusive)
+     * @return  true if the range is in the interval, false otherwise
+     */
+    public boolean isInInterval(final int start, final int end){
+        return start<=this.start && end<=this.end;
     }
 
     /**
@@ -64,7 +90,6 @@ public class Range implements Comparable<Range>{
      * @return the range that merges the two ranges
      * @throws IllegalArgumentException if the ranges are not contiguous
      */
-
     public synchronized Range merge(final Range next){
         if(!canMerge(next)){
             throw new IllegalArgumentException();
@@ -148,7 +173,21 @@ public class Range implements Comparable<Range>{
         this.passengerQueue.add(passenger);
     }
 
-    public synchronized void checkIn(){
-        //TODO: implementar
+    public synchronized Pair<List<Passenger>,List<Counter>> checkIn(final HistoryCheckIn historyCheckIn){
+        List<Passenger> checkedIn = new ArrayList<>();
+        List<Counter> countersFree = new ArrayList<>();
+        for(Counter counter: this.counters){
+            Passenger passenger = this.passengerQueue.poll();
+
+            if(passenger != null){
+                historyCheckIn.logHistory(passenger);
+                checkedIn.add(passenger);
+            }else {
+                countersFree.add(counter);
+            }
+
+
+        }
+        return new Pair<>(checkedIn,countersFree);
     }
 }

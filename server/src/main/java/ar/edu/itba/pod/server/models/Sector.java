@@ -1,6 +1,7 @@
 package ar.edu.itba.pod.server.models;
 
-import ar.edu.itba.pod.server.exceptions.InvalidRangeStartException;
+import ar.edu.itba.pod.server.exceptions.*;
+import ar.edu.itba.pod.server.models.ds.Pair;
 import ar.edu.itba.pod.server.models.ds.RangeList;
 import lombok.Getter;
 
@@ -45,7 +46,41 @@ public class Sector {
 //        Airline.log(range.get());
     }
 
-    public synchronized void free(int start, final Airline airline){
+    //Lo hago aca para evitar el siguiente caso que se daba cuando se devolvía el rango, y se hacía desde afuera:
+    //T1 obtiene el rango
+    //T2 libera el rango en el sector
+    //T1 mete al pasajero en el rango liberado
+    //Esto se daba porque no se bloqueaban llamadas a liberar un rango en el sector cuando se estaba agregando un pasajero
+    public synchronized Range addPassengerToQueue(final Passenger passenger,final int start){
+        if(!passenger.getStatus().equals(Status.NONE)){
+            throw new PassengerAlreadyEnqueuedException();
+        }
+
+        final Range range = rangeList.getRangeByStart(start).orElseThrow(InvalidRangeException::new);
+        if(!range.hasFlight(passenger.getFlight())){
+            throw new FlightNotInRangeException();
+        }
+        passenger.enqueue();
+        range.addPassengerToQueue(passenger);
+        return range;
+    }
+
+    //TODO: revisar synchronized aca, creo que puede no ir porque no estoy agregando un rango (entonces no se ven las pendientes)
+    //Va porque si se esta liberando uno, tiene que ser consistente lo que se muestra en el listado con lo que pasa (no se puede mostrar como ocupado y liberar o viceversa)
+    public synchronized List<Range> getRangesInInterval(final int from, final int to){
+        return rangeList.getRangesInInterval(from,to);
+    }
+
+    public synchronized Pair<List<Passenger>,List<Counter>> checkInCounters(final int from, final Airline airline){
+        Range range = rangeList.getRangeByStart(from).orElseThrow(InvalidRangeException::new);
+
+        if (!range.getAirline().orElseThrow(AirlineNotInRangeException::new).equals(airline)) {
+            throw new AirlineNotInRangeException();
+        }
+        return range.checkIn(this.historyCheckIn);
+    }
+
+    public synchronized void free(int start, final Airline airline) {
         if (!this.rangeList.freeRange(start, airline) || start < 0) {
             throw new InvalidRangeStartException(start);
         }

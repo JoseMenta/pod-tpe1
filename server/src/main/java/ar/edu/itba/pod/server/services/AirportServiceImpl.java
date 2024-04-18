@@ -1,9 +1,8 @@
 package ar.edu.itba.pod.server.services;
 
-import ar.edu.itba.pod.server.exceptions.InvalidRangeException;
-import ar.edu.itba.pod.server.exceptions.InvalidRangeStartException;
-import ar.edu.itba.pod.server.exceptions.InvalidSectorException;
-import ar.edu.itba.pod.server.exceptions.FlightAssignedToOtherAirlineException;
+import ar.edu.itba.pod.server.exceptions.*;
+import ar.edu.itba.pod.server.interfaces.Notification;
+
 import ar.edu.itba.pod.server.interfaces.repositories.*;
 import ar.edu.itba.pod.server.interfaces.services.AirportService;
 import ar.edu.itba.pod.server.models.*;
@@ -15,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.BlockingQueue;
 
 public class AirportServiceImpl implements AirportService {
 
@@ -77,8 +77,12 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public List<Range> listCounters(String sector, int start, int end) {
-        return null;
+    public List<Range> listCounters(String sector, int from, int to) {
+        if(to-from<=-1){
+            throw new InvalidRangeException();
+        }
+        final Sector sector1 = sectorRepository.getSectorById(sector).orElseThrow(InvalidSectorException::new);
+        return sector1.getRangesInInterval(from,to);
     }
 
     @Override
@@ -112,7 +116,8 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public Pair<List<Passenger>, List<Counter>> checkInCounters(String sector, int counterFrom, String airline) {
-        return null;
+        Airline airline1 = airlineRepository.getAirlineByName(airline).orElseThrow(AirlineNotInRangeException::new);
+        return sectorRepository.getSectorById(sector).orElseThrow(InvalidSectorException::new).checkInCounters(counterFrom,airline1);
     }
 
     @Override
@@ -120,14 +125,17 @@ public class AirportServiceImpl implements AirportService {
         return null;
     }
 
+    // TODO: Preguntar si la lista tiene que obtener el valor de la cantidad de gente antes o es li mismo.
     @Override
     public Flight fetchCounter(String booking) {
-        return null;
+        return passengerRepository.getPassengerByBookingId(booking).orElseThrow(InvalidPassengerException::new).getFlight();
     }
 
     @Override
     public Range addPassengerToQueue(String booking, String sector, int startCounter) {
-        return null;
+        final Passenger passenger = passengerRepository.getPassengerByBookingId(booking).orElseThrow(InvalidPassengerException::new);
+        final Sector sector1 = sectorRepository.getSectorById(sector).orElseThrow(InvalidSectorException::new);
+        return sector1.addPassengerToQueue(passenger,startCounter);
     }
 
     @Override
@@ -136,13 +144,13 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public void register(String airline) {
-
+    public BlockingQueue<Notification> register(String airline) {
+        return airlineRepository.getAirlineByName(airline).orElseThrow(() ->new AirlineNotFoundException(airline)).subscribe();
     }
 
     @Override
     public void unregister(String airline) {
-
+        airlineRepository.getAirlineByName(airline).orElseThrow(() ->new AirlineNotFoundException(airline)).unsubscribe();
     }
 
     @Override
@@ -151,7 +159,7 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public List<Passenger> queryCheckInHistory(Optional<String> sector, Optional<String> airline) {
-        return null;
+    public List<Passenger> queryCheckInHistory(String sector, String airline) {
+        return this.historyCheckIn.getHistoryCheckIn(sector,airline);
     }
 }
