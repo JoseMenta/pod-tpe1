@@ -1,6 +1,7 @@
 package ar.edu.itba.pod.server.services;
 
 import ar.edu.itba.pod.server.exceptions.InvalidRangeException;
+import ar.edu.itba.pod.server.exceptions.InvalidRangeStartException;
 import ar.edu.itba.pod.server.exceptions.InvalidSectorException;
 import ar.edu.itba.pod.server.exceptions.FlightAssignedToOtherAirlineException;
 import ar.edu.itba.pod.server.interfaces.repositories.*;
@@ -86,8 +87,27 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public void freeCounters(String sector, int counterFrom, String airline) {
-
+    public void freeCounters(String sectorName, int counterFrom, String airlineName) {
+        Optional<Sector> maybeSector = sectorRepository.getSectorById(sectorName);
+        if(maybeSector.isEmpty()) {
+            InvalidSectorException e = new InvalidSectorException();
+            LOGGER.error("Sector not found: {}", sectorName, e);
+            throw e;
+        }
+        Optional<Airline> maybeAirline = airlineRepository.getAirlineByName(airlineName);
+        if(maybeAirline.isEmpty()) {
+            InvalidSectorException e = new InvalidSectorException();
+            LOGGER.error("Airline not found: {}", airlineName, e);
+            throw e;
+        }
+        Sector sector = maybeSector.get();
+        Airline airline = maybeAirline.get();
+        try {
+            sector.free(counterFrom, airline);
+        } catch (Exception e) {
+            LOGGER.error("Error freeing counters: {}", e.getMessage(), e);
+            throw e;
+        }
     }
 
     @Override
