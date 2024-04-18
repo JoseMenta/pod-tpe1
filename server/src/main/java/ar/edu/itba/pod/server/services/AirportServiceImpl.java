@@ -161,7 +161,7 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public List<RequestRange> listPendingAssignments(String sector) {
-        return null;
+        return sectorRepository.getSectorById(sector).orElseThrow(InvalidSectorException::new).getPendingRequests();
     }
 
     // TODO: Preguntar si la lista tiene que obtener el valor de la cantidad de gente antes o es li mismo.
@@ -194,7 +194,15 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public List<Range> checkCountersStatus(Optional<String> sector) {
-        return null;
+        if(sector.isEmpty()){
+            List<Range> auxList = new ArrayList<>();
+            for(Sector sectorData : sectorRepository.getSectors().values()){
+                auxList.addAll(sectorData.getRanges());
+            }
+            return auxList;
+        }else{
+            return sectorRepository.getSectorById(sector.get()).orElseThrow(InvalidSectorException::new).getRanges();
+        }
     }
 
     @Override

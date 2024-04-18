@@ -7,12 +7,13 @@ import lombok.Getter;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Sector {
     @Getter
     private final String name;
-    private final ConcurrentLinkedQueue<RequestRange> pendingRequests;
+    private final Queue<RequestRange> pendingRequests;
     private final HistoryCheckIn historyCheckIn;
     private final RangeList rangeList;
 
@@ -75,6 +76,10 @@ public class Sector {
         return rangeList.getRangesInInterval(from,to);
     }
 
+    public synchronized List<Range> getRanges(){
+        return rangeList.getElements();
+    }
+
     public synchronized Pair<List<Passenger>,List<Counter>> checkInCounters(final int from, final Airline airline){
         Range range = rangeList.getRangeByStart(from).orElseThrow(InvalidRangeException::new);
 
@@ -103,5 +108,9 @@ public class Sector {
                 }
             }
         }
+    }
+
+    public synchronized List<RequestRange> getPendingRequests() {
+        return List.copyOf(this.pendingRequests);
     }
 }
