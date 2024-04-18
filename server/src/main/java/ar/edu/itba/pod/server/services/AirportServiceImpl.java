@@ -6,6 +6,7 @@ import ar.edu.itba.pod.server.interfaces.Notification;
 import ar.edu.itba.pod.server.interfaces.repositories.*;
 import ar.edu.itba.pod.server.interfaces.services.AirportService;
 import ar.edu.itba.pod.server.models.*;
+import ar.edu.itba.pod.server.models.Notifications.SubscriptionNotification;
 import ar.edu.itba.pod.server.models.ds.Pair;
 import ar.edu.itba.pod.server.repositories.*;
 import org.slf4j.Logger;
@@ -126,7 +127,10 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public BlockingQueue<Notification> register(String airline) {
-        return airlineRepository.getAirlineByName(airline).orElseThrow(() ->new AirlineNotFoundException(airline)).subscribe();
+        Airline airline1 = airlineRepository.getAirlineByName(airline).orElseThrow(() ->new AirlineNotFoundException(airline));
+        BlockingQueue<Notification> notifications = airline1.subscribe();
+        airline1.log(new SubscriptionNotification(airline1));
+        return notifications;
     }
 
     @Override

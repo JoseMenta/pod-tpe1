@@ -26,6 +26,7 @@ message SubscriptionResponse{
     CounterCheckInNotification counterCheckIn = 3;
     CheckInEndedNotification checkInEnded = 4;
     PendingAssignmentNotification pendingAssignment = 5;
+    SubscriptionNotification subscription = 6;
   }
 }
 
@@ -44,7 +45,9 @@ message PassengerQueuedNotification{
   string sector= 5;
   int32 waitingCount = 6;
 }
-
+message SubscriptionNotification{
+  string airline = 1;
+}
 message CounterCheckInNotification{
  string booking = 1;
  string flight = 2;

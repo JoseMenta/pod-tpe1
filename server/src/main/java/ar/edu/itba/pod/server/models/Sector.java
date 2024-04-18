@@ -2,6 +2,7 @@ package ar.edu.itba.pod.server.models;
 
 import ar.edu.itba.pod.server.exceptions.*;
 import ar.edu.itba.pod.server.exceptions.InvalidRangeException;
+import ar.edu.itba.pod.server.models.Notifications.*;
 import ar.edu.itba.pod.server.models.ds.Pair;
 import ar.edu.itba.pod.server.models.ds.RangeList;
 import lombok.Getter;
@@ -9,10 +10,13 @@ import lombok.Getter;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Sector {
     @Getter
     private final String name;
+
+    // TODO Check if it is necessary ConcurrentLinkedQueue because it is used in a synchronized block
     private final ConcurrentLinkedQueue<RequestRange> pendingRequests;
     private HistoryCheckIn historyCheckIn;
     private RangeList rangeList;
@@ -34,7 +38,6 @@ public class Sector {
         this.rangeList.addRange(range);
     }
 
-    // TODO: Agregar el historyCheckIn al book
     public synchronized void book(int length, List<Flight> flightList, Airline airline){
         if(length <= 0 || flightList == null || airline == null){
             throw new IllegalArgumentException("Invalid arguments");
@@ -42,9 +45,10 @@ public class Sector {
         Optional<Range> range = this.rangeList.bookRange(length, flightList, airline);
         if(range.isEmpty()){
             this.pendingRequests.add(new RequestRange(length, flightList, airline));
+            airline.log(new PendingAssignmentNotification(flightList,this,length,pendingRequests.size()));
             return;
         }
-//        Airline.log(range.get());
+        airline.log(new CounterAssignmentNotification(range.get()));
     }
 
     //Lo hago aca para evitar el siguiente caso que se daba cuando se devolvía el rango, y se hacía desde afuera:
@@ -62,7 +66,8 @@ public class Sector {
             throw new FlightNotInRangeException();
         }
         passenger.enqueue();
-        range.addPassengerToQueue(passenger);
+        int waitingAhead = range.addPassengerToQueue(passenger);
+        range.getAirline().orElseThrow(AirlineNotInRangeException::new).log(new PassengerQueuedNotification(passenger,waitingAhead));
         return range;
     }
 
@@ -82,9 +87,10 @@ public class Sector {
     }
 
     public synchronized void free(int start) {
-        if (!this.rangeList.freeRange(start) || start < 0) {
-            throw new IllegalArgumentException("Invalid start");
-        }
+        Range rangeToFree = rangeList.getRangeByStart(start).orElseThrow(InvalidRangeException::new);
+
+        rangeToFree.getAirline().orElseThrow(AirlineNotInRangeException::new).log(new CheckInEndedNotification(rangeToFree));
+        rangeList.freeRange(start);
         boolean flag = true;
         while (flag) {
             RequestRange requestRange = this.pendingRequests.peek();
@@ -94,7 +100,9 @@ public class Sector {
                 Optional<Range> range = this.rangeList.bookRange(requestRange.length(), requestRange.flightList(), requestRange.airline());
                 if (range.isPresent()) {
                     this.pendingRequests.poll();
-//                    Airline.log(range.get());
+
+                    AtomicInteger index = new AtomicInteger();
+                    pendingRequests.forEach(r -> r.getAirline().log(new PendingAssignmentNotification(r.getFlightList(), this,r.getLength(), index.getAndIncrement())));
                 }else{
                     flag = false;
                 }
