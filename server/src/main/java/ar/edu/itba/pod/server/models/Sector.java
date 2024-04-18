@@ -87,9 +87,13 @@ public class Sector {
     }
 
     public synchronized void free(int start, final Airline airline) {
-        if (!this.rangeList.freeRange(start, airline) || start < 0) {
+        if (start < 0) {
             throw new InvalidRangeStartException(start);
         }
+        Range rangeToFree = rangeList.getRangeByStart(start).orElseThrow(InvalidRangeException::new);
+        rangeToFree.getAirline().orElseThrow(() -> new AirlineCannotFreeRangeException(rangeToFree,airline)).log(new CheckInEndedNotification(rangeToFree));
+        rangeToFree.free(airline);
+
         boolean flag = true;
         while (flag) {
             RequestRange requestRange = this.pendingRequests.peek();
