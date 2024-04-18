@@ -1,6 +1,7 @@
 package ar.edu.itba.pod.server.models;
 
 import ar.edu.itba.pod.server.exceptions.AirlineCannotFreeRangeException;
+import ar.edu.itba.pod.server.exceptions.FreeNonBookedRangeException;
 import ar.edu.itba.pod.server.exceptions.RangeHasPassengersException;
 import lombok.Getter;
 
@@ -131,7 +132,10 @@ public class Range implements Comparable<Range>{
     }
 
     public synchronized Range free(final Airline airlineRequester){
-        if (!this.isOccupied() || !this.airline.equals(airlineRequester)){
+        if (!this.isOccupied()) {
+            throw new FreeNonBookedRangeException(this);
+        }
+        if (!this.airline.equals(airlineRequester)){
             throw new AirlineCannotFreeRangeException(this,airlineRequester);
         }
         if (!this.passengerQueue.isEmpty()){

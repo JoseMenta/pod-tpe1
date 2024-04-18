@@ -1,5 +1,8 @@
 package ar.edu.itba.pod;
 
+import ar.edu.itba.pod.server.exceptions.AirlineCannotFreeRangeException;
+import ar.edu.itba.pod.server.exceptions.FreeNonBookedRangeException;
+import ar.edu.itba.pod.server.exceptions.RangeHasPassengersException;
 import ar.edu.itba.pod.server.models.*;
 import ar.edu.itba.pod.server.models.ds.RangeList;
 import org.junit.Before;
@@ -20,6 +23,9 @@ public class RangeListTest {
     private static final Sector SECTOR = new Sector("A",new HistoryCheckIn());//TODO: change after merge
     private static final SequencedCollection<Flight> FLIGHTS = List.of(new Flight("AAAAA",new Airline("A")));
     private static final Airline AIRLINE = new Airline("air");
+    // TODO: Flight code can have any length
+    private static final Flight FLIGHT = new Flight("12345",AIRLINE);
+    private static final Passenger PASSENGER = new Passenger(AIRLINE, "bookId", FLIGHT);
     private static final Range RANGE11 = new Range(1,1,SECTOR,COUNTERS);
     private static final Range RANGE12 = new Range(1,2,SECTOR,COUNTERS);
     private static final Range RANGE13 = new Range(1,3,SECTOR,COUNTERS);
@@ -183,7 +189,7 @@ public class RangeListTest {
     public void testFreeOnlyRange(){
         list.add(RANGE16.book(6,FLIGHTS, AIRLINE).getFirst());
 
-        rangeList.freeRange(1);
+        rangeList.freeRange(1, AIRLINE);
 
         Assertions.assertIterableEquals(List.of(RANGE16),list);
     }
@@ -194,7 +200,7 @@ public class RangeListTest {
         list.add(RANGE12);
         list.add(RANGE45.book(2,FLIGHTS, AIRLINE).getFirst());
 
-        rangeList.freeRange(4);
+        rangeList.freeRange(4, AIRLINE);
 
         Assertions.assertIterableEquals(List.of(RANGE12,RANGE45),list);
     }
@@ -204,7 +210,7 @@ public class RangeListTest {
         list.add(RANGE23.book(2,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE45.book(2,FLIGHTS, AIRLINE).getFirst());
 
-        rangeList.freeRange(4);
+        rangeList.freeRange(4, AIRLINE);
 
         Assertions.assertIterableEquals(List.of(RANGE23,RANGE45),list);
     }
@@ -214,7 +220,7 @@ public class RangeListTest {
         list.add(RANGE23);
         list.add(RANGE45.book(2,FLIGHTS, AIRLINE).getFirst());
 
-        rangeList.freeRange(4);
+        rangeList.freeRange(4, AIRLINE);
 
         Assertions.assertIterableEquals(List.of(new Range(2,5,SECTOR,COUNTERS)),list);
     }
@@ -224,7 +230,7 @@ public class RangeListTest {
         list.add(RANGE11.book(1,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE45);
 
-        rangeList.freeRange(1);
+        rangeList.freeRange(1, AIRLINE);
 
         Assertions.assertIterableEquals(List.of(RANGE11,RANGE45),list);
     }
@@ -234,7 +240,7 @@ public class RangeListTest {
         list.add(RANGE12.book(2,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
 
-        rangeList.freeRange(1);
+        rangeList.freeRange(1, AIRLINE);
 
         Assertions.assertIterableEquals(List.of(RANGE12,RANGE34),list);
     }
@@ -244,7 +250,7 @@ public class RangeListTest {
         list.add(RANGE12.book(2,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE34);
 
-        rangeList.freeRange(1);
+        rangeList.freeRange(1, AIRLINE);
 
         Assertions.assertIterableEquals(List.of(new Range(1,4,SECTOR,COUNTERS)),list);
     }
@@ -255,7 +261,7 @@ public class RangeListTest {
         list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE66);
 
-        rangeList.freeRange(3);
+        rangeList.freeRange(3, AIRLINE);
 
         Assertions.assertIterableEquals(List.of(RANGE11,RANGE34,RANGE66),list);
     }
@@ -266,7 +272,7 @@ public class RangeListTest {
         list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE56.book(2,FLIGHTS, AIRLINE).getFirst());
 
-        rangeList.freeRange(3);
+        rangeList.freeRange(3, AIRLINE);
 
         Assertions.assertIterableEquals(List.of(RANGE11,RANGE34,RANGE56),list);
     }
@@ -277,7 +283,7 @@ public class RangeListTest {
         list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE56);
 
-        rangeList.freeRange(3);
+        rangeList.freeRange(3, AIRLINE);
 
         Assertions.assertIterableEquals(List.of(RANGE11,new Range(3,6,SECTOR,COUNTERS)),list);
     }
@@ -288,7 +294,7 @@ public class RangeListTest {
         list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE66);
 
-        rangeList.freeRange(3);
+        rangeList.freeRange(3, AIRLINE);
 
         Assertions.assertIterableEquals(List.of(RANGE12,RANGE34,RANGE66),list);
     }
@@ -298,7 +304,7 @@ public class RangeListTest {
         list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE66);
 
-        rangeList.freeRange(3);
+        rangeList.freeRange(3, AIRLINE);
 
         Assertions.assertIterableEquals(List.of(new Range(1,4,SECTOR,COUNTERS),RANGE66),list);
     }
@@ -309,7 +315,7 @@ public class RangeListTest {
         list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE56);
 
-        rangeList.freeRange(3);
+        rangeList.freeRange(3, AIRLINE);
 
         Assertions.assertIterableEquals(List.of(RANGE16),list);
     }
@@ -320,10 +326,31 @@ public class RangeListTest {
         list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
         list.add(RANGE56.book(2,FLIGHTS, AIRLINE).getFirst());
 
-        rangeList.freeRange(3);
+        rangeList.freeRange(3, AIRLINE);
 
         Assertions.assertIterableEquals(List.of(RANGE12,RANGE34,RANGE56),list);
     }
 
+    @Test
+    public void testFreeAnotherAirlineFails() {
+        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).getFirst());
+
+        Assertions.assertThrows(AirlineCannotFreeRangeException.class, () -> rangeList.freeRange(1, new Airline("another")));
+    }
+
+    @Test
+    public void testFreeNonBookedRangeFails() {
+        list.add(RANGE12);
+
+        Assertions.assertThrows(FreeNonBookedRangeException.class, () -> rangeList.freeRange(1, AIRLINE));
+    }
+
+    @Test
+    public void testFreeRangeWithPassengersFails() {
+        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.getFirst().addPassengerToQueue(PASSENGER);
+
+        Assertions.assertThrows(RangeHasPassengersException.class, () -> rangeList.freeRange(1, AIRLINE));
+    }
 
 }
