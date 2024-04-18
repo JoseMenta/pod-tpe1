@@ -99,7 +99,7 @@ public class RangeList {
      * @param start: the start of the range
      * @return true if the range was found, false otherwise
      */
-    public synchronized boolean freeRange(final int start){
+    public synchronized boolean freeRange(final int start, final Airline airline){
         if(ranges.isEmpty()){
             return false;
         }
@@ -114,7 +114,7 @@ public class RangeList {
             return false;
         }
         //curr is the wanted range
-        Range newRange = curr.free();
+        Range newRange = curr.free(airline);
         iterator.remove();//remove the used range from the list
         if(iterator.hasNext()){
             //we try to merge with next Range

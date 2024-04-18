@@ -18,8 +18,8 @@ public class Sector {
 
     // TODO Check if it is necessary ConcurrentLinkedQueue because it is used in a synchronized block
     private final ConcurrentLinkedQueue<RequestRange> pendingRequests;
-    private HistoryCheckIn historyCheckIn;
-    private RangeList rangeList;
+    private final HistoryCheckIn historyCheckIn;
+    private final RangeList rangeList;
 
     public Sector(String name, HistoryCheckIn historyCheckIn) {
         if(historyCheckIn == null || name == null){
@@ -86,11 +86,10 @@ public class Sector {
         return range.checkIn(this.historyCheckIn);
     }
 
-    public synchronized void free(int start) {
-        Range rangeToFree = rangeList.getRangeByStart(start).orElseThrow(InvalidRangeException::new);
-
-        rangeToFree.getAirline().orElseThrow(AirlineNotInRangeException::new).log(new CheckInEndedNotification(rangeToFree));
-        rangeList.freeRange(start);
+    public synchronized void free(int start, final Airline airline) {
+        if (!this.rangeList.freeRange(start, airline) || start < 0) {
+            throw new InvalidRangeStartException(start);
+        }
         boolean flag = true;
         while (flag) {
             RequestRange requestRange = this.pendingRequests.peek();
