@@ -168,7 +168,7 @@ public class Range implements Comparable<Range>{
             Passenger passenger = this.passengerQueue.poll();
 
             if(passenger != null){
-                historyCheckIn.addCheckIn(passenger,counter);
+                historyCheckIn.logHistory(passenger);
                 checkedIn.add(passenger);
             }else {
                 countersFree.add(counter);
