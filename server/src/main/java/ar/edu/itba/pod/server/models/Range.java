@@ -49,6 +49,15 @@ public class Range implements Comparable<Range>{
         this.airline = airline;
     }
 
+    //Not synchronized because flights is inmutable
+    public Optional<Airline> getAirline(){
+        return flights.stream().findFirst().map(Flight::getAirline);
+    }
+
+    public boolean hasFlight(final Flight flight){
+        return flights.stream().anyMatch(f -> f.equals(flight));
+    }
+
     public boolean canMerge(final Range next){
         if(next == null){
             return false;
@@ -56,7 +65,8 @@ public class Range implements Comparable<Range>{
         return this.end+1 == next.start && !this.isOccupied() && !next.isOccupied();
     }
 
-    public synchronized boolean isOccupied(){
+    //Not synchronized because flights is inmutable
+    public boolean isOccupied(){
         return !this.flights.isEmpty();
     }
 

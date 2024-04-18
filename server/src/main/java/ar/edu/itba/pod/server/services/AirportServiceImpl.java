@@ -1,9 +1,6 @@
 package ar.edu.itba.pod.server.services;
 
-import ar.edu.itba.pod.server.exceptions.AirlineNotFoundException;
-import ar.edu.itba.pod.server.exceptions.FlightAssignedToOtherAirlineException;
-import ar.edu.itba.pod.server.exceptions.InvalidRangeException;
-import ar.edu.itba.pod.server.exceptions.InvalidSectorException;
+import ar.edu.itba.pod.server.exceptions.*;
 import ar.edu.itba.pod.server.interfaces.Notification;
 
 import ar.edu.itba.pod.server.interfaces.repositories.*;
@@ -115,7 +112,9 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public Range addPassengerToQueue(String booking, String sector, int startCounter) {
-        return null;
+        final Passenger passenger = passengerRepository.getPassengerByBookingId(booking).orElseThrow(InvalidPassengerException::new);
+        final Sector sector1 = sectorRepository.getSectorById(sector).orElseThrow(InvalidSectorException::new);
+        return sector1.addPassengerToQueue(passenger,startCounter);
     }
 
     @Override

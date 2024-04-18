@@ -150,4 +150,10 @@ public class RangeList {
                 .filter(r -> r.isInInterval(from,to))
                 .toList();
     }
+
+    public synchronized Optional<Range> getRangeByStart(final int start){
+        return ranges.stream()
+                .filter(r -> r.getStart() == start)
+                .findFirst();
+    }
 }
