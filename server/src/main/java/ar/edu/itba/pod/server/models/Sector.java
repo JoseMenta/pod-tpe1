@@ -41,7 +41,8 @@ public class Sector {
             this.pendingRequests.add(new RequestRange(length, flightList, airline));
             return;
         }
-//        Airline.log(range.get());
+
+        //Airline.log(range.get());
     }
 
     public synchronized void free(int start) {

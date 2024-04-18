@@ -67,7 +67,7 @@ public class RangeList {
      * @return an optional with the booked range if one was found
      * @throws IllegalArgumentException if length <= 0 or flights is null or empty
      */
-    public synchronized Optional<Range> bookRange(final int length, final SequencedCollection<Flight> flights, final Airline airline) {
+    public synchronized Optional<Range> bookRange(final int length, final List<Flight> flights, final Airline airline) {
         if(length<=0 || flights == null || flights.isEmpty()){
             throw new IllegalArgumentException();
         }

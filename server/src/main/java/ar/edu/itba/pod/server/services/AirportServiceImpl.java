@@ -1,6 +1,7 @@
 package ar.edu.itba.pod.server.services;
 
 import ar.edu.itba.pod.grpc.admin.RangeRequest;
+import ar.edu.itba.pod.server.exceptions.FlightAlreadyAssigned;
 import ar.edu.itba.pod.server.exceptions.InvalidRangeException;
 import ar.edu.itba.pod.server.exceptions.InvalidSectorException;
 import ar.edu.itba.pod.server.exceptions.FlightAssignedToOtherAirlineException;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class AirportServiceImpl implements AirportService {
@@ -78,12 +80,47 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public List<Range> listCounters(String sector, int start, int end) {
+        Optional<Sector> sectorOptional = sectorRepository.getSectorById(sector);
+        // Preguntar a JOSE como recibir el rango o si tenemos que implementarlo
         return null;
     }
 
     @Override
     public Pair<Range, Integer> assignRange(String sector, String airline, List<String> flights, int count) {
-        return null;
+        Optional<Sector> sectorOptional = sectorRepository.getSectorById(sector);
+        // No existe un sector con ese nombre
+        if(sectorOptional.isEmpty()){
+            throw new InvalidSectorException();
+        }
+
+        List<Flight> flightList = new ArrayList<>();
+        for(String flight : flights){
+            Optional<Flight> flightOptional = flightRepository.getFlightByFlightNumber(flight);
+            // No se agregaron pasajeros esperados con el código de vuelo, para al menos un de los vuelos solicitados
+            if(flightOptional.isEmpty()){
+                throw new FlightAssignedToOtherAirlineException();
+            }
+            // Se agregaron pasajeros esperados con el código de vuelo pero con otra aerolínea, para al menos uno de los vuelos solicitados
+            if(!Objects.equals(flightOptional.get().getAirline().getName(), airline)){
+                throw new FlightAssignedToOtherAirlineException();
+            }
+            // Ya existe al menos un mostrador asignado para al menos uno de los vuelos solicitados
+            // Ya existe una solicitud pendiente de un rango de mostradores para al menos uno de los vuelos solicitados
+            if(flightOptional.get().getStatus() != Flight.Status.NOTASIGNED){
+                throw new FlightAlreadyAssigned();
+            }
+            // Ya se asignó y luego se liberó un rango de mostradores para al menos uno de los vuelos solicitados
+            if(flightOptional.get().getRange() != null){
+                throw new FlightAlreadyAssigned();
+            }
+            flightList.add(flightOptional.get());
+        }
+
+        Optional<Airline> airlineOptional = airlineRepository.getAirlineByName(airline);
+        if(airlineOptional.isEmpty()){
+            throw new FlightAssignedToOtherAirlineException();
+        }
+        Range range = sectorOptional.get().book(count, flightList, airlineOptional.get());
     }
 
     @Override

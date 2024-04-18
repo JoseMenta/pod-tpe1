@@ -16,10 +16,9 @@ public class Range implements Comparable<Range>{
     private final List<Flight> flights;
     private final Queue<Passenger> passengerQueue;
     private final Airline airline;
-
     private static final Comparator<Range> comparator = Comparator.comparing(Range::getStart).thenComparing(Range::getEnd);
 
-    public Range(int start, int end, Sector sector, SequencedCollection<Counter> counters) {
+    public Range(int start, int end, Sector sector, List<Counter> counters) {
         if(start>end || counters.isEmpty()){
             throw new IllegalArgumentException();
         }
@@ -88,7 +87,7 @@ public class Range implements Comparable<Range>{
      * @return a list of the resulting ranges, with two non-empty ranges or one empty range
      * @throws IllegalArgumentException if length is negative or zero
      */
-    public synchronized List<Range> book(final int length, final SequencedCollection<Flight> flights, final Airline airline) {
+    public synchronized List<Range> book(final int length, final List<Flight> flights, final Airline airline) {
         if(length<=0){
             throw new IllegalArgumentException();
         }
