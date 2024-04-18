@@ -106,9 +106,10 @@ public class AirportServiceImpl implements AirportService {
         return null;
     }
 
+    // TODO: Preguntar si la lista tiene que obtener el valor de la cantidad de gente antes o es li mismo.
     @Override
     public Flight fetchCounter(String booking) {
-        return null;
+        return passengerRepository.getPassengerByBookingId(booking).orElseThrow(InvalidPassengerException::new).getFlight();
     }
 
     @Override
