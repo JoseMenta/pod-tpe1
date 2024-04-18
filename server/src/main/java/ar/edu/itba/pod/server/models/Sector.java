@@ -34,17 +34,20 @@ public class Sector {
     }
 
     // TODO: Agregar el historyCheckIn al book
-    public synchronized void book(int length, List<Flight> flightList, Airline airline){
+    public synchronized Pair<Range, Integer> book(int length, List<Flight> flightList, Airline airline){
         if(length <= 0 || flightList == null || airline == null){
             throw new IllegalArgumentException("Invalid arguments");
+        }
+        if(!this.pendingRequests.isEmpty()){
+            this.pendingRequests.add(new RequestRange(length, flightList, airline));
+            return new Pair<>(null, this.pendingRequests.size());
         }
         Optional<Range> range = this.rangeList.bookRange(length, flightList, airline);
         if(range.isEmpty()){
             this.pendingRequests.add(new RequestRange(length, flightList, airline));
-            return;
+            return new Pair<>(null, this.pendingRequests.size());
         }
-
-        //Airline.log(range.get());
+        return new Pair<>(range.get(), null);
     }
 
     //Lo hago aca para evitar el siguiente caso que se daba cuando se devolvía el rango, y se hacía desde afuera:

@@ -126,7 +126,7 @@ public class AirportServiceImpl implements AirportService {
         if(airlineOptional.isEmpty()){
             throw new FlightAssignedToOtherAirlineException();
         }
-        Range range = sectorOptional.get().book(count, flightList, airlineOptional.get());
+        return sectorOptional.get().book(count, flightList, airlineOptional.get());
     }
 
     @Override
