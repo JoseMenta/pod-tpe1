@@ -1,5 +1,6 @@
 package ar.edu.itba.pod.server.models;
 
+import ar.edu.itba.pod.server.exceptions.InvalidRangeStartException;
 import ar.edu.itba.pod.server.models.ds.RangeList;
 import lombok.Getter;
 
@@ -11,8 +12,8 @@ public class Sector {
     @Getter
     private final String name;
     private final ConcurrentLinkedQueue<RequestRange> pendingRequests;
-    private HistoryCheckIn historyCheckIn;
-    private RangeList rangeList;
+    private final HistoryCheckIn historyCheckIn;
+    private final RangeList rangeList;
 
     public Sector(String name, HistoryCheckIn historyCheckIn) {
         if(historyCheckIn == null || name == null){
@@ -44,9 +45,9 @@ public class Sector {
 //        Airline.log(range.get());
     }
 
-    public synchronized void free(int start) {
-        if (!this.rangeList.freeRange(start) || start < 0) {
-            throw new IllegalArgumentException("Invalid start");
+    public synchronized void free(int start, final Airline airline){
+        if (!this.rangeList.freeRange(start, airline) || start < 0) {
+            throw new InvalidRangeStartException(start);
         }
         boolean flag = true;
         while (flag) {
