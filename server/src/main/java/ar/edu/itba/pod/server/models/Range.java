@@ -3,6 +3,7 @@ package ar.edu.itba.pod.server.models;
 import ar.edu.itba.pod.server.exceptions.AirlineCannotFreeRangeException;
 import ar.edu.itba.pod.server.exceptions.FreeNonBookedRangeException;
 import ar.edu.itba.pod.server.exceptions.RangeHasPassengersException;
+import ar.edu.itba.pod.server.models.Notifications.CounterCheckInNotification;
 import ar.edu.itba.pod.server.models.ds.Pair;
 import lombok.Getter;
 
@@ -168,8 +169,10 @@ public class Range implements Comparable<Range>{
         return new Range(this.start,this.end,this.sector,this.counters);
     }
 
-    public synchronized void addPassengerToQueue(final Passenger passenger){
+    public synchronized int addPassengerToQueue(final Passenger passenger){
+        int waitingAhead = this.passengerQueue.size();
         this.passengerQueue.add(passenger);
+        return waitingAhead;
     }
 
     public synchronized Pair<List<Passenger>,List<Counter>> checkIn(final HistoryCheckIn historyCheckIn){
@@ -179,6 +182,7 @@ public class Range implements Comparable<Range>{
             Passenger passenger = this.passengerQueue.poll();
 
             if(passenger != null){
+                passenger.getAirline().log(new CounterCheckInNotification(passenger));
                 historyCheckIn.logHistory(passenger);
                 checkedIn.add(passenger);
             }else {
