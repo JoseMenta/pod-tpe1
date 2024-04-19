@@ -207,7 +207,7 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public List<Passenger> queryCheckInHistory(String sector, String airline) {
+    public List<Passenger> queryCheckInHistory(Optional<String> sector, Optional<String> airline) {
         return this.historyCheckIn.getHistoryCheckIn(sector,airline);
     }
 }
