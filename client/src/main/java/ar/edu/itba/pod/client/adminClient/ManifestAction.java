@@ -94,11 +94,11 @@ public class ManifestAction extends Action {
                                         .build()
                         );
                         System.out.printf("Booking %s for %s %s added successfully\n",values[0],values[2],values[1]);
-                    }catch (StatusRuntimeException e){//TODO: usar codigo de error de exception
+                    }catch (StatusRuntimeException e){
                         switch (e.getMessage()){
-                            case "a" -> System.out.printf("A: An error occurred while adding booking %s for %s %s added successfully\n",values[0],values[2],values[1]);
-                            case "b" -> System.out.printf("B: An error occurred while adding booking %s for %s %s added successfully\n",values[0],values[2],values[1]);
-                            default -> System.out.printf("An error occurred while adding booking %s for %s %s added successfully\n",values[0],values[2],values[1]);
+                            case "1" -> System.out.printf("Booking %s has already been added\n",values[0]);
+                            case "2" -> System.out.printf("Flight %s has already been registered for another airline\n",values[1]);
+                            default -> System.out.printf("An unknown error occurred while adding booking %s for %s %s\n",values[0],values[2],values[1]);
                         }
 
                     }
