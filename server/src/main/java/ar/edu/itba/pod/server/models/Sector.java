@@ -72,7 +72,7 @@ public class Sector {
         }
         passenger.enqueue();
         int waitingAhead = range.addPassengerToQueue(passenger);
-        range.getAirline().orElseThrow(AirlineNotInRangeException::new).log(new PassengerQueuedNotification(passenger,waitingAhead));
+        passenger.getAirline().log(new PassengerQueuedNotification(passenger,waitingAhead));
         return waitingAhead;
     }
 
