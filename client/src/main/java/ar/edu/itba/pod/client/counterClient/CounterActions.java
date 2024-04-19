@@ -9,7 +9,7 @@ public enum CounterActions {
     LISTSECTOR("listSectors",new ListSectorsAction(Collections.emptyList())),
     LISTCOUNTERS("listCounters",new ListCountersAction(List.of(ListCountersAction.SECTOR,ListCountersAction.COUNTER_FROM,ListCountersAction.COUNTER_TO))),
     ASSIGNCOUNTERS("assignCounters",new AssignCounterAction(List.of(AssignCounterAction.SECTOR,AssignCounterAction.COUNTER_COUNT,AssignCounterAction.AIRLINE,AssignCounterAction.FLIGHTS))),
-    FREECOUNTERS("freeCounters", new FreeCounterAction(List.of(FreeCounterAction.SECTOR,FreeCounterAction.COUNTERFROM,FreeCounterAction.AIRLINE))),
+    FREECOUNTERS("freeCounters", new FreeCounterAction(List.of(FreeCounterAction.SECTOR,FreeCounterAction.COUNTER_FROM,FreeCounterAction.AIRLINE))),
     CHECKINCOUNTERS("checkinCounters",new CheckInAction(List.of(CheckInAction.SECTOR,CheckInAction.COUNTERFROM,CheckInAction.AIRLINE))),
     LISTPENDINGASSIGNMENTS("listPendingAssignments",new ListPendingAssignmentAction(List.of(ListPendingAssignmentAction.SECTOR)));
     private final String actionName;
