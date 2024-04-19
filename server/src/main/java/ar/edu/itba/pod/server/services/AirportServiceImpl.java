@@ -80,6 +80,7 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public List<Sector> listSectors() {
+        // TODO Check if it is okay this
         return new ArrayList<>(sectorRepository.getSectors().values());
     }
 
@@ -93,7 +94,7 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public Pair<Range, Integer> assignRange(String sector, String airline, List<String> flights, int count) {
+    public Pair<Optional<Range>, Integer> assignRange(String sector, String airline, List<String> flights, int count) {
         Optional<Sector> sectorOptional = sectorRepository.getSectorById(sector);
         // No existe un sector con ese nombre
         if(sectorOptional.isEmpty()){
@@ -112,9 +113,12 @@ public class AirportServiceImpl implements AirportService {
                 throw new FlightAssignedToOtherAirlineException();
             }
             // Ya existe al menos un mostrador asignado para al menos uno de los vuelos solicitados
-            // Ya existe una solicitud pendiente de un rango de mostradores para al menos uno de los vuelos solicitados
-            if(flightOptional.get().getStatus() != Flight.Status.NOTASIGNED){
+            if(flightOptional.get().getStatus() == Flight.Status.ASIGNED){
                 throw new FlightAlreadyAssigned();
+            }
+            // Ya existe una solicitud pendiente de un rango de mostradores para al menos uno de los vuelos solicitados
+            if(flightOptional.get().getStatus() == Flight.Status.WAITING){
+                throw new FlightInPendingQueueException();
             }
             // Ya se asignó y luego se liberó un rango de mostradores para al menos uno de los vuelos solicitados
             if(flightOptional.get().getRange() != null){
@@ -122,7 +126,9 @@ public class AirportServiceImpl implements AirportService {
             }
             flightList.add(flightOptional.get());
         }
-
+        if (flightList.isEmpty()){
+            throw new FlightsNotHavePassengersException();
+        }
         Optional<Airline> airlineOptional = airlineRepository.getAirlineByName(airline);
         if(airlineOptional.isEmpty()){
             throw new FlightAssignedToOtherAirlineException();
@@ -131,7 +137,7 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public void freeCounters(String sectorName, int counterFrom, String airlineName) {
+    public Range freeCounters(String sectorName, int counterFrom, String airlineName) {
         Optional<Sector> maybeSector = sectorRepository.getSectorById(sectorName);
         if(maybeSector.isEmpty()) {
             InvalidSectorException e = new InvalidSectorException();
@@ -147,7 +153,7 @@ public class AirportServiceImpl implements AirportService {
         Sector sector = maybeSector.get();
         Airline airline = maybeAirline.get();
         try {
-            sector.free(counterFrom, airline);
+            return sector.free(counterFrom, airline);
         } catch (Exception e) {
             LOGGER.error("Error freeing counters: {}", e.getMessage(), e);
             throw e;
