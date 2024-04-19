@@ -31,23 +31,18 @@ public class CheckInServantImpl extends CheckInServiceGrpc.CheckInServiceImplBas
     };
 
     private final static BiFunction<Passenger, Integer, PassengerCheckInResponse> PASSENGER_CHECK_IN_RESPONSE_MAPPER = (passenger, waitingAhead) -> {
-        String booking = passenger.getBooking();
         Airline airline = passenger.getAirline();
         Flight flight = passenger.getFlight();
         Range range = flight.getRange();
-        Sector sector = range.getSector();
         return PassengerCheckInResponse.newBuilder()
                 .setAirline(airline.getName())
                 .setFlight(flight.getCode())
                 .setPeopleInLine(waitingAhead)
-                .setBooking(booking)
-                .setSector(sector.getName())
                 .setRange(RangeMapper.mapToRangeMessage(range))
                 .build();
     };
 
     private final static Function<Passenger, PassengerResponse> PASSENGER_RESPONSE_MAPPER = (passenger) -> {
-        String booking = passenger.getBooking();
         Airline airline = passenger.getAirline();
         Flight flight = passenger.getFlight();
         Range range = flight.getRange();
@@ -56,7 +51,6 @@ public class CheckInServantImpl extends CheckInServiceGrpc.CheckInServiceImplBas
         PassengerResponse.Builder builder = PassengerResponse.newBuilder()
                 .setAirline(airline.getName())
                 .setFlight(flight.getCode())
-                .setBooking(booking)
                 .setSector(sector.getName())
                 .setRange(RangeMapper.mapToRangeMessage(range));
         if (passengerStatus == PassengerStatus.CHECKED) {

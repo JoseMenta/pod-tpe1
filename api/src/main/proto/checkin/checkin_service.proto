@@ -43,7 +43,6 @@ message RangeWaitingInfo{
 
 
 message PassengerResponse{
- string booking = 1;
  string flight = 2;
  string airline = 3;
  string sector = 5;
@@ -61,8 +60,6 @@ message PassengerCheckInRequest{
 }
 
 message PassengerCheckInResponse{
- string booking = 1;
- string sector = 2;
  RangeMessage range = 3;
  int32 peopleInLine = 4;
  string airline = 5;
