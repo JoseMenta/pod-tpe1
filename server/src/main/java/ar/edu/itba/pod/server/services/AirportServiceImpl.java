@@ -44,12 +44,14 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public void addSector(String sector) {
+        LOGGER.debug("Adding sector {}", sector);
         sectorRepository.createSector(sector, historyCheckIn);
+        LOGGER.info("Sector {} added", sector);
     }
 
     @Override
     public Range addCountersToSector(String sectorName, int amount) {
-        LOGGER.info("Adding {} counters to sector {}", amount, sectorName);
+        LOGGER.debug("Adding {} counters to sector {}", amount, sectorName);
         if(amount <= 0) {
             throw new InvalidRangeException();
         }

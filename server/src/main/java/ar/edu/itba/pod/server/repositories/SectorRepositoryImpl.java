@@ -23,13 +23,13 @@ public class SectorRepositoryImpl implements SectorRepository {
 
     @Override
     public Sector createSector(String sectorId, HistoryCheckIn historyCheckIn) {
+        LOGGER.debug("Creating sector with id {}", sectorId);
         Sector sector = new Sector(sectorId, historyCheckIn);
         Sector possibleSector = sectors.putIfAbsent(sectorId,sector);
         if (possibleSector != null) {
-            LOGGER.error("Sector with id {} already exists",sectorId);
             throw new SectorAlreadyExistsException();
         }
-        LOGGER.info("Create sector with id {}",sectorId);
+        LOGGER.info("Created sector with id {}",sectorId);
         return sector;
     }
 
