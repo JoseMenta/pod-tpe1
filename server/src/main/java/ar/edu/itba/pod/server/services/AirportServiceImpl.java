@@ -191,15 +191,15 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public BlockingQueue<Notification> register(String airline) {
-        Airline airline1 = airlineRepository.getAirlineByName(airline).orElseThrow(() ->new AirlineNotFoundException(airline));
+        Airline airline1 = airlineRepository.getAirlineByName(airline).orElseThrow(AirlineNotFoundException::new);
         BlockingQueue<Notification> notifications = airline1.subscribe();
         airline1.log(new SubscriptionNotification(airline1));
         return notifications;
     }
 
     @Override
-    public void unregister(String airline) {
-        airlineRepository.getAirlineByName(airline).orElseThrow(() ->new AirlineNotFoundException(airline)).unsubscribe();
+    public void unregister(String airline) throws InterruptedException {
+        airlineRepository.getAirlineByName(airline).orElseThrow(AirlineNotFoundException::new).unsubscribe();
     }
 
     @Override

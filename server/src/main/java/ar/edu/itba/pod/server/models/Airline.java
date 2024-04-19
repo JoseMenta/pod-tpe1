@@ -3,6 +3,7 @@ package ar.edu.itba.pod.server.models;
 import ar.edu.itba.pod.server.exceptions.AirlineMultiSubscriptionException;
 import ar.edu.itba.pod.server.exceptions.AirlineNullSubscriptionException;
 import ar.edu.itba.pod.server.interfaces.Notification;
+import ar.edu.itba.pod.server.models.Notifications.NotificationPill;
 import ar.edu.itba.pod.server.models.ds.LogMessage;
 import lombok.Getter;
 import org.slf4j.Logger;
@@ -50,7 +51,7 @@ public class Airline {
      */
     public synchronized BlockingQueue<Notification> subscribe() {
         if (messageQueue != null) {
-            final AirlineMultiSubscriptionException e = new AirlineMultiSubscriptionException(name);
+            final AirlineMultiSubscriptionException e = new AirlineMultiSubscriptionException();
             LOGGER.error("Airline {} has already a subscriptor", name, e);
             throw e;
         }
@@ -64,13 +65,14 @@ public class Airline {
      *
      * @throws AirlineNullSubscriptionException if the airline has no subscriptor
      */
-    public synchronized void unsubscribe() {
+    public synchronized void unsubscribe() throws InterruptedException {
         if (messageQueue == null) {
-            final AirlineNullSubscriptionException e = new AirlineNullSubscriptionException(name);
+            final AirlineNullSubscriptionException e = new AirlineNullSubscriptionException();
             LOGGER.error("Airline {} has no subscriptor", name, e);
             throw e;
         }
         LOGGER.info("Airline {} subscription removed", name);
+        messageQueue.put(new NotificationPill());
         messageQueue = null;
     }
 

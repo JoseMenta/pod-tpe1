@@ -4,7 +4,6 @@ import lombok.Getter;
 
 import java.util.List;
 
-@Getter
 public record RequestRange(int length, List<Flight> flightList, Airline airline) {
 
     public RequestRange {
