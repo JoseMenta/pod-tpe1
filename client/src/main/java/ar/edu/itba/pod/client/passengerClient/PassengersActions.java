@@ -8,7 +8,7 @@ public enum  PassengersActions {
 
     FETCHCOUNTER("fetchCounter", new FetchCounterAction(List.of(FetchCounterAction.BOOKING))),
 
-    PASSENGERCHECKIN("passengerCheckIn", new PassengerCheckInAction(List.of(PassengerCheckInAction.BOOKING, PassengerCheckInAction.SECTION, PassengerCheckInAction.COUNTER))),
+    PASSENGERCHECKIN("passengerCheckIn", new PassengerCheckInAction(List.of(PassengerCheckInAction.BOOKING, PassengerCheckInAction.SECTOR, PassengerCheckInAction.COUNTER))),
 
     PASSENGERSTATUS("passengerStatus", new PassengerStatusAction(List.of(PassengerStatusAction.BOOKING)));
 
