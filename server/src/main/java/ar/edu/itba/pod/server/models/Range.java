@@ -24,7 +24,7 @@ public class Range implements Comparable<Range>{
     @Getter
     private final List<Flight> flights;
     private final Queue<Passenger> passengerQueue;
-    @Getter
+
     private final Airline airline;
     private static final Comparator<Range> comparator = Comparator.comparing(Range::getStart).thenComparing(Range::getEnd);
 

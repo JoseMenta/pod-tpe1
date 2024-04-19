@@ -3,7 +3,7 @@ package ar.edu.itba.pod.client.adminClient;
 import ar.edu.itba.pod.client.Action;
 import ar.edu.itba.pod.grpc.admin.AdminServiceGrpc;
 import ar.edu.itba.pod.grpc.admin.SectorRequest;
-import ar.edu.itba.pod.grpc.admin.SectorResponse;
+//import ar.edu.itba.pod.grpc.admin.SectorResponse;
 import io.grpc.ManagedChannel;
 
 import java.util.List;
@@ -25,6 +25,7 @@ public class AddSectorAction extends Action {
                     AdminServiceGrpc.newBlockingStub(channel);
 
             SectorRequest request = SectorRequest.newBuilder().setSector(arguments.get(SECTOR)).build();
+            /*
             SectorResponse response = stub.addSector(request);
 
             if(response.getReady()){
@@ -32,6 +33,7 @@ public class AddSectorAction extends Action {
             }else{
                 System.out.println("se creo mal");
             }
+            */
         } finally {
             channel.shutdown().awaitTermination(10, TimeUnit.SECONDS);
         }
