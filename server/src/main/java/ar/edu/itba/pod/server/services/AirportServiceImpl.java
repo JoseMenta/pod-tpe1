@@ -168,19 +168,26 @@ public class AirportServiceImpl implements AirportService {
     // TODO: Preguntar si la lista tiene que obtener el valor de la cantidad de gente antes o es li mismo.
     @Override
     public Flight fetchCounter(String booking) {
-        return passengerRepository.getPassengerByBookingId(booking).orElseThrow(InvalidPassengerException::new).getFlight();
+        return passengerRepository.getPassengerByBookingId(booking).orElseThrow(PassengerNotFoundException::new).getFlight();
     }
 
     @Override
     public Range addPassengerToQueue(String booking, String sector, int startCounter) {
-        final Passenger passenger = passengerRepository.getPassengerByBookingId(booking).orElseThrow(InvalidPassengerException::new);
+        final Passenger passenger = passengerRepository.getPassengerByBookingId(booking).orElseThrow(PassengerNotFoundException::new);
         final Sector sector1 = sectorRepository.getSectorById(sector).orElseThrow(InvalidSectorException::new);
         return sector1.addPassengerToQueue(passenger,startCounter);
     }
 
     @Override
     public Passenger checkPassengerStatus(String booking) {
-        return null;
+        LOGGER.info("Checking passenger status with booking id {}",booking);
+        Passenger passenger = passengerRepository.getPassengerByBookingId(booking).orElseThrow(PassengerNotFoundException::new);
+        Flight flight = passenger.getFlight();
+        Range range = flight.getRange();
+        if (range == null) {
+            throw new RangeNotAssignedException();
+        }
+        return passenger;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package ar.edu.itba.pod.server.interfaces.services;
 
-import ar.edu.itba.pod.grpc.admin.RangeRequest;
 import ar.edu.itba.pod.server.interfaces.Notification;
 import ar.edu.itba.pod.server.models.*;
 import ar.edu.itba.pod.server.models.ds.Pair;

@@ -1,5 +1,5 @@
 package ar.edu.itba.pod.server.models;
 
-public enum Status {
+public enum PassengerStatus {
     NONE, WAITING, CHECKED
 }

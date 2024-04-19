@@ -61,7 +61,7 @@ public class Sector {
     //T1 mete al pasajero en el rango liberado
     //Esto se daba porque no se bloqueaban llamadas a liberar un rango en el sector cuando se estaba agregando un pasajero
     public synchronized Range addPassengerToQueue(final Passenger passenger,final int start){
-        if(!passenger.getStatus().equals(Status.NONE)){
+        if(!passenger.getPassengerStatus().equals(PassengerStatus.NONE)){
             throw new PassengerAlreadyEnqueuedException();
         }
 
