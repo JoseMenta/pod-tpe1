@@ -64,6 +64,6 @@ public interface AirportService {
     List<Range> checkCountersStatus(Optional<String> sector);
 
     // 5.2
-    List<Passenger> queryCheckInHistory(final String sector,final String airline);
+    List<Passenger> queryCheckInHistory(final Optional<String> sector,final Optional<String> airline);
 }
 
