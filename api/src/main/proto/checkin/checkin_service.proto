@@ -43,13 +43,11 @@ message RangeWaitingInfo{
 
 
 message PassengerResponse{
- string booking = 1;
  string flight = 2;
  string airline = 3;
- string status = 4;
  string sector = 5;
  oneof counterInfo{
-  string counter = 6;
+  int32 counter = 6;
   RangeMessage range = 7;
   RangeWaitingInfo waiting = 8;
  }

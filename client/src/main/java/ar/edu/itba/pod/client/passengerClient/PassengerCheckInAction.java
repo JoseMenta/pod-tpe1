@@ -58,6 +58,7 @@ public class PassengerCheckInAction extends Action {
                 case "11" -> System.out.printf("Passenger with booking %s has already started the check-in process\n", booking);
                 case "12" -> System.out.printf("There is no passenger with booking %s\n", booking);
                 case "18" -> System.out.printf("Flight %s is not checking in the range of counters starting at %s\n", booking, counter);
+                default -> System.out.printf("An unknown error occurred while checking in the passenger with booking %s\n", booking);
             }
         } finally {
             channel.shutdown().awaitTermination(10, TimeUnit.SECONDS);
