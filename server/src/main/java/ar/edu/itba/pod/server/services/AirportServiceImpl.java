@@ -1,9 +1,8 @@
 package ar.edu.itba.pod.server.services;
 
-import ar.edu.itba.pod.grpc.admin.RangeRequest;
 import ar.edu.itba.pod.server.exceptions.FlightAlreadyAssigned;
 import ar.edu.itba.pod.server.exceptions.InvalidRangeException;
-import ar.edu.itba.pod.server.exceptions.InvalidSectorException;
+import ar.edu.itba.pod.server.exceptions.SectorNotFoundException;
 import ar.edu.itba.pod.server.exceptions.FlightAssignedToOtherAirlineException;
 import ar.edu.itba.pod.server.exceptions.*;
 import ar.edu.itba.pod.server.interfaces.Notification;
@@ -50,18 +49,11 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public Range addCountersToSector(String sectorName, int amount) {
+        LOGGER.info("Adding {} counters to sector {}", amount, sectorName);
         if(amount <= 0) {
-            InvalidRangeException e = new InvalidRangeException();
-            LOGGER.error("Amount must be greater than 0: {}", amount, e);
-            throw e;
+            throw new InvalidRangeException();
         }
-        Optional<Sector> maybeSector = sectorRepository.getSectorById(sectorName);
-        if(maybeSector.isEmpty()) {
-            InvalidSectorException e = new InvalidSectorException();
-            LOGGER.error("Sector not found: {}", sectorName, e);
-            throw e;
-        }
-        Sector sector = maybeSector.get();
+        Sector sector = sectorRepository.getSectorById(sectorName).orElseThrow(SectorNotFoundException::new);
         Range range = rangeRepository.createRange(amount, sector);
         sector.addRange(range);
         return range;
@@ -89,7 +81,7 @@ public class AirportServiceImpl implements AirportService {
         if(to-from<=-1){
             throw new InvalidRangeException();
         }
-        final Sector sector1 = sectorRepository.getSectorById(sector).orElseThrow(InvalidSectorException::new);
+        final Sector sector1 = sectorRepository.getSectorById(sector).orElseThrow(SectorNotFoundException::new);
         return sector1.getRangesInInterval(from,to);
     }
 
@@ -98,7 +90,7 @@ public class AirportServiceImpl implements AirportService {
         Optional<Sector> sectorOptional = sectorRepository.getSectorById(sector);
         // No existe un sector con ese nombre
         if(sectorOptional.isEmpty()){
-            throw new InvalidSectorException();
+            throw new SectorNotFoundException();
         }
 
         List<Flight> flightList = new ArrayList<>();
@@ -138,20 +130,9 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public Range freeCounters(String sectorName, int counterFrom, String airlineName) {
-        Optional<Sector> maybeSector = sectorRepository.getSectorById(sectorName);
-        if(maybeSector.isEmpty()) {
-            InvalidSectorException e = new InvalidSectorException();
-            LOGGER.error("Sector not found: {}", sectorName, e);
-            throw e;
-        }
-        Optional<Airline> maybeAirline = airlineRepository.getAirlineByName(airlineName);
-        if(maybeAirline.isEmpty()) {
-            InvalidSectorException e = new InvalidSectorException();
-            LOGGER.error("Airline not found: {}", airlineName, e);
-            throw e;
-        }
-        Sector sector = maybeSector.get();
-        Airline airline = maybeAirline.get();
+        LOGGER.info("Freeing counters from {} in sector {} by airline {}", counterFrom, sectorName, airlineName);
+        Sector sector = sectorRepository.getSectorById(sectorName).orElseThrow(SectorNotFoundException::new);
+        Airline airline = airlineRepository.getAirlineByName(airlineName).orElseThrow(AirlineNotFoundException::new);
         try {
             return sector.free(counterFrom, airline);
         } catch (Exception e) {
@@ -163,30 +144,38 @@ public class AirportServiceImpl implements AirportService {
     @Override
     public Pair<List<Passenger>, List<Counter>> checkInCounters(String sector, int counterFrom, String airline) {
         Airline airline1 = airlineRepository.getAirlineByName(airline).orElseThrow(AirlineNotInRangeException::new);
-        return sectorRepository.getSectorById(sector).orElseThrow(InvalidSectorException::new).checkInCounters(counterFrom,airline1);
+        return sectorRepository.getSectorById(sector).orElseThrow(SectorNotFoundException::new).checkInCounters(counterFrom,airline1);
     }
 
     @Override
     public List<RequestRange> listPendingAssignments(String sector) {
-        return sectorRepository.getSectorById(sector).orElseThrow(InvalidSectorException::new).getPendingRequests();
+        return sectorRepository.getSectorById(sector).orElseThrow(SectorNotFoundException::new).getPendingRequests();
     }
 
     // TODO: Preguntar si la lista tiene que obtener el valor de la cantidad de gente antes o es li mismo.
     @Override
     public Flight fetchCounter(String booking) {
-        return passengerRepository.getPassengerByBookingId(booking).orElseThrow(InvalidPassengerException::new).getFlight();
+        return passengerRepository.getPassengerByBookingId(booking).orElseThrow(PassengerNotFoundException::new).getFlight();
     }
 
     @Override
-    public Range addPassengerToQueue(String booking, String sector, int startCounter) {
-        final Passenger passenger = passengerRepository.getPassengerByBookingId(booking).orElseThrow(InvalidPassengerException::new);
-        final Sector sector1 = sectorRepository.getSectorById(sector).orElseThrow(InvalidSectorException::new);
-        return sector1.addPassengerToQueue(passenger,startCounter);
+    public Pair<Passenger, Integer> addPassengerToQueue(String booking, String sectorName, int startCounter) {
+        final Passenger passenger = passengerRepository.getPassengerByBookingId(booking).orElseThrow(PassengerNotFoundException::new);
+        final Sector sector = sectorRepository.getSectorById(sectorName).orElseThrow(SectorNotFoundException::new);
+        final int waitingAhead = sector.addPassengerToQueue(passenger,startCounter);
+        return new Pair<>(passenger, waitingAhead);
     }
 
     @Override
     public Passenger checkPassengerStatus(String booking) {
-        return null;
+        LOGGER.info("Checking passenger status with booking id {}",booking);
+        Passenger passenger = passengerRepository.getPassengerByBookingId(booking).orElseThrow(PassengerNotFoundException::new);
+        Flight flight = passenger.getFlight();
+        Range range = flight.getRange();
+        if (range == null) {
+            throw new RangeNotAssignedException();
+        }
+        return passenger;
     }
 
     @Override
@@ -211,7 +200,7 @@ public class AirportServiceImpl implements AirportService {
             }
             return auxList;
         }else{
-            return sectorRepository.getSectorById(sector.get()).orElseThrow(InvalidSectorException::new).getRanges();
+            return sectorRepository.getSectorById(sector.get()).orElseThrow(SectorNotFoundException::new).getRanges();
         }
     }
 

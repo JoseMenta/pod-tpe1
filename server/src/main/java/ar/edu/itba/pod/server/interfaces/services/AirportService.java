@@ -1,6 +1,5 @@
 package ar.edu.itba.pod.server.interfaces.services;
 
-import ar.edu.itba.pod.grpc.admin.RangeRequest;
 import ar.edu.itba.pod.server.interfaces.Notification;
 import ar.edu.itba.pod.server.models.*;
 import ar.edu.itba.pod.server.models.ds.Pair;
@@ -47,7 +46,7 @@ public interface AirportService {
     Flight fetchCounter(final String booking);
 
     //3.2
-    Range addPassengerToQueue(final String booking, final String sector, final int startCounter);
+    Pair<Passenger, Integer> addPassengerToQueue(final String booking, final String sector, final int startCounter);
 
     //3.3
     Passenger checkPassengerStatus(final String booking);

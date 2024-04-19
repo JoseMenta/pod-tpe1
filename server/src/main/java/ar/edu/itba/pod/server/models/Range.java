@@ -156,6 +156,14 @@ public class Range implements Comparable<Range>{
         return String.format("Range: (%d,%d)",start,end);
     }
 
+    public synchronized int getWaitingCount(){
+        return this.passengerQueue.size();
+    }
+
+    public synchronized int getWaitingCount(Passenger passenger) {
+        return (int) this.passengerQueue.stream().takeWhile(p -> !p.equals(passenger)).count();
+    }
+
     public synchronized Range free(final Airline airlineRequester){
         if (!this.isOccupied()) {
             throw new FreeNonBookedRangeException();

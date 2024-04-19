@@ -61,8 +61,8 @@ public class Sector {
     //T2 libera el rango en el sector
     //T1 mete al pasajero en el rango liberado
     //Esto se daba porque no se bloqueaban llamadas a liberar un rango en el sector cuando se estaba agregando un pasajero
-    public synchronized Range addPassengerToQueue(final Passenger passenger,final int start){
-        if(!passenger.getStatus().equals(Status.NONE)){
+    public synchronized int addPassengerToQueue(final Passenger passenger,final int start){
+        if(!passenger.getPassengerStatus().equals(PassengerStatus.NONE)){
             throw new PassengerAlreadyEnqueuedException();
         }
 
@@ -73,7 +73,7 @@ public class Sector {
         passenger.enqueue();
         int waitingAhead = range.addPassengerToQueue(passenger);
         range.getAirline().orElseThrow(AirlineNotInRangeException::new).log(new PassengerQueuedNotification(passenger,waitingAhead));
-        return range;
+        return waitingAhead;
     }
 
     //TODO: revisar synchronized aca, creo que puede no ir porque no estoy agregando un rango (entonces no se ven las pendientes)
