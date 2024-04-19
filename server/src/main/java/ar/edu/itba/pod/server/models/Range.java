@@ -158,13 +158,13 @@ public class Range implements Comparable<Range>{
 
     public synchronized Range free(final Airline airlineRequester){
         if (!this.isOccupied()) {
-            throw new FreeNonBookedRangeException(this);
+            throw new FreeNonBookedRangeException();
         }
         if (!this.airline.equals(airlineRequester)){
-            throw new AirlineCannotFreeRangeException(this,airlineRequester);
+            throw new AirlineCannotFreeRangeException();
         }
         if (!this.passengerQueue.isEmpty()){
-            throw new RangeHasPassengersException(this);
+            throw new RangeHasPassengersException();
         }
         return new Range(this.start,this.end,this.sector,this.counters);
     }
