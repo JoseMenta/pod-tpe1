@@ -56,14 +56,12 @@ message PassengerResponse{
 }
 
 message PassengerCheckInRequest{
- string booking = 1;
+  string booking = 1;
   string sector = 2;
   string counterFrom = 3;
-
 }
-message PassengerCheckInResponse{
- string booking = 1;
- string sector = 2;
+
+message PassengerCheckInResponse {
  RangeMessage range = 3;
  int32 peopleInLine = 4;
  string airline = 5;
