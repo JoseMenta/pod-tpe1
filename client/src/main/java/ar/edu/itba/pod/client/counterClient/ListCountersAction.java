@@ -46,7 +46,7 @@ public class ListCountersAction extends Action {
                 switch (t.getMessage()){
                     case "2" -> System.out.printf("Sector %s was not found\n",arguments.get(SECTOR));
                     case "3" -> System.out.printf("From val %s and to val %s are not a range of one or more counters\n",arguments.get(COUNTER_FROM),arguments.get(COUNTER_TO));
-                    default -> System.out.println("An unknown error occurred while getting the sectors");
+                    default -> System.out.println("An unknown error occurred while getting the counters");
                 }
             }
             @Override
