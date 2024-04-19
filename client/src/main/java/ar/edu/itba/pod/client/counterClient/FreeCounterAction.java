@@ -44,7 +44,7 @@ public class FreeCounterAction extends Action {
                 case "3" -> System.out.printf("Range starting at %s was not found in the sector %s\n",arguments.get(COUNTER_FROM),arguments.get(SECTOR));
                 case "10" -> System.out.printf("Range starting at %s is not from airline %s\n",arguments.get(COUNTER_FROM),arguments.get(AIRLINE));
                 case "11" -> System.out.println("There are passengers waiting in the range");
-                default -> System.out.println("An unknown error occurred while getting the counters");
+                default -> System.out.println("An unknown error occurred while freeing the counter");
             }
         }
     }
