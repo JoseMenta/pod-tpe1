@@ -29,10 +29,10 @@ public interface AirportService {
     List<Range> listCounters(final String sector, final int start, final int end);
 
     //2.3
-    Pair<Range, Integer> assignRange(final String sector, final String airline, final List<String> flights, final int count);
+    Pair<Optional<Range>, Integer> assignRange(final String sector, final String airline, final List<String> flights, final int count);
 
     //2.4
-    void freeCounters(final String sector,final int counterFrom,final String airline);
+    Range freeCounters(final String sector,final int counterFrom,final String airline);
 
     //2.5
     Pair<List<Passenger>,List<Counter>> checkInCounters(final String sector, final int counterFrom, final String airline);

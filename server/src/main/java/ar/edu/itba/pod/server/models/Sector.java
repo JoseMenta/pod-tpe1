@@ -37,22 +37,23 @@ public class Sector {
         this.rangeList.addRange(range);
     }
 
-    public synchronized Pair<Range, Integer> book(int length, List<Flight> flightList, Airline airline){
+    public synchronized Pair<Optional<Range>, Integer> book(int length, List<Flight> flightList, Airline airline){
         if(length <= 0 || flightList == null || airline == null){
             throw new IllegalArgumentException("Invalid arguments");
         }
         if(!this.pendingRequests.isEmpty()){
             this.pendingRequests.add(new RequestRange(length, flightList, airline));
-            return new Pair<>(null, this.pendingRequests.size());
+            return new Pair<>(Optional.empty(), this.pendingRequests.size());
         }
         Optional<Range> range = this.rangeList.bookRange(length, flightList, airline);
         if(range.isEmpty()){
+
             this.pendingRequests.add(new RequestRange(length, flightList, airline));
             airline.log(new PendingAssignmentNotification(flightList,this,length,pendingRequests.size()));
-            return new Pair<>(null, this.pendingRequests.size());
+            return new Pair<>(Optional.empty(), this.pendingRequests.size());
         }
         airline.log(new CounterAssignmentNotification(range.get()));
-        return new Pair<>(range.get(), null);
+        return new Pair<>(range, null);
     }
 
     //Lo hago aca para evitar el siguiente caso que se daba cuando se devolvía el rango, y se hacía desde afuera:
@@ -94,12 +95,12 @@ public class Sector {
         return range.checkIn(this.historyCheckIn);
     }
 
-    public synchronized void free(int start, final Airline airline) {
+    public synchronized Range free(int start, final Airline airline) {
         if (start < 0) {
-            throw new InvalidRangeStartException(start);
+            throw new InvalidRangeStartException();
         }
         Range rangeToFree = rangeList.getRangeByStart(start).orElseThrow(InvalidRangeException::new);
-        rangeToFree.getAirline().orElseThrow(() -> new AirlineCannotFreeRangeException(rangeToFree,airline)).log(new CheckInEndedNotification(rangeToFree));
+        rangeToFree.getAirline().orElseThrow(AirlineCannotFreeRangeException::new).log(new CheckInEndedNotification(rangeToFree));
         rangeToFree.free(airline);
 
         boolean flag = true;
@@ -119,6 +120,7 @@ public class Sector {
                 }
             }
         }
+        return rangeToFree;
     }
 
     public synchronized List<RequestRange> getPendingRequests() {
