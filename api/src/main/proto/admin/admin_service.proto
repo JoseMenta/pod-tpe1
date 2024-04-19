@@ -5,6 +5,7 @@ option java_package = "ar.edu.itba.pod.grpc.admin";
 option java_multiple_files = true;
 
 import "commons/error.proto";
+import "commons/range.proto";
 import "google/protobuf/empty.proto";
 
 package admin; //TODO: revisar
@@ -13,7 +14,7 @@ package admin; //TODO: revisar
 service AdminService {
   rpc AddSector(SectorRequest) returns (google.protobuf.Empty); //1
   rpc AddRange(RangeRequest) returns (RangeResponse); //2,3
-  rpc AddFlight(FlightMessage) returns (FlightResponse);//1,4
+  rpc AddFlight(FlightMessage) returns (google.protobuf.Empty);//1,4
 }
 
 message SectorRequest {
@@ -26,9 +27,8 @@ message RangeRequest{
 }
 
 message RangeResponse{
-  int32 start = 1;
-  int32 end = 2;
-  string sector = 3;
+  RangeMessage range = 1;
+  string sector = 2;
 }
 
 message FlightMessage{
@@ -37,10 +37,5 @@ message FlightMessage{
   string flight = 3;
 }
 
-message FlightResponse{
-  oneof try{
-    FlightMessage flight = 1;
-    Error error = 2;
-  }
-}
+
 
