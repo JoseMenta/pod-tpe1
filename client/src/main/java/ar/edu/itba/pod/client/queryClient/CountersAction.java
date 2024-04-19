@@ -8,6 +8,11 @@ import ar.edu.itba.pod.grpc.query.QueryServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.stub.StreamObserver;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -27,25 +32,43 @@ public class CountersAction extends Action {
         final CountDownLatch finishLatch = new CountDownLatch(1);
         QueryServiceGrpc.QueryServiceStub stub = QueryServiceGrpc.newStub(channel);
 
-        final StreamObserver<CheckInStatusResponse> observer = new StreamObserver<CheckInStatusResponse>() {
-            @Override
-            public void onNext(final CheckInStatusResponse checkIn) {
-                //TODO
-            }
+        try (
+                BufferedWriter fileOutput = Files.newBufferedWriter(
+                        Paths.get(arguments.get(OUTPATH)),
+                        StandardOpenOption.APPEND,
+                        StandardOpenOption.CREATE
+                );
+        ) {
+            //fileOutput.write(String.format("%f %s %f %f %f %f", elapsedTime, particle.getIdentifier(), particle.getX(), particle.getY(), particle.getVelocity(), particle.getAngle()));
 
-            @Override
-            public void onError(final Throwable throwable) {
-                finishLatch.countDown();
-            }
+            final StreamObserver<CheckInStatusResponse> observer = new StreamObserver<CheckInStatusResponse>() {
+                @Override
+                public void onNext(final CheckInStatusResponse checkIn) {
+                    try {
+                        fileOutput.write(String.format("%s\t(%d-%d)\t%s\t%s\t%s",
+                                checkIn.getSector(), checkIn.getRange().getStart(), checkIn.getRange().getEnd(),
+                                checkIn.getAirline(), "airlines", checkIn.getWaiting()));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
 
-            @Override
-            public void onCompleted() {
-                finishLatch.countDown();
-            }
-        };
+                @Override
+                public void onError(final Throwable throwable) {
+                    finishLatch.countDown();
+                }
 
+                @Override
+                public void onCompleted() {
+                    finishLatch.countDown();
+                }
+            };
 
-        stub.checkInStatus(CheckInStatusRequest.newBuilder().setSector(arguments.get(SECTOR)).build(), observer);
-        finishLatch.await();
+            stub.checkInStatus(CheckInStatusRequest.newBuilder().setSector(arguments.get(SECTOR)).build(), observer);
+            finishLatch.await();
+        }
+         catch (IOException e) {
+            throw new RuntimeException("Could not write files.");
+        }
     }
 }
