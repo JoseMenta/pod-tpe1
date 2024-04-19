@@ -1,14 +1,13 @@
 package ar.edu.itba.pod.client.counterClient;
 
 import ar.edu.itba.pod.client.Action;
-import ar.edu.itba.pod.client.adminClient.AdminActions;
 
 import java.util.Collections;
 import java.util.List;
 
 public enum CounterActions {
     LISTSECTOR("listSectors",new ListSectorsAction(Collections.emptyList())),
-    LISTCOUNTERS("listCounters",new ListCountersAction(List.of(ListCountersAction.SECTOR,ListCountersAction.COUNTERFROM,ListCountersAction.COUNTERTO))),
+    LISTCOUNTERS("listCounters",new ListCountersAction(List.of(ListCountersAction.SECTOR,ListCountersAction.COUNTER_FROM,ListCountersAction.COUNTER_TO))),
     ASSIGNCOUNTERS("assignCounters",new AssignCounterAction(List.of(AssignCounterAction.SECTOR,AssignCounterAction.COUNTERCOUNT,AssignCounterAction.AIRLINE,AssignCounterAction.FLIGHTS))),
     FREECOUNTERS("freeCounters", new FreeCounterAction(List.of(FreeCounterAction.SECTOR,FreeCounterAction.COUNTERFROM,FreeCounterAction.AIRLINE))),
     CHECKINCOUNTERS("checkinCounters",new CheckInAction(List.of(CheckInAction.SECTOR,CheckInAction.COUNTERFROM,CheckInAction.AIRLINE))),

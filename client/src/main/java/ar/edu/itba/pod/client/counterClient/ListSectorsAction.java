@@ -26,7 +26,7 @@ public class ListSectorsAction extends Action {
         //TODO: check if a BlockingStub should be used
         CounterServiceGrpc.CounterServiceStub stub =
                 CounterServiceGrpc.newStub(channel);
-        System.out.printf("%-9s Counters\n","Sectors");
+        System.out.printf("%-9s %-9s\n","Sectors","Counters");
         System.out.printf("%s\n","#".repeat(19));
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         StreamObserver<SectorResponse> observer = new StreamObserver<SectorResponse>() {
@@ -38,7 +38,10 @@ public class ListSectorsAction extends Action {
             }
             @Override
             public void onError(Throwable t) {
-
+                switch (t.getMessage()){
+                    case "5" -> System.out.println("There are no sectors in the airport");
+                    default -> System.out.println("An unknown error occurred while getting the sectors");
+                }
             }
             @Override
             public void onCompleted() {
