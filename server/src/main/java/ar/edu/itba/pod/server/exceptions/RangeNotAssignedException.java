@@ -9,6 +9,6 @@ public class RangeNotAssignedException extends RuntimeException {
 
     public RangeNotAssignedException() {
         super("15");
-        LOGGER.error("There is no range assigned");
+        LOGGER.error("RangeNotAssignedException", this);
     }
 }

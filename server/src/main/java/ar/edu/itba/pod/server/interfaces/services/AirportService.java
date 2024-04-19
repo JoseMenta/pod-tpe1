@@ -46,7 +46,7 @@ public interface AirportService {
     Flight fetchCounter(final String booking);
 
     //3.2
-    Range addPassengerToQueue(final String booking, final String sector, final int startCounter);
+    Pair<Passenger, Integer> addPassengerToQueue(final String booking, final String sector, final int startCounter);
 
     //3.3
     Passenger checkPassengerStatus(final String booking);
