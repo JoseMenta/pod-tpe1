@@ -56,7 +56,7 @@ public interface AirportService {
     BlockingQueue<Notification> register(final String airline);
 
     // 4.2
-    void  unregister(final String airline);
+    void  unregister(final String airline) throws InterruptedException;
 
     //5 Query service
     //5.1

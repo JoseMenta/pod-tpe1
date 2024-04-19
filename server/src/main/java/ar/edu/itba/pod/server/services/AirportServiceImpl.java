@@ -187,7 +187,7 @@ public class AirportServiceImpl implements AirportService {
     }
 
     @Override
-    public void unregister(String airline) {
+    public void unregister(String airline) throws InterruptedException {
         airlineRepository.getAirlineByName(airline).orElseThrow(AirlineNotFoundException::new).unsubscribe();
     }
 

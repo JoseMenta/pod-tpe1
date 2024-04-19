@@ -114,7 +114,7 @@ public class Sector {
                     this.pendingRequests.poll();
 
                     AtomicInteger index = new AtomicInteger();
-                    pendingRequests.forEach(r -> r.getAirline().log(new PendingAssignmentNotification(r.getFlightList(), this,r.getLength(), index.getAndIncrement())));
+                    pendingRequests.forEach(r -> r.airline().log(new PendingAssignmentNotification(r.flightList(), this,r.length(), index.getAndIncrement())));
                 }else{
                     flag = false;
                 }
