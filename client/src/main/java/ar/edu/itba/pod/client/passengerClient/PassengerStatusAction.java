@@ -63,8 +63,6 @@ public class PassengerStatusAction extends Action {
                 case RANGE_NOT_ASSIGNED -> System.out.printf("The flight for booking %s has not been assigned a range of counters yet\n", booking);
                 default -> System.out.printf("An unknown error occurred while fetching the status for booking %s\n", booking);
             }
-        } finally {//TODO: sacar
-            channel.shutdown().awaitTermination(10, TimeUnit.SECONDS);
         }
     }
 }

@@ -50,9 +50,6 @@ public class FetchCounterAction extends Action {
                 case PASSENGER_NOT_FOUND -> System.out.printf("There is no passenger with booking %s\n", booking);
                 default -> System.out.printf("An unknown error occurred while fetching the check-in range for booking %s\n", booking);
             }
-        } finally {
-            //TODO: revisar
-            channel.shutdown().awaitTermination(10, java.util.concurrent.TimeUnit.SECONDS);
         }
     }
 }

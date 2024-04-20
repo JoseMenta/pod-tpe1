@@ -60,8 +60,6 @@ public class PassengerCheckInAction extends Action {
                 case FLIGHT_NOT_IN_RANGE -> System.out.printf("Flight %s is not checking in the range of counters starting at %s\n", booking, counter);
                 default -> System.out.printf("An unknown error occurred while checking in the passenger with booking %s\n", booking);
             }
-        } finally {//TODO: sacar
-            channel.shutdown().awaitTermination(10, TimeUnit.SECONDS);
         }
     }
 }

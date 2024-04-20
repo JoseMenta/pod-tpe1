@@ -17,7 +17,6 @@ public class CounterClient extends Client {
 
         try (Client client = new CounterClient(host,action)){
             client.run();
-            client.close();
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
