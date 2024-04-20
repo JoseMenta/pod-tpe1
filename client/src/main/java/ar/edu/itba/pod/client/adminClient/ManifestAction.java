@@ -17,9 +17,10 @@ import java.util.Map;
 import java.util.concurrent.*;
 
 public class ManifestAction extends Action {
+//    -DserverAddress=localhost:50051 -Daction=manifest -DinPath=client/src/main/resources/bookings.csv
     public static final String IN_PATH = "inPath";
     private static final int THREAD_COUNT = 10;
-    private static final int LINE_COUNT = 200;
+    private static final int LINE_COUNT = 10;
 
     public ManifestAction() {
         super(List.of(IN_PATH), Collections.emptyList());
@@ -97,7 +98,7 @@ public class ManifestAction extends Action {
                     }catch (StatusRuntimeException e){
                         switch (e.getStatus().getDescription()){
                             case "1" -> System.out.printf("Booking %s has already been added\n",values[0]);
-                            case "2" -> System.out.printf("Flight %s has already been registered for another airline\n",values[1]);
+                            case "4" -> System.out.printf("Flight %s has already been registered for another airline\n",values[1]);
                             default -> System.out.printf("An unknown error occurred while adding booking %s for %s %s\n",values[0],values[2],values[1]);
                         }
 

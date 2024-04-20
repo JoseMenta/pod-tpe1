@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AddCounterAction extends Action {
-
+//-DserverAddress=localhost:50051 -Daction=addCounters -Dsector=C -Dcounters=3
     public static final String SECTOR = "sector";
     public static final String COUNTERS = "counters";
 
