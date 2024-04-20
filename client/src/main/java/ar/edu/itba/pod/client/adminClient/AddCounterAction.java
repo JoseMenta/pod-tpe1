@@ -33,9 +33,9 @@ public class AddCounterAction extends Action {
                     .build());
             System.out.printf("%d new counters (%d,%d) in Sector %s added successfully\n",counterCount,response.getRange().getStart(),response.getRange().getEnd(),sector);
         }catch (StatusRuntimeException e){
-            switch (e.getStatus().getDescription()){
-                case "2" -> System.out.printf("Sector %s was not found\n",sector);
-                case "3" -> System.out.println("Counter count must be positive");
+            switch (getError(e)){
+                case SECTOR_NOT_FOUND -> System.out.printf("Sector %s was not found\n",sector);
+                case INVALID_RANGE -> System.out.println("Counter count must be positive");
                 default -> System.out.println("An unknown error occurred while adding counter");
             }
         }

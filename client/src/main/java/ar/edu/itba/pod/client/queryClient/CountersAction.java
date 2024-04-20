@@ -61,13 +61,9 @@ public class CountersAction extends Action {
 
             @Override
             public void onError(final Throwable t) {
-                if(t instanceof StatusRuntimeException e){
-                    switch (e.getStatus().getDescription()){
-                        case "15" -> System.out.printf("Range %s was not assigned in sector \n", arguments.get(SECTOR));
-                        default -> System.out.println("An unknown error occurred while getting the counters");
-                    }
-                }else{
-                    System.out.println("An unknown error occurred while listing check-in history");
+                switch (getError(t)){
+                    case RANGE_NOT_ASSIGNED -> System.out.printf("Range %s was not assigned in sector \n", arguments.get(SECTOR));
+                    default -> System.out.println("An unknown error occurred while getting the counters");
                 }
                 finishLatch.countDown();
             }
@@ -77,7 +73,6 @@ public class CountersAction extends Action {
                 finishLatch.countDown();
             }
         };
-
         stub.checkInStatus(CheckInStatusRequest.newBuilder().setSector(arguments.get(SECTOR)).build(), observer);
         finishLatch.await();
     }

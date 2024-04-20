@@ -45,16 +45,11 @@ public class ListCountersAction extends Action {
             }
             @Override
             public void onError(Throwable t) {
-                if(t instanceof StatusRuntimeException e){
-                    switch (t.getMessage()){
-                        case "2" -> System.out.printf("Sector %s was not found\n",arguments.get(SECTOR));
-                        case "3" -> System.out.printf("From val %s and to val %s are not a range of one or more counters\n",arguments.get(COUNTER_FROM),arguments.get(COUNTER_TO));
-                        default -> System.out.println("An unknown error occurred while getting the counters");
-                    }
-                }else {
-                    System.out.println("An unknown error occurred while getting the counters");
+                switch (getError(t)){
+                    case SECTOR_NOT_FOUND -> System.out.printf("Sector %s was not found\n",arguments.get(SECTOR));
+                    case INVALID_RANGE -> System.out.printf("From val %s and to val %s are not a range of one or more counters\n",arguments.get(COUNTER_FROM),arguments.get(COUNTER_TO));
+                    default -> System.out.println("An unknown error occurred while getting the counters");
                 }
-
                 finishLatch.countDown();
             }
             @Override

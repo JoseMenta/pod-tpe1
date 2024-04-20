@@ -30,10 +30,9 @@ public class UnregisterAction extends Action {
             stub.unsubscribeAirline(UnRegisterRequest.newBuilder().setAirline(arguments.get(AIRLINE)).build());
             System.out.printf("%s unregistered successfully for events\n", arguments.get(AIRLINE));
         }catch (StatusRuntimeException e){
-            if (e.getStatus().getDescription().equals("16")) {
-                System.out.printf("Airline %s was not registered\n", arguments.get(AIRLINE));
-            } else {
-                System.out.println("An unknown error occurred while getting the counters");
+            switch (getError(e)){
+                case AIRLINE_NOT_REGISTERED -> System.out.printf("Airline %s was not registered\n", arguments.get(AIRLINE));
+                default -> System.out.println("An unknown error occurred while getting the counters");
             }
         }
     }

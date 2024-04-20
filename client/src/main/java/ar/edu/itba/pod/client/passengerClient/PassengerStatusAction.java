@@ -58,12 +58,12 @@ public class PassengerStatusAction extends Action {
             final PassengerResponse response = stub.passengerStatus(request);
             printResponse(booking, response);
         } catch (StatusRuntimeException e) {
-            switch (e.getStatus().getDescription()) {
-                case "12" -> System.out.printf("There is no passenger with booking %s\n", booking);
-                case "15" -> System.out.printf("The flight for booking %s has not been assigned a range of counters yet\n", booking);
+            switch (getError(e)) {
+                case PASSENGER_NOT_FOUND -> System.out.printf("There is no passenger with booking %s\n", booking);
+                case RANGE_NOT_ASSIGNED -> System.out.printf("The flight for booking %s has not been assigned a range of counters yet\n", booking);
                 default -> System.out.printf("An unknown error occurred while fetching the status for booking %s\n", booking);
             }
-        } finally {
+        } finally {//TODO: sacar
             channel.shutdown().awaitTermination(10, TimeUnit.SECONDS);
         }
     }

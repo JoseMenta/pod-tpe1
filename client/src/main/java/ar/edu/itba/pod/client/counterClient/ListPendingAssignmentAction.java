@@ -35,14 +35,11 @@ public class ListPendingAssignmentAction extends Action {
 
             @Override
             public void onError(Throwable t) {
-                if(t instanceof StatusRuntimeException e) {
-                    switch (e.getStatus().getDescription()){
-                        case "2" -> System.out.printf("Sector %s was not found\n",arguments.get(SECTOR));
-                        default -> System.out.println("An unknown error occurred while listing pending assignments");
-                    }
-                }else{
-                    System.out.println("An unknown error occurred while listing pending assignments");
+                switch (getError(t)){
+                    case SECTOR_NOT_FOUND -> System.out.printf("Sector %s was not found\n",arguments.get(SECTOR));
+                    default -> System.out.println("An unknown error occurred while listing pending assignments");
                 }
+                finishLatch.countDown();
             }
 
             @Override

@@ -27,8 +27,8 @@ public class AddSectorAction extends Action {
             stub.addSector(request);
             System.out.printf("Sector %s added successfully\n",sector);
         }catch (StatusRuntimeException e){
-            switch (e.getStatus().getDescription()){
-                case "1" -> System.out.printf("Sector %s has already been added\n",sector);
+            switch (getError(e)){
+                case ALREADY_EXISTS -> System.out.printf("Sector %s has already been added\n",sector);
                 default -> System.out.printf("An unknown error occurred while adding sector %s\n",sector);
             }
         } finally {

@@ -47,7 +47,7 @@ public class ManifestAction extends Action {
         }
     }
 
-    private static class AddFlightsRunnable implements Runnable{
+    private class AddFlightsRunnable implements Runnable{
 
         final private AdminServiceGrpc.AdminServiceBlockingStub blockingStub;
         final private BufferedReader reader;
@@ -96,9 +96,9 @@ public class ManifestAction extends Action {
                         );
                         System.out.printf("Booking %s for %s %s added successfully\n",values[0],values[2],values[1]);
                     }catch (StatusRuntimeException e){
-                        switch (e.getStatus().getDescription()){
-                            case "1" -> System.out.printf("Booking %s has already been added\n",values[0]);
-                            case "4" -> System.out.printf("Flight %s has already been registered for another airline\n",values[1]);
+                        switch (getError(e)){
+                            case ALREADY_EXISTS -> System.out.printf("Booking %s has already been added\n",values[0]);
+                            case FLIGHT_ALREADY_USED -> System.out.printf("Flight %s has already been registered for another airline\n",values[1]);
                             default -> System.out.printf("An unknown error occurred while adding booking %s for %s %s\n",values[0],values[2],values[1]);
                         }
 

@@ -62,13 +62,9 @@ public class CheckinsAction extends Action {
             @Override
 
             public void onError(final Throwable t) {
-                if(t instanceof StatusRuntimeException e){
-                    switch (e.getStatus().getDescription()){
-                        case "5" -> System.out.println("There are no check-in's done for now");
-                        default -> System.out.println("An unknown error occurred while listing check-in history");
-                    }
-                }else{
-                    System.out.println("An unknown error occurred while listing check-in history");
+                switch (getError(t)){
+                    case EMPTY_AIRPORT -> System.out.println("There are no check-in's done for now");
+                    default -> System.out.println("An unknown error occurred while listing check-in history");
                 }
                 finishLatch.countDown();
             }

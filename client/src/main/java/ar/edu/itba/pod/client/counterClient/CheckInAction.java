@@ -32,10 +32,10 @@ public class CheckInAction extends Action {
             response.getCheckInCountersList().forEach(c -> System.out.printf("Check-in successful of %s for flight %s at counter %d\n",c.getBooking(),c.getFlight(),c.getCounter()));
             response.getEmptyCountersList().forEach(c -> System.out.printf("Counter %d is idle\n",c));
         }catch (StatusRuntimeException e){
-            switch (e.getStatus().getDescription()){
-                case "2" -> System.out.printf("Sector %s was not found\n",arguments.get(SECTOR));
-                case "3" -> System.out.printf("Range starting at %s was not found in the sector %s\n",arguments.get(COUNTER_FROM),arguments.get(SECTOR));
-                case "10" -> System.out.printf("Range starting at %s is not from airline %s\n",arguments.get(COUNTER_FROM),arguments.get(AIRLINE));
+            switch (getError(e)){
+                case SECTOR_NOT_FOUND -> System.out.printf("Sector %s was not found\n",arguments.get(SECTOR));
+                case INVALID_RANGE -> System.out.printf("Range starting at %s was not found in the sector %s\n",arguments.get(COUNTER_FROM),arguments.get(SECTOR));
+                case RANGE_FROM_OTHER_AIRLINE -> System.out.printf("Range starting at %s is not from airline %s\n",arguments.get(COUNTER_FROM),arguments.get(AIRLINE));
                 default -> System.out.println("An unknown error occurred while checking-in in the counter");
             }
         }

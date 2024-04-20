@@ -42,16 +42,11 @@ public class ListSectorsAction extends Action {
             }
             @Override
             public void onError(Throwable t) {
-                if(t instanceof StatusRuntimeException e){
-                    switch (e.getStatus().getDescription()){
-                        case "5" -> System.out.println("There are no sectors in the airport");
-                        default -> System.out.println("An unknown error occurred while getting the sectors");
-                    }
-                }else{
-                    System.out.println("An unknown error occurred while getting the sectors");
+                switch (getError(t)){
+                    case EMPTY_AIRPORT -> System.out.println("There are no sectors in the airport");
+                    default -> System.out.println("An unknown error occurred while getting the sectors");
                 }
                 finishLatch.countDown();
-
             }
             @Override
             public void onCompleted() {

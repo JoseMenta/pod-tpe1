@@ -46,13 +46,13 @@ public class AssignCounterAction extends Action {
                         rangeInfo.getPendingCount());
             }
         }catch (StatusRuntimeException e){
-            switch (e.getStatus().getDescription()){
-                case "2" -> System.out.printf("Sector %s was not found\n",arguments.get(SECTOR));
-                case "4" -> System.out.printf("There were passengers added for one of flights %s but for other airline",arguments.get(FLIGHTS));
-                case "6" -> System.out.printf("There are no passengers for flights %s\n",arguments.get(FLIGHTS));
-                case "7" -> System.out.printf("There is already a counter assignment for one of the flights %s\n",arguments.get(FLIGHTS));
-                case "8" -> System.out.printf("There is a pending assignment for one of the flights %s\n",arguments.get(FLIGHTS));
-                case "9" -> System.out.printf("One of the flights %s has already ended the check in\n",arguments.get(FLIGHTS));
+            switch (getError(e)){
+                case SECTOR_NOT_FOUND -> System.out.printf("Sector %s was not found\n",arguments.get(SECTOR));
+                case FLIGHT_ALREADY_USED -> System.out.printf("There were passengers added for one of flights %s but for other airline",arguments.get(FLIGHTS));
+                case EMPTY_PASSENGERS -> System.out.printf("There are no passengers for flights %s\n",arguments.get(FLIGHTS));
+                case FLIGHT_ALREADY_ASSIGNED -> System.out.printf("There is already a counter assignment for one of the flights %s\n",arguments.get(FLIGHTS));
+                case PENDING_REQUEST_FOR_FLIGHT -> System.out.printf("There is a pending assignment for one of the flights %s\n",arguments.get(FLIGHTS));
+                case FLIGHT_ALREADY_CHECKED_IN -> System.out.printf("One of the flights %s has already ended the check in\n",arguments.get(FLIGHTS));
                 default -> System.out.println("An unknown error occurred while assigning the counter");
             }
         }

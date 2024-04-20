@@ -47,15 +47,12 @@ public class RegisterAction extends Action {
             }
             @Override
             public void onError(Throwable t) {
-                if(t instanceof StatusRuntimeException e){
-                    switch (e.getStatus().getDescription()){
-                        case "6" -> System.out.printf("Passenger not exists for airline %s\n",arguments.get(AIRLINE));
-                        case "17" -> System.out.printf("Airline %s already subscribed\n",arguments.get(AIRLINE));
-                        default -> System.out.println("An unknown error occurred while getting the counters");
-                    }
-                }else{
-                    System.out.println("An unknown error occurred while getting the counters");
+                switch (getError(t)){
+                    case EMPTY_PASSENGERS -> System.out.printf("Passenger not exists for airline %s\n",arguments.get(AIRLINE));
+                    case AIRLINE_ALREADY_SUBSCRIBED -> System.out.printf("Airline %s already subscribed\n",arguments.get(AIRLINE));
+                    default -> System.out.println("An unknown error occurred while getting the counters");
                 }
+                finishLatch.countDown();
             }
             @Override
             public void onCompleted() {

@@ -1,11 +1,14 @@
 package ar.edu.itba.pod.client;
 
+import ar.edu.itba.pod.grpc.commons.Error;
 import io.grpc.ManagedChannel;
+import io.grpc.StatusRuntimeException;
 
 import java.nio.channels.Channel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class Action {
 
@@ -29,5 +32,18 @@ public abstract class Action {
         }
     }
 
+    public Error getError(final StatusRuntimeException e){
+        return Optional.ofNullable(e.getStatus().getDescription())
+                .map(Integer::parseInt)
+                .map(Error::forNumber)
+                .orElse(Error.UNSPECIFIED);
+    }
+
+    public Error getError(final Throwable t){
+        if(t instanceof StatusRuntimeException e){
+            return getError(e);
+        }
+        return Error.UNSPECIFIED;
+    }
     public abstract void run(ManagedChannel channel) throws InterruptedException;
 }

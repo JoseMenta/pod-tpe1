@@ -53,14 +53,14 @@ public class PassengerCheckInAction extends Action {
             final PassengerCheckInResponse response = stub.passengerCheckIn(request);
             printResponse(booking, sector, response);
         } catch (StatusRuntimeException e) {
-            switch (e.getMessage()) {
-                case "2" -> System.out.printf("Sector %s does not exist\n", sector);
-                case "11" -> System.out.printf("Passenger with booking %s has already started the check-in process\n", booking);
-                case "12" -> System.out.printf("There is no passenger with booking %s\n", booking);
-                case "18" -> System.out.printf("Flight %s is not checking in the range of counters starting at %s\n", booking, counter);
+            switch (getError(e)) {
+                case SECTOR_NOT_FOUND -> System.out.printf("Sector %s does not exist\n", sector);
+                case PASSENGERS_WAITING -> System.out.printf("Passenger with booking %s has already started the check-in process\n", booking);
+                case PASSENGER_NOT_FOUND -> System.out.printf("There is no passenger with booking %s\n", booking);
+                case FLIGHT_NOT_IN_RANGE -> System.out.printf("Flight %s is not checking in the range of counters starting at %s\n", booking, counter);
                 default -> System.out.printf("An unknown error occurred while checking in the passenger with booking %s\n", booking);
             }
-        } finally {
+        } finally {//TODO: sacar
             channel.shutdown().awaitTermination(10, TimeUnit.SECONDS);
         }
     }
