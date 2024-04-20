@@ -47,8 +47,8 @@ public class GlobalExceptionHandlerInterceptor implements ServerInterceptor {
             AirlineNotFoundException.class, Code.NOT_FOUND,
             PassengerAlreadyEnqueuedException.class, Code.ALREADY_EXISTS,
             FlightNotInRangeException.class, Code.INVALID_ARGUMENT,
-            AirlineNotInRangeException.class, Code.INVALID_ARGUMENT,
-            RangeNotAssignedException.class, Code.INVALID_ARGUMENT
+            AirlineNotInRangeException.class, Code.INVALID_ARGUMENT
+//            RangeNotAssignedException.class, Code.INVALID_ARGUMENT
         );
 
         private void handleException(RuntimeException exception, ServerCall<T, R> serverCall, Metadata headers) {

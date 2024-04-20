@@ -48,7 +48,7 @@ public class PassengerCheckInAction extends Action {
             final PassengerCheckInRequest request = PassengerCheckInRequest.newBuilder()
                     .setBooking(booking)
                     .setSector(sector)
-                    .setCounterFrom(counter)
+                    .setCounterFrom(Integer.parseInt(counter))
                     .build();
             final PassengerCheckInResponse response = stub.passengerCheckIn(request);
             printResponse(booking, sector, response);

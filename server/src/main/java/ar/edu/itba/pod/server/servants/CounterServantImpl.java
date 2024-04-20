@@ -74,13 +74,13 @@ public class CounterServantImpl extends CounterServiceGrpc.CounterServiceImplBas
     public void bookRange(RangeBookingRequest request,
                           StreamObserver<RangeInfo> responseObserver) {
         Pair<Optional<Range>,Integer> assignment = airportService.assignRange(request.getSector(),request.getAirline(),request.getFlightsList(),request.getCounterCount());
-        if(assignment.getFirst().isEmpty()) {
+        if(assignment.first().isEmpty()) {
             responseObserver.onNext(RangeInfo.newBuilder()
-                            .setPendingCount(assignment.getSecond())
+                            .setPendingCount(assignment.second())
                     .build());
         }else {
             responseObserver.onNext(RangeInfo.newBuilder()
-                            .setAssignedRange(RangeMapper.mapToRangeMessage(assignment.getFirst().get()))
+                            .setAssignedRange(RangeMapper.mapToRangeMessage(assignment.first().get()))
                     .build());
         }
         responseObserver.onCompleted();
@@ -116,7 +116,7 @@ public class CounterServantImpl extends CounterServiceGrpc.CounterServiceImplBas
         Pair<List<Passenger>, List<Counter>> counters = airportService.checkInCounters(request.getSector(),request.getCountFrom(),request.getAirline());
          responseObserver.onNext(CheckInCountersResponse.newBuilder()
                 .addAllCheckInCounters(
-                        counters.getFirst().stream().map(p ->
+                        counters.first().stream().map(p ->
                                 CheckInCounters.newBuilder()
                                         .setCounter(p.getCounter().getId())
                                         .setBooking(p.getBooking())
@@ -126,7 +126,7 @@ public class CounterServantImpl extends CounterServiceGrpc.CounterServiceImplBas
                                 ).toList()
                 )
                 .addAllEmptyCounters(
-                        counters.getSecond().stream().map(Counter::getId).toList()
+                        counters.second().stream().map(Counter::getId).toList()
                 )
                 .build());
          responseObserver.onCompleted();
@@ -145,9 +145,9 @@ public class CounterServantImpl extends CounterServiceGrpc.CounterServiceImplBas
                 r ->
                         responseObserver.onNext(
                                 PendingRangeInfo.newBuilder()
-                                        .setAirline(r.getAirline().getName())
-                                        .addAllFlights(r.getFlightList().stream().map(Flight::getCode).toList())
-                                        .setSize(r.getLength())
+                                        .setAirline(r.airline().getName())
+                                        .addAllFlights(r.flightList().stream().map(Flight::getCode).toList())
+                                        .setSize(r.length())
                                         .build()
                         )
         );

@@ -89,8 +89,8 @@ public class CheckInServantImpl extends CheckInServiceGrpc.CheckInServiceImplBas
         String sectorName = request.getSector();
         int counterFrom = request.getCounterFrom();
         Pair<Passenger, Integer> rangePassengerPair = airportService.addPassengerToQueue(booking, sectorName, counterFrom);
-        Passenger passenger = rangePassengerPair.getFirst();
-        int waitingAhead = rangePassengerPair.getSecond();
+        Passenger passenger = rangePassengerPair.first();
+        int waitingAhead = rangePassengerPair.second();
         responseObserver.onNext(PASSENGER_CHECK_IN_RESPONSE_MAPPER.apply(passenger, waitingAhead));
         responseObserver.onCompleted();
     }
