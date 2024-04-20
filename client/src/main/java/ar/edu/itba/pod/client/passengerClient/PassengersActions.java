@@ -8,7 +8,7 @@ public enum  PassengersActions {
 
     FETCH_COUNTER("fetchCounter", FetchCounterAction::new),
 
-    PASSENGER_CHECKIN("passengerCheckIn", PassengerCheckInAction::new),
+    PASSENGER_CHECKIN("passengerCheckin", PassengerCheckInAction::new),
 
     PASSENGER_STATUS("passengerStatus",PassengerStatusAction::new);
 

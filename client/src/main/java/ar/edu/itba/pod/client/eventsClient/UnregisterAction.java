@@ -31,7 +31,7 @@ public class UnregisterAction extends Action {
             System.out.printf("%s unregistered successfully for events\n", arguments.get(AIRLINE));
         }catch (StatusRuntimeException e){
             switch (getError(e)){
-                case AIRLINE_NOT_REGISTERED -> System.out.printf("Airline %s was not registered\n", arguments.get(AIRLINE));
+                case AIRLINE_NOT_REGISTERED, AIRLINE_NOT_FOUND -> System.out.printf("Airline %s was not registered\n", arguments.get(AIRLINE));
                 default -> System.out.println("An unknown error occurred while getting the counters");
             }
         }

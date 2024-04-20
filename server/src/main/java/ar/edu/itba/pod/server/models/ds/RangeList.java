@@ -83,15 +83,15 @@ public class RangeList {
             return Optional.empty();
         }
         //curr can Book length
-        List<Range> splitRanges = curr.book(length,flights, airline);
-        if(splitRanges.size()==1){
+        Pair<Range,Range> splitRanges = curr.book(length,flights, airline);
+        if(!splitRanges.hasSecond()){
             //All the range was booked
-            iterator.set(splitRanges.getFirst());
+            iterator.set(splitRanges.first());
         }else{
-            iterator.set(splitRanges.getFirst());
-            iterator.add(splitRanges.getLast());
+            iterator.set(splitRanges.first());
+            iterator.add(splitRanges.second());
         }
-        return Optional.of(splitRanges.getFirst());
+        return Optional.of(splitRanges.first());
     }
 
     /**

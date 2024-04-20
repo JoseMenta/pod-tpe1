@@ -18,7 +18,6 @@ public class Server {
     public static void main(String[] args) throws InterruptedException, IOException {
         logger.info(" Server Starting ...");
         final AirportService airportService = new AirportServiceImpl();
-        final GlobalExceptionHandlerInterceptor interceptor = new GlobalExceptionHandlerInterceptor();
         int port = Optional.ofNullable(System.getProperty("port")).map(Integer::parseInt).orElse(50051);
         io.grpc.Server server = ServerBuilder.forPort(port)
                 .intercept(new GlobalExceptionHandlerInterceptor())
