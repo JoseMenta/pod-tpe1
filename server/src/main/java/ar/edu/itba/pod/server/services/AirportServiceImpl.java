@@ -122,7 +122,13 @@ public class AirportServiceImpl implements AirportService {
             if (airlineOptional.isEmpty()) {
                 throw new FlightAssignedToOtherAirlineException();
             }
-            return sectorOptional.get().book(count, flightList, airlineOptional.get());
+            Pair<Optional<Range>, Integer> auxRange = sectorOptional.get().book(count, flightList, airlineOptional.get());
+            for(Flight flight : flightList){
+                if(auxRange.first().isPresent()){
+                    flight.assignRange(auxRange.first().get());
+                }
+            }
+            return auxRange;
         }
     }
 
