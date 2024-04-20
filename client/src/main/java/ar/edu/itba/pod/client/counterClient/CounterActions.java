@@ -2,17 +2,15 @@ package ar.edu.itba.pod.client.counterClient;
 
 import ar.edu.itba.pod.client.Action;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Supplier;
 
 public enum CounterActions {
-    LISTSECTOR("listSectors",ListSectorsAction::new),
-    LISTCOUNTERS("listCounters",ListCountersAction::new),
-    ASSIGNCOUNTERS("assignCounters",AssignCounterAction::new),
-    FREECOUNTERS("freeCounters", FreeCounterAction::new),
-    CHECKINCOUNTERS("checkinCounters",CheckInAction::new),
-    LISTPENDINGASSIGNMENTS("listPendingAssignments",ListPendingAssignmentAction::new);
+    LIST_SECTOR("listSectors",ListSectorsAction::new),
+    LIST_COUNTERS("listCounters",ListCountersAction::new),
+    ASSIGN_COUNTERS("assignCounters",AssignCounterAction::new),
+    FREE_COUNTERS("freeCounters", FreeCounterAction::new),
+    CHECKIN_COUNTERS("checkinCounters",CheckInAction::new),
+    LIST_PENDING_ASSIGNMENTS("listPendingAssignments",ListPendingAssignmentAction::new);
     private final String actionName;
 
     private final Supplier<Action> action;

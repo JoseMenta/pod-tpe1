@@ -1,13 +1,11 @@
 package ar.edu.itba.pod.client.eventsClient;
 
 import ar.edu.itba.pod.client.Action;
-import ar.edu.itba.pod.client.adminClient.AdminActions;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 public enum EventsActions {
-    RESGISTER("register", RegisterAction::new),
+    REGISTER("register", RegisterAction::new),
     UNREGISTER("unregister", UnregisterAction::new);
 
     private final String actionName;

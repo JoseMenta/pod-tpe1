@@ -1,12 +1,10 @@
 package ar.edu.itba.pod.client.queryClient;
 
 import ar.edu.itba.pod.client.Action;
-import ar.edu.itba.pod.grpc.counter.CounterServiceGrpc;
 import ar.edu.itba.pod.grpc.query.CheckInStatusRequest;
 import ar.edu.itba.pod.grpc.query.CheckInStatusResponse;
 import ar.edu.itba.pod.grpc.query.QueryServiceGrpc;
 import io.grpc.ManagedChannel;
-import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
 import java.io.BufferedWriter;
@@ -14,18 +12,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 public class CountersAction extends Action {
-    public static final String OUTPATH = "outPath";
+    public static final String OUT_PATH = "outPath";
     public static final String SECTOR = "sector";
 
     public CountersAction() {
-        super(List.of(OUTPATH), List.of(SECTOR));
+        super(List.of(OUT_PATH), List.of(SECTOR));
     }
 
     @Override
@@ -41,7 +36,7 @@ public class CountersAction extends Action {
                 try {
                     if(fileOutput == null){
                         BufferedWriter fileOutput = Files.newBufferedWriter(
-                                Paths.get(arguments.get(OUTPATH)),
+                                Paths.get(arguments.get(OUT_PATH)),
                                 StandardOpenOption.APPEND,
                                 StandardOpenOption.CREATE
                         );

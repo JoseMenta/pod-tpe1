@@ -1,18 +1,16 @@
 package ar.edu.itba.pod.client.passengerClient;
 
 import ar.edu.itba.pod.client.Action;
-import ar.edu.itba.pod.grpc.commons.Error;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 public enum  PassengersActions {
 
-    FETCHCOUNTER("fetchCounter", FetchCounterAction::new),
+    FETCH_COUNTER("fetchCounter", FetchCounterAction::new),
 
-    PASSENGERCHECKIN("passengerCheckIn", PassengerCheckInAction::new),
+    PASSENGER_CHECKIN("passengerCheckIn", PassengerCheckInAction::new),
 
-    PASSENGERSTATUS("passengerStatus",PassengerStatusAction::new);
+    PASSENGER_STATUS("passengerStatus",PassengerStatusAction::new);
 
 
     private final String actionName;

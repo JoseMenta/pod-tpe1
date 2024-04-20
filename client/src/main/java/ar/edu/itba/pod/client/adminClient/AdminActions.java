@@ -2,12 +2,11 @@ package ar.edu.itba.pod.client.adminClient;
 
 import ar.edu.itba.pod.client.Action;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 public enum AdminActions {
-    ADDSECTOR("addSector", AddSectorAction::new),
-    ADDCOUNTER("addCounters", AddCounterAction::new),
+    ADD_SECTOR("addSector", AddSectorAction::new),
+    ADD_COUNTER("addCounters", AddCounterAction::new),
     MANIFEST("manifest", ManifestAction::new);
 
     private final String actionName;
