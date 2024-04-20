@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public enum AdminActions {
-//    -DserverAddress=localhost:50051 -Daction=addSector -Dsector=C
     ADDSECTOR("addSector", AddSectorAction::new),
     ADDCOUNTER("addCounters", AddCounterAction::new),
     MANIFEST("manifest", ManifestAction::new);

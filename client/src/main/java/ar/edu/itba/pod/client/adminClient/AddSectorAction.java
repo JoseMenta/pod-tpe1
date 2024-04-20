@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class AddSectorAction extends Action {
+    //    -DserverAddress=localhost:50051 -Daction=addSector -Dsector=C
     public static final String SECTOR = "sector";
     public AddSectorAction() {
         super(List.of(SECTOR), Collections.emptyList());

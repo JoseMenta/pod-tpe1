@@ -4,19 +4,20 @@ import ar.edu.itba.pod.client.Action;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 public enum CounterActions {
-    LISTSECTOR("listSectors",new ListSectorsAction()),
-    LISTCOUNTERS("listCounters",new ListCountersAction()),
-    ASSIGNCOUNTERS("assignCounters",new AssignCounterAction()),
-    FREECOUNTERS("freeCounters", new FreeCounterAction()),
-    CHECKINCOUNTERS("checkinCounters",new CheckInAction()),
-    LISTPENDINGASSIGNMENTS("listPendingAssignments",new ListPendingAssignmentAction());
+    LISTSECTOR("listSectors",ListSectorsAction::new),
+    LISTCOUNTERS("listCounters",ListCountersAction::new),
+    ASSIGNCOUNTERS("assignCounters",AssignCounterAction::new),
+    FREECOUNTERS("freeCounters", FreeCounterAction::new),
+    CHECKINCOUNTERS("checkinCounters",CheckInAction::new),
+    LISTPENDINGASSIGNMENTS("listPendingAssignments",ListPendingAssignmentAction::new);
     private final String actionName;
 
-    private final Action action;
+    private final Supplier<Action> action;
 
-    CounterActions(String actionName, Action action) {
+    CounterActions(String actionName, Supplier<Action> action) {
         this.actionName = actionName;
         this.action = action;
     }
@@ -30,6 +31,6 @@ public enum CounterActions {
     }
 
     public Action getActionClass() {
-        return action;
+        return action.get();
     }
 }

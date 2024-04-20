@@ -1,23 +1,25 @@
 package ar.edu.itba.pod.client.passengerClient;
 
 import ar.edu.itba.pod.client.Action;
+import ar.edu.itba.pod.grpc.commons.Error;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public enum  PassengersActions {
 
-    FETCHCOUNTER("fetchCounter", new FetchCounterAction()),
+    FETCHCOUNTER("fetchCounter", FetchCounterAction::new),
 
-    PASSENGERCHECKIN("passengerCheckIn", new PassengerCheckInAction()),
+    PASSENGERCHECKIN("passengerCheckIn", PassengerCheckInAction::new),
 
-    PASSENGERSTATUS("passengerStatus", new PassengerStatusAction());
+    PASSENGERSTATUS("passengerStatus",PassengerStatusAction::new);
 
 
     private final String actionName;
 
-    private final Action action;
+    private final Supplier<Action> action;
 
-    PassengersActions(String actionName, Action action) {
+    PassengersActions(String actionName, Supplier<Action> action) {
         this.actionName = actionName;
         this.action = action;
     }
@@ -32,6 +34,6 @@ public enum  PassengersActions {
     }
 
     public Action getActionClass() {
-        return action;
+        return action.get();
     }
 }

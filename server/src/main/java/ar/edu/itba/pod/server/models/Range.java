@@ -81,7 +81,7 @@ public class Range implements Comparable<Range>{
      * @return  true if the range is in the interval, false otherwise
      */
     public boolean isInInterval(final int start, final int end){
-        return start<=this.start && end<=this.end;
+        return start<=this.start && this.end<=end;
     }
 
     /**

@@ -3,15 +3,16 @@ package ar.edu.itba.pod.client.queryClient;
 import ar.edu.itba.pod.client.Action;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public enum QueryActions {
-    COUNTERS("counters", new CountersAction()),
-    CHECKINS("checkins", new CheckinsAction());
+    COUNTERS("counters", CountersAction::new),
+    CHECKINS("checkins", CheckinsAction::new);
 
     private final String actionName;
-    private final Action action;
+    private final Supplier<Action> action;
 
-    QueryActions(String actionName, Action action) {
+    QueryActions(String actionName, Supplier<Action> action) {
         this.actionName = actionName;
         this.action = action;
     }
@@ -26,6 +27,6 @@ public enum QueryActions {
     }
 
     public Action getActionClass() {
-        return action;
+        return action.get();
     }
 }

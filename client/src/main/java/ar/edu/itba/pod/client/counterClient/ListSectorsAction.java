@@ -19,6 +19,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class ListSectorsAction extends Action {
+//    -DserverAddress=localhost:50051 -Daction=listSectors
 
     public ListSectorsAction() {
         super(Collections.emptyList(),Collections.emptyList());
@@ -35,7 +36,7 @@ public class ListSectorsAction extends Action {
         StreamObserver<SectorResponse> observer = new StreamObserver<SectorResponse>() {
             @Override
             public void onNext(SectorResponse value) {
-                System.out.printf("%-9s %s",value.getName(),value.getRangesList()
+                System.out.printf("%-9s %s\n",value.getName(),value.getRangesCount()==0?"-":value.getRangesList()
                                                         .stream().map(r->String.format("(%d-%d)",r.getStart(),r.getEnd()))
                                                         .collect(Collectors.joining()));
             }
