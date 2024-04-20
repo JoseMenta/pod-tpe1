@@ -7,6 +7,7 @@ import ar.edu.itba.pod.grpc.counter.FreeRangeResponse;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,17 +16,15 @@ public class FreeCounterAction extends Action {
 
     public static final String SECTOR = "sector";
     public static final String COUNTER_FROM = "counterFrom";
-
     public static final String AIRLINE = "airline";
 
 
-    public FreeCounterAction(List<String> expectedArguments) {
-        super(expectedArguments);
+    public FreeCounterAction(){
+        super(List.of(SECTOR,COUNTER_FROM,AIRLINE), Collections.emptyList());
     }
 
     @Override
     public void run(ManagedChannel channel) throws InterruptedException {
-        Map<String, String> arguments = parseArguments();
         CounterServiceGrpc.CounterServiceBlockingStub stub = CounterServiceGrpc.newBlockingStub(channel);
         try {
             FreeRangeResponse response = stub.freeCounterRange(FreeRangeRequest.newBuilder()
@@ -39,7 +38,7 @@ public class FreeCounterAction extends Action {
                     response.getRange().getStart(),response.getRange().getEnd(),
                     arguments.get(SECTOR));
         }catch (StatusRuntimeException e){
-            switch (e.getMessage()){
+            switch (e.getStatus().getDescription()){
                 case "2" -> System.out.printf("Sector %s was not found\n",arguments.get(SECTOR));
                 case "3" -> System.out.printf("Range starting at %s was not found in the sector %s\n",arguments.get(COUNTER_FROM),arguments.get(SECTOR));
                 case "10" -> System.out.printf("Range starting at %s is not from airline %s\n",arguments.get(COUNTER_FROM),arguments.get(AIRLINE));

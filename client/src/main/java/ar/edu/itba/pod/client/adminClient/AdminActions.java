@@ -5,9 +5,9 @@ import ar.edu.itba.pod.client.Action;
 import java.util.List;
 
 public enum AdminActions {
-    ADDSECTOR("addSector", new AddSectorAction(List.of(AddSectorAction.SECTOR))),
-    ADDCOUNTER("addCounters", new AddCounterAction(List.of(AddCounterAction.SECTOR, AddCounterAction.COUNTERS))),
-    MANIFEST("manifest", new ManifestAction(List.of(ManifestAction.IN_PATH)));
+    ADDSECTOR("addSector", new AddSectorAction()),
+    ADDCOUNTER("addCounters", new AddCounterAction()),
+    MANIFEST("manifest", new ManifestAction());
 
     private final String actionName;
 

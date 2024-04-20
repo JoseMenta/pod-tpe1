@@ -6,11 +6,11 @@ import java.util.List;
 
 public enum  PassengersActions {
 
-    FETCHCOUNTER("fetchCounter", new FetchCounterAction(List.of(FetchCounterAction.BOOKING))),
+    FETCHCOUNTER("fetchCounter", new FetchCounterAction()),
 
-    PASSENGERCHECKIN("passengerCheckIn", new PassengerCheckInAction(List.of(PassengerCheckInAction.BOOKING, PassengerCheckInAction.SECTOR, PassengerCheckInAction.COUNTER))),
+    PASSENGERCHECKIN("passengerCheckIn", new PassengerCheckInAction()),
 
-    PASSENGERSTATUS("passengerStatus", new PassengerStatusAction(List.of(PassengerStatusAction.BOOKING)));
+    PASSENGERSTATUS("passengerStatus", new PassengerStatusAction());
 
 
     private final String actionName;

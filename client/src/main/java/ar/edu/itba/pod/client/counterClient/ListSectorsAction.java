@@ -7,18 +7,21 @@ import ar.edu.itba.pod.grpc.counter.CounterServiceGrpc;
 import ar.edu.itba.pod.grpc.counter.SectorResponse;
 import com.google.protobuf.Empty;
 import io.grpc.ManagedChannel;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 public class ListSectorsAction extends Action {
 
-    public ListSectorsAction(List<String> expectedArguments) {
-        super(expectedArguments);
+    public ListSectorsAction() {
+        super(Collections.emptyList(),Collections.emptyList());
     }
 
     @Override
@@ -28,7 +31,7 @@ public class ListSectorsAction extends Action {
                 CounterServiceGrpc.newStub(channel);
         System.out.printf("%-9s %-9s\n","Sectors","Counters");
         System.out.printf("%s\n","#".repeat(19));
-        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
+        final CountDownLatch finishLatch = new CountDownLatch(1);
         StreamObserver<SectorResponse> observer = new StreamObserver<SectorResponse>() {
             @Override
             public void onNext(SectorResponse value) {
@@ -38,22 +41,23 @@ public class ListSectorsAction extends Action {
             }
             @Override
             public void onError(Throwable t) {
-                switch (t.getMessage()){
-                    case "5" -> System.out.println("There are no sectors in the airport");
-                    default -> System.out.println("An unknown error occurred while getting the sectors");
+                if(t instanceof StatusRuntimeException e){
+                    switch (e.getStatus().getDescription()){
+                        case "5" -> System.out.println("There are no sectors in the airport");
+                        default -> System.out.println("An unknown error occurred while getting the sectors");
+                    }
+                }else{
+                    System.out.println("An unknown error occurred while getting the sectors");
                 }
+                finishLatch.countDown();
+
             }
             @Override
             public void onCompleted() {
-                completableFuture.complete(true);
+                finishLatch.countDown();
             }
         };
         stub.listSectors(Empty.getDefaultInstance(),observer);
-        try {
-            completableFuture.get();
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-
+        finishLatch.await();
     }
 }

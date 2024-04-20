@@ -1,6 +1,5 @@
 package ar.edu.itba.pod.server.repositories;
 
-import ar.edu.itba.pod.server.exceptions.AirlineAlreadyExistsException;
 import ar.edu.itba.pod.server.interfaces.repositories.AirlineRepository;
 import ar.edu.itba.pod.server.models.Airline;
 import org.slf4j.Logger;
@@ -19,18 +18,6 @@ public class AirlineRepositoryImpl implements AirlineRepository {
     public Optional<Airline> getAirlineByName(String airlineName) {
         LOGGER.info("Get Airline with name {}",airlineName);
         return Optional.ofNullable(airlines.get(airlineName));
-    }
-
-    @Override
-    public Airline createAirline(String name) {
-        Airline airline = new Airline(name);
-        Airline possibleAirline =  airlines.putIfAbsent(name,airline);
-        if (possibleAirline != null) {
-            LOGGER.error("Airline with name {} already exists",name);
-            throw new AirlineAlreadyExistsException();
-        }
-        LOGGER.info("Create Airline with name {}",name);
-        return airline;
     }
 
     @Override

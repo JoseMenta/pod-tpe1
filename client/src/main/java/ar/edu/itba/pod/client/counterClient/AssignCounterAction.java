@@ -8,6 +8,7 @@ import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -18,13 +19,12 @@ public class AssignCounterAction extends Action {
     public static final String AIRLINE  = "airline";
     public static final String FLIGHTS = "flights";
 
-    public AssignCounterAction(List<String> expectedArguments) {
-        super(expectedArguments);
+    public AssignCounterAction() {
+        super(List.of(SECTOR,COUNTER_COUNT,AIRLINE,FLIGHTS), Collections.emptyList());
     }
 
     @Override
     public void run(ManagedChannel channel) throws InterruptedException {
-        Map<String, String> arguments = parseArguments();
         CounterServiceGrpc.CounterServiceBlockingStub stub = CounterServiceGrpc.newBlockingStub(channel);
         try {
             RangeInfo rangeInfo = stub.bookRange(RangeBookingRequest.newBuilder()
@@ -46,7 +46,7 @@ public class AssignCounterAction extends Action {
                         rangeInfo.getPendingCount());
             }
         }catch (StatusRuntimeException e){
-            switch (e.getMessage()){
+            switch (e.getStatus().getDescription()){
                 case "2" -> System.out.printf("Sector %s was not found\n",arguments.get(SECTOR));
                 case "4" -> System.out.printf("There were passengers added for one of flights %s but for other airline",arguments.get(FLIGHTS));
                 case "6" -> System.out.printf("There are no passengers for flights %s\n",arguments.get(FLIGHTS));

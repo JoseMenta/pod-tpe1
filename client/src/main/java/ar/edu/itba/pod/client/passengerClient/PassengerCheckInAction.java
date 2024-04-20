@@ -7,6 +7,7 @@ import ar.edu.itba.pod.grpc.checkin.PassengerCheckInResponse;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -16,8 +17,8 @@ public class PassengerCheckInAction extends Action {
     public static final String BOOKING = "booking";
     public static final String SECTOR = "sector";
     public static final String COUNTER = "counter";
-    public PassengerCheckInAction(List<String> expectedArguments) {
-        super(expectedArguments);
+    public PassengerCheckInAction() {
+        super(List.of(BOOKING, SECTOR, COUNTER), Collections.emptyList());
     }
 
     private void printResponse(final String booking, final String sector, final PassengerCheckInResponse response) {
@@ -38,7 +39,6 @@ public class PassengerCheckInAction extends Action {
 
     @Override
     public void run(ManagedChannel channel) throws InterruptedException {
-        Map<String, String> arguments = parseArguments();
         final String booking = arguments.get(BOOKING);
         final String sector = arguments.get(SECTOR);
         final String counter = arguments.get(COUNTER);

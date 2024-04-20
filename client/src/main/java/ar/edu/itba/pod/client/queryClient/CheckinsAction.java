@@ -6,6 +6,7 @@ import ar.edu.itba.pod.grpc.query.CheckInHistoryResponse;
 import ar.edu.itba.pod.grpc.query.CheckInStatusRequest;
 import ar.edu.itba.pod.grpc.query.QueryServiceGrpc;
 import io.grpc.ManagedChannel;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
 import java.io.BufferedWriter;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -24,13 +26,12 @@ public class CheckinsAction extends Action {
     public static final String SECTOR = "sector";
     public static final String AIRLINE = "airline";
 
-    public CheckinsAction(List<String> expectedArguments) {
-        super(expectedArguments);
+    public CheckinsAction() {
+        super(List.of(OUT_PATH), List.of(SECTOR, AIRLINE));
     }
 
     @Override
     public void run(ManagedChannel channel) throws InterruptedException {
-        Map<String, String> arguments = parseArguments();
         final CountDownLatch finishLatch = new CountDownLatch(1);
         QueryServiceGrpc.QueryServiceStub stub = QueryServiceGrpc.newStub(channel);
         final StreamObserver<CheckInHistoryResponse> observer = new StreamObserver<CheckInHistoryResponse>() {
@@ -59,10 +60,15 @@ public class CheckinsAction extends Action {
             }
 
             @Override
+
             public void onError(final Throwable t) {
-                switch (t.getMessage()){
-                    case "5" -> System.out.println("There are no check-in's done for now");
-                    default -> System.out.println("An unknown error occurred while listing check-in history");
+                if(t instanceof StatusRuntimeException e){
+                    switch (e.getStatus().getDescription()){
+                        case "5" -> System.out.println("There are no check-in's done for now");
+                        default -> System.out.println("An unknown error occurred while listing check-in history");
+                    }
+                }else{
+                    System.out.println("An unknown error occurred while listing check-in history");
                 }
                 finishLatch.countDown();
             }

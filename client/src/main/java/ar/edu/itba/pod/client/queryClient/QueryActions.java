@@ -5,8 +5,8 @@ import ar.edu.itba.pod.client.Action;
 import java.util.List;
 
 public enum QueryActions {
-    COUNTERS("counters", new CountersAction(List.of(CountersAction.OUTPATH, CountersAction.SECTOR))),
-    CHECKINS("checkins", new CheckinsAction(List.of(CheckinsAction.OUT_PATH, CheckinsAction.SECTOR, CheckinsAction.AIRLINE)));
+    COUNTERS("counters", new CountersAction()),
+    CHECKINS("checkins", new CheckinsAction());
 
     private final String actionName;
     private final Action action;

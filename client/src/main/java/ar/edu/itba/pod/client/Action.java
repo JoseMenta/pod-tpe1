@@ -9,23 +9,24 @@ import java.util.Map;
 
 public abstract class Action {
 
-    private final List<String> expectedArguments;
+    protected final Map<String, String> arguments;
 
-    public Action(List<String> expectedArguments) {
-        this.expectedArguments = expectedArguments;
-    }
-
-    public Map<String, String> parseArguments(){
-        Map<String, String> arguments = new HashMap<>();
+    public Action(List<String> expectedArguments, List<String> optionalArguments) {
+        arguments = new HashMap<>();
         for (String arg : expectedArguments) {
             String aux = System.getProperty(arg);
             if (aux == null) {
-                throw new IllegalArgumentException("Arguments not valid");
+                throw new IllegalArgumentException("Expected "+ arg + " argument");
             }else{
                 arguments.put(arg, aux);
             }
         }
-        return arguments;
+        for(String optArg : optionalArguments){
+            String aux = System.getProperty(optArg);
+            if(aux!=null){
+                arguments.put(optArg,aux);
+            }
+        }
     }
 
     public abstract void run(ManagedChannel channel) throws InterruptedException;

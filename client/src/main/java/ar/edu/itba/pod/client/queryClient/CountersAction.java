@@ -6,6 +6,7 @@ import ar.edu.itba.pod.grpc.query.CheckInStatusRequest;
 import ar.edu.itba.pod.grpc.query.CheckInStatusResponse;
 import ar.edu.itba.pod.grpc.query.QueryServiceGrpc;
 import io.grpc.ManagedChannel;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
 import java.io.BufferedWriter;
@@ -14,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -22,14 +24,12 @@ public class CountersAction extends Action {
     public static final String OUTPATH = "outPath";
     public static final String SECTOR = "sector";
 
-    public CountersAction(List<String> expectedArguments) {
-        super(expectedArguments);
+    public CountersAction() {
+        super(List.of(OUTPATH), List.of(SECTOR));
     }
 
     @Override
     public void run(ManagedChannel channel) throws InterruptedException {
-        Map<String, String> arguments = parseArguments();
-
         final CountDownLatch finishLatch = new CountDownLatch(1);
         QueryServiceGrpc.QueryServiceStub stub = QueryServiceGrpc.newStub(channel);
 
@@ -61,9 +61,13 @@ public class CountersAction extends Action {
 
             @Override
             public void onError(final Throwable t) {
-                switch (t.getMessage()){
-                    case "15" -> System.out.printf("Range %s was not assigned in sector \n", arguments.get(SECTOR));
-                    default -> System.out.println("An unknown error occurred while getting the counters");
+                if(t instanceof StatusRuntimeException e){
+                    switch (e.getStatus().getDescription()){
+                        case "15" -> System.out.printf("Range %s was not assigned in sector \n", arguments.get(SECTOR));
+                        default -> System.out.println("An unknown error occurred while getting the counters");
+                    }
+                }else{
+                    System.out.println("An unknown error occurred while listing check-in history");
                 }
                 finishLatch.countDown();
             }

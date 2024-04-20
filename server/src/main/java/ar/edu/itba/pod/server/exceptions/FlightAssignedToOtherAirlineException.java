@@ -1,8 +1,13 @@
 package ar.edu.itba.pod.server.exceptions;
 
-public class FlightAssignedToOtherAirlineException extends RuntimeException{
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-        public FlightAssignedToOtherAirlineException(){
-            super("4");
-        }
+public class FlightAssignedToOtherAirlineException extends RuntimeException{
+    private static final Logger LOGGER = LoggerFactory.getLogger(FlightAssignedToOtherAirlineException.class);
+
+    public FlightAssignedToOtherAirlineException(){
+        super("4");
+        LOGGER.error("FlightAssignedToOtherAirlineException", this);
+    }
 }

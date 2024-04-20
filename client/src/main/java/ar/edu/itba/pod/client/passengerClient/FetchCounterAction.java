@@ -7,14 +7,15 @@ import ar.edu.itba.pod.grpc.checkin.CheckInServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 public class FetchCounterAction extends Action {
 
     public static final String BOOKING = "booking";
-    public FetchCounterAction(List<String> expectedArguments) {
-        super(expectedArguments);
+    public FetchCounterAction() {
+        super(List.of(BOOKING), Collections.emptyList());
     }
 
     private void printResponse(final CheckInRangeResponse response) {
@@ -37,7 +38,6 @@ public class FetchCounterAction extends Action {
 
     @Override
     public void run(final ManagedChannel channel) throws InterruptedException {
-        final Map<String, String> arguments = parseArguments();
         final String booking = arguments.get(BOOKING);
         final CheckInServiceGrpc.CheckInServiceBlockingStub stub = CheckInServiceGrpc.newBlockingStub(channel);
         try {
@@ -46,7 +46,7 @@ public class FetchCounterAction extends Action {
             final CheckInRangeResponse response = stub.checkInRangeQuery(request);
             printResponse(response);
         } catch (StatusRuntimeException e) {
-            switch(e.getMessage()) {
+            switch(e.getStatus().getDescription()) {
                 case "12" -> System.out.printf("There is no passenger with booking %s\n", booking);
                 default -> System.out.printf("An unknown error occurred while fetching the check-in range for booking %s\n", booking);
             }

@@ -8,8 +8,10 @@ import ar.edu.itba.pod.grpc.notification.NotificationServiceGrpc;
 import ar.edu.itba.pod.grpc.notification.SubscriptionRequest;
 import ar.edu.itba.pod.grpc.notification.SubscriptionResponse;
 import io.grpc.ManagedChannel;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -18,16 +20,12 @@ import java.util.concurrent.CountDownLatch;
 public class RegisterAction extends Action {
     public static final String AIRLINE = "airline";
 
-    public RegisterAction(List<String> expectedArguments) {
-        super(expectedArguments);
+    public RegisterAction() {
+        super(List.of(AIRLINE), Collections.emptyList());
     }
 
     @Override
     public void run(ManagedChannel channel) throws InterruptedException {
-        Map<String, String> arguments = parseArguments();
-
-
-
 
         final CountDownLatch finishLatch = new CountDownLatch(1);
 
@@ -49,10 +47,14 @@ public class RegisterAction extends Action {
             }
             @Override
             public void onError(Throwable t) {
-                switch (t.getMessage()){
-                    case "6" -> System.out.printf("Passenger not exists for airline %s\n",arguments.get(AIRLINE));
-                    case "17" -> System.out.printf("Airline %s already subscribed\n",arguments.get(AIRLINE));
-                    default -> System.out.println("An unknown error occurred while getting the counters");
+                if(t instanceof StatusRuntimeException e){
+                    switch (e.getStatus().getDescription()){
+                        case "6" -> System.out.printf("Passenger not exists for airline %s\n",arguments.get(AIRLINE));
+                        case "17" -> System.out.printf("Airline %s already subscribed\n",arguments.get(AIRLINE));
+                        default -> System.out.println("An unknown error occurred while getting the counters");
+                    }
+                }else{
+                    System.out.println("An unknown error occurred while getting the counters");
                 }
             }
             @Override

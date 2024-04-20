@@ -44,7 +44,6 @@ public class CounterServantImpl extends CounterServiceGrpc.CounterServiceImplBas
      *2,3
      * </pre>
      */
-    // TODO la gente en los los ranges
     @Override
     public void listCounters(CounterRequest request,
                              StreamObserver<CountersResponse> responseObserver) {

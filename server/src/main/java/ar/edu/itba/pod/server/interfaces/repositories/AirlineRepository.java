@@ -8,7 +8,5 @@ public interface AirlineRepository {
 
     Optional<Airline> getAirlineByName(final String airlineName);
 
-    Airline createAirline(final String name);
-
     Airline createAirlineIfAbsent(final String name);
 }

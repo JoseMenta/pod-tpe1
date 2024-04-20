@@ -4,11 +4,40 @@ import ar.edu.itba.pod.server.exceptions.*;
 import com.google.rpc.Code;
 import io.grpc.*;
 import io.grpc.protobuf.StatusProto;
+import org.checkerframework.checker.units.qual.C;
 
+import java.util.HashMap;
 import java.util.Map;
 
 
 public class GlobalExceptionHandlerInterceptor implements ServerInterceptor {
+
+    private final Map<Class<? extends Throwable>, Code> errorCodesByException;
+
+    public GlobalExceptionHandlerInterceptor() {
+        errorCodesByException = new HashMap<>();
+        errorCodesByException.put(SectorAlreadyExistsException.class, Code.ALREADY_EXISTS);
+        errorCodesByException.put(InvalidRangeException.class, Code.INVALID_ARGUMENT);
+        errorCodesByException.put(SectorNotFoundException.class,Code.NOT_FOUND);
+        errorCodesByException.put(PassengerAlreadyExistsException.class, Code.ALREADY_EXISTS);
+        errorCodesByException.put(FlightAssignedToOtherAirlineException.class, Code.FAILED_PRECONDITION);
+        errorCodesByException.put(PassengerNotFoundException.class, Code.NOT_FOUND);
+        errorCodesByException.put(AirlineNotFoundException.class, Code.NOT_FOUND);
+        errorCodesByException.put(PassengerAlreadyEnqueuedException.class, Code.ALREADY_EXISTS);
+        errorCodesByException.put(FlightNotInRangeException.class, Code.FAILED_PRECONDITION);
+        errorCodesByException.put(AirlineNotInRangeException.class, Code.FAILED_PRECONDITION);
+        errorCodesByException.put(RangeNotAssignedException.class, Code.FAILED_PRECONDITION);
+        errorCodesByException.put(AirlineCannotFreeRangeException.class, Code.FAILED_PRECONDITION);
+        errorCodesByException.put(AirlineMultiSubscriptionException.class, Code.ALREADY_EXISTS);
+        errorCodesByException.put(AirlineNullSubscriptionException.class, Code.NOT_FOUND);
+        errorCodesByException.put(EmptyHistoryCheckInException.class, Code.NOT_FOUND);
+        errorCodesByException.put(FlightAlreadyAssigned.class, Code.ALREADY_EXISTS);
+        errorCodesByException.put(FlightInPendingQueueException.class, Code.FAILED_PRECONDITION);
+        errorCodesByException.put(FlightsNotHavePassengersException.class, Code.FAILED_PRECONDITION);
+        errorCodesByException.put(FreeNonBookedRangeException.class, Code.FAILED_PRECONDITION);
+        errorCodesByException.put(InvalidRangeStartException.class, Code.INVALID_ARGUMENT);
+        errorCodesByException.put(RangeHasPassengersException.class, Code.FAILED_PRECONDITION);
+    }
 
     @Override
     public <T, R> ServerCall.Listener<T> interceptCall(
@@ -17,7 +46,7 @@ public class GlobalExceptionHandlerInterceptor implements ServerInterceptor {
         return new ExceptionHandler<>(delegate, serverCall, headers);
     }
 
-    private static class ExceptionHandler<T, R> extends ForwardingServerCallListener.SimpleForwardingServerCallListener<T> {
+    private class ExceptionHandler<T, R> extends ForwardingServerCallListener.SimpleForwardingServerCallListener<T> {
 
         private final ServerCall<T, R> delegate;
         private final Metadata headers;
@@ -37,19 +66,7 @@ public class GlobalExceptionHandlerInterceptor implements ServerInterceptor {
             }
         }
 
-        private final Map<Class<? extends Throwable>, Code> errorCodesByException = Map.of(
-            SectorAlreadyExistsException.class, Code.ALREADY_EXISTS,
-            InvalidRangeException.class, Code.INVALID_ARGUMENT,
-            SectorNotFoundException.class,Code.NOT_FOUND,
-            PassengerAlreadyExistsException.class, Code.ALREADY_EXISTS,
-            FlightAssignedToOtherAirlineException.class, Code.INVALID_ARGUMENT,
-            PassengerNotFoundException.class, Code.NOT_FOUND,
-            AirlineNotFoundException.class, Code.NOT_FOUND,
-            PassengerAlreadyEnqueuedException.class, Code.ALREADY_EXISTS,
-            FlightNotInRangeException.class, Code.INVALID_ARGUMENT,
-            AirlineNotInRangeException.class, Code.INVALID_ARGUMENT
-//            RangeNotAssignedException.class, Code.INVALID_ARGUMENT
-        );
+
 
         private void handleException(RuntimeException exception, ServerCall<T, R> serverCall, Metadata headers) {
             Throwable error = exception;

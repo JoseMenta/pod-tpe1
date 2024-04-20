@@ -7,14 +7,15 @@ import ar.edu.itba.pod.grpc.checkin.PassengerResponse;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class PassengerStatusAction extends Action {
     public static final String BOOKING = "booking";
-    public PassengerStatusAction(List<String> expectedArguments) {
-        super(expectedArguments);
+    public PassengerStatusAction() {
+        super(List.of(BOOKING), Collections.emptyList());
     }
 
     private void printResponse(final String booking, final PassengerResponse response) {
@@ -47,7 +48,6 @@ public class PassengerStatusAction extends Action {
 
     @Override
     public void run(final ManagedChannel channel) throws InterruptedException {
-        final Map<String, String> arguments = parseArguments();
         final String booking = arguments.get(BOOKING);
         final CheckInServiceGrpc.CheckInServiceBlockingStub stub =
                 CheckInServiceGrpc.newBlockingStub(channel);
@@ -58,7 +58,7 @@ public class PassengerStatusAction extends Action {
             final PassengerResponse response = stub.passengerStatus(request);
             printResponse(booking, response);
         } catch (StatusRuntimeException e) {
-            switch (e.getMessage()) {
+            switch (e.getStatus().getDescription()) {
                 case "12" -> System.out.printf("There is no passenger with booking %s\n", booking);
                 case "15" -> System.out.printf("The flight for booking %s has not been assigned a range of counters yet\n", booking);
                 default -> System.out.printf("An unknown error occurred while fetching the status for booking %s\n", booking);

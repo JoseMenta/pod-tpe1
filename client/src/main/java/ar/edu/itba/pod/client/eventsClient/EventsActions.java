@@ -6,8 +6,8 @@ import ar.edu.itba.pod.client.adminClient.AdminActions;
 import java.util.List;
 
 public enum EventsActions {
-    RESGISTER("register", new RegisterAction(List.of(RegisterAction.AIRLINE))),
-    UNREGISTER("unregister", new UnregisterAction(List.of(UnregisterAction.AIRLINE)));
+    RESGISTER("register", new RegisterAction()),
+    UNREGISTER("unregister", new UnregisterAction());
 
     private final String actionName;
 

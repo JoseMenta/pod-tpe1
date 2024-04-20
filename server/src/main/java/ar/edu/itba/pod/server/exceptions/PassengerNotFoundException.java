@@ -9,6 +9,6 @@ public class PassengerNotFoundException extends RuntimeException{
 
     public PassengerNotFoundException() {
         super("12");
-        LOGGER.error("Passenger not found");
+        LOGGER.error("PassengerNotFoundException", this);
     }
 }

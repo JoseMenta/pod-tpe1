@@ -8,6 +8,6 @@ public class SectorNotFoundException extends RuntimeException {
 
     public SectorNotFoundException(){
         super("2");
-        LOGGER.error("SectotNotFoundException", this);
+        LOGGER.error("SectorNotFoundException", this);
     }
 }
