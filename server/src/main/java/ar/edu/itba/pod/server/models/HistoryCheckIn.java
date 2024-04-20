@@ -2,8 +2,10 @@ package ar.edu.itba.pod.server.models;
 
 import ar.edu.itba.pod.server.exceptions.EmptyHistoryCheckInException;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class HistoryCheckIn {
 
@@ -17,18 +19,21 @@ public class HistoryCheckIn {
         historyCheckIn.add(passenger);
     }
 
-    public synchronized List<Passenger> getHistoryCheckIn(final String sector,final String airline) {
+    public synchronized List<Passenger> getHistoryCheckIn(final Optional<String> sector, final Optional<String> airline) {
         if (historyCheckIn.isEmpty())
         {
             throw new EmptyHistoryCheckInException();
         }
-        if (sector == null){
-            return historyCheckIn.stream().filter(p -> p.getAirline().getName().equals(airline)).toList();
+        if(sector.isEmpty() && airline.isEmpty()){
+            return historyCheckIn.stream().toList();
         }
-        if (airline == null){
-            return historyCheckIn.stream().filter(p -> p.getFlight().getRange().getSector().getName().equals(sector)).toList();
+        if (sector.isEmpty()){
+            return historyCheckIn.stream().filter(p -> p.getAirline().getName().equals(airline.get())).toList();
         }
-        return historyCheckIn.stream().filter(p -> p.getAirline().getName().equals(airline) && p.getFlight().getRange().getSector().getName().equals(sector)).toList();
+        if (airline.isEmpty()){
+            return historyCheckIn.stream().filter(p -> p.getFlight().getRange().getSector().getName().equals(sector.get())).toList();
+        }
+        return historyCheckIn.stream().filter(p -> p.getAirline().getName().equals(airline.get()) && p.getFlight().getRange().getSector().getName().equals(sector.get())).toList();
     }
 
 }

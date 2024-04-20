@@ -12,7 +12,7 @@ public class Passenger {
     @Getter
     private final Flight flight;
     private Counter counter;
-    private Status status;
+    private PassengerStatus passengerStatus;
     private static final int BOOKING_LENGTH = 6;
 
     public Passenger(Airline airline, String booking, Flight flight) {
@@ -29,20 +29,20 @@ public class Passenger {
         this.booking = booking;
         this.flight = flight;
         this.counter = null;
-        this.status = Status.NONE;
+        this.passengerStatus = PassengerStatus.NONE;
     }
 
     public synchronized void checkIn(Counter counter) {
         this.counter = counter;
-        this.status = Status.CHECKED;
+        this.passengerStatus = PassengerStatus.CHECKED;
     }
 
     public synchronized void enqueue() {
-        this.status = Status.WAITING;
+        this.passengerStatus = PassengerStatus.WAITING;
     }
 
-    public synchronized Status getStatus() {
-        return this.status;
+    public synchronized PassengerStatus getPassengerStatus() {
+        return this.passengerStatus;
     }
 
     public synchronized Counter getCounter() {

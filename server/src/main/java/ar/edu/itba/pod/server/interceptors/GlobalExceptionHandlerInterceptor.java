@@ -40,9 +40,15 @@ public class GlobalExceptionHandlerInterceptor implements ServerInterceptor {
         private final Map<Class<? extends Throwable>, Code> errorCodesByException = Map.of(
             SectorAlreadyExistsException.class, Code.ALREADY_EXISTS,
             InvalidRangeException.class, Code.INVALID_ARGUMENT,
-            InvalidSectorException.class,Code.NOT_FOUND,
+            SectorNotFoundException.class,Code.NOT_FOUND,
             PassengerAlreadyExistsException.class, Code.ALREADY_EXISTS,
-            FlightAssignedToOtherAirlineException.class, Code.INVALID_ARGUMENT
+            FlightAssignedToOtherAirlineException.class, Code.INVALID_ARGUMENT,
+            PassengerNotFoundException.class, Code.NOT_FOUND,
+            AirlineNotFoundException.class, Code.NOT_FOUND,
+            PassengerAlreadyEnqueuedException.class, Code.ALREADY_EXISTS,
+            FlightNotInRangeException.class, Code.INVALID_ARGUMENT,
+            AirlineNotInRangeException.class, Code.INVALID_ARGUMENT,
+            RangeNotAssignedException.class, Code.INVALID_ARGUMENT
         );
 
         private void handleException(RuntimeException exception, ServerCall<T, R> serverCall, Metadata headers) {

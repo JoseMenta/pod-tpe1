@@ -12,7 +12,7 @@ package checkin; //TODO: revisar
 
 service CheckInService{
  rpc CheckInRangeQuery(CheckInRangeRequest) returns (CheckInRangeResponse);//12
- rpc PassengerCheckIn(PassengerCheckInRequest) returns (PassengerCheckInResponse); // 13,2,10,14,11
+ rpc PassengerCheckIn(PassengerCheckInRequest) returns (PassengerCheckInResponse); // 13,2,10,14,18,3
  rpc PassengerStatus(PassengerRequest) returns (PassengerResponse); //12, 15
 }
 
@@ -56,10 +56,10 @@ message PassengerResponse{
 message PassengerCheckInRequest{
   string booking = 1;
   string sector = 2;
-  string counterFrom = 3;
+  int32 counterFrom = 3;
 }
 
-message PassengerCheckInResponse {
+message PassengerCheckInResponse{
  RangeMessage range = 3;
  int32 peopleInLine = 4;
  string airline = 5;

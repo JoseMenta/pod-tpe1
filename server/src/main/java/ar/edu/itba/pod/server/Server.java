@@ -2,6 +2,7 @@ package ar.edu.itba.pod.server;
 
 import ar.edu.itba.pod.server.interfaces.services.AirportService;
 import ar.edu.itba.pod.server.servants.AdminServantImpl;
+import ar.edu.itba.pod.server.servants.CheckInServantImpl;
 import ar.edu.itba.pod.server.services.AirportServiceImpl;
 import io.grpc.ServerBuilder;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ public class Server {
         int port = 50051;
         io.grpc.Server server = ServerBuilder.forPort(port)
                 .addService(new AdminServantImpl(airportService))
+                .addService(new CheckInServantImpl(airportService))
                 .build();
         server.start();
         logger.info("Server started, listening on " + port);
