@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class Server {
     private static final Logger logger = LoggerFactory.getLogger(Server.class);
@@ -18,7 +19,7 @@ public class Server {
         logger.info(" Server Starting ...");
         final AirportService airportService = new AirportServiceImpl();
         final GlobalExceptionHandlerInterceptor interceptor = new GlobalExceptionHandlerInterceptor();
-        int port = 50051;
+        int port = Optional.ofNullable(System.getProperty("port")).map(Integer::parseInt).orElse(50051);
         io.grpc.Server server = ServerBuilder.forPort(port)
                 .intercept(new GlobalExceptionHandlerInterceptor())
                 .addService(new AdminServantImpl(airportService))
