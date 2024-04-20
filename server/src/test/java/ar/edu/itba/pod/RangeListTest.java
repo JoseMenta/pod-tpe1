@@ -174,7 +174,7 @@ public class RangeListTest {
 
     @Test
     public void testBookPartialRangeAfterBooked(){
-        list.add(RANGE16.book(6,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE16.book(6,FLIGHTS, AIRLINE).first());
         list.add(new Range(7,20,SECTOR,COUNTERS));
 
         Optional<Range> ans = rangeList.bookRange(1,FLIGHTS, AIRLINE);
@@ -187,7 +187,7 @@ public class RangeListTest {
 
     @Test
     public void testFreeOnlyRange(){
-        list.add(RANGE16.book(6,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE16.book(6,FLIGHTS, AIRLINE).first());
 
         rangeList.freeRange(1, AIRLINE);
 
@@ -198,7 +198,7 @@ public class RangeListTest {
     @Test
     public void testFreeLastWithoutMerge(){
         list.add(RANGE12);
-        list.add(RANGE45.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE45.book(2,FLIGHTS, AIRLINE).first());
 
         rangeList.freeRange(4, AIRLINE);
 
@@ -207,8 +207,8 @@ public class RangeListTest {
 
     @Test
     public void testFreeLastPrevOccupied(){
-        list.add(RANGE23.book(2,FLIGHTS, AIRLINE).getFirst());
-        list.add(RANGE45.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE23.book(2,FLIGHTS, AIRLINE).first());
+        list.add(RANGE45.book(2,FLIGHTS, AIRLINE).first());
 
         rangeList.freeRange(4, AIRLINE);
 
@@ -218,7 +218,7 @@ public class RangeListTest {
     @Test
     public void testFreeLastMerge(){
         list.add(RANGE23);
-        list.add(RANGE45.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE45.book(2,FLIGHTS, AIRLINE).first());
 
         rangeList.freeRange(4, AIRLINE);
 
@@ -227,7 +227,7 @@ public class RangeListTest {
 
     @Test
     public void testFreeFirstWithoutMerge(){
-        list.add(RANGE11.book(1,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE11.book(1,FLIGHTS, AIRLINE).first());
         list.add(RANGE45);
 
         rangeList.freeRange(1, AIRLINE);
@@ -237,8 +237,8 @@ public class RangeListTest {
 
     @Test
     public void testFreeFirstNextOccupied(){
-        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).getFirst());
-        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).first());
+        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).first());
 
         rangeList.freeRange(1, AIRLINE);
 
@@ -247,7 +247,7 @@ public class RangeListTest {
 
     @Test
     public void testFreeFirstMerge(){
-        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).first());
         list.add(RANGE34);
 
         rangeList.freeRange(1, AIRLINE);
@@ -258,7 +258,7 @@ public class RangeListTest {
     @Test
     public void testFreeMiddleWithoutMerge(){
         list.add(RANGE11);
-        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).first());
         list.add(RANGE66);
 
         rangeList.freeRange(3, AIRLINE);
@@ -269,8 +269,8 @@ public class RangeListTest {
     @Test
     public void testFreeMiddleNextOccupied(){
         list.add(RANGE11);
-        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
-        list.add(RANGE56.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).first());
+        list.add(RANGE56.book(2,FLIGHTS, AIRLINE).first());
 
         rangeList.freeRange(3, AIRLINE);
 
@@ -280,7 +280,7 @@ public class RangeListTest {
     @Test
     public void testFreeMiddleMergeNext(){
         list.add(RANGE11);
-        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).first());
         list.add(RANGE56);
 
         rangeList.freeRange(3, AIRLINE);
@@ -290,8 +290,8 @@ public class RangeListTest {
 
     @Test
     public void testFreeMiddlePrevOccupied(){
-        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).getFirst());
-        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).first());
+        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).first());
         list.add(RANGE66);
 
         rangeList.freeRange(3, AIRLINE);
@@ -301,7 +301,7 @@ public class RangeListTest {
     @Test
     public void testFreeMiddleMergePrev(){
         list.add(RANGE12);
-        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).first());
         list.add(RANGE66);
 
         rangeList.freeRange(3, AIRLINE);
@@ -312,7 +312,7 @@ public class RangeListTest {
     @Test
     public void testFreeMiddleMergePrevAndNext(){
         list.add(RANGE12);
-        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).first());
         list.add(RANGE56);
 
         rangeList.freeRange(3, AIRLINE);
@@ -322,9 +322,9 @@ public class RangeListTest {
 
     @Test
     public void testFreeMiddleOccupiedPrevAndNext(){
-        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).getFirst());
-        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).getFirst());
-        list.add(RANGE56.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).first());
+        list.add(RANGE34.book(2,FLIGHTS, AIRLINE).first());
+        list.add(RANGE56.book(2,FLIGHTS, AIRLINE).first());
 
         rangeList.freeRange(3, AIRLINE);
 
@@ -333,7 +333,7 @@ public class RangeListTest {
 
     @Test
     public void testFreeAnotherAirlineFails() {
-        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).first());
 
         Assertions.assertThrows(AirlineCannotFreeRangeException.class, () -> rangeList.freeRange(1, new Airline("another")));
     }
@@ -347,7 +347,7 @@ public class RangeListTest {
 
     @Test
     public void testFreeRangeWithPassengersFails() {
-        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).getFirst());
+        list.add(RANGE12.book(2,FLIGHTS, AIRLINE).first());
         list.getFirst().addPassengerToQueue(PASSENGER);
 
         Assertions.assertThrows(RangeHasPassengersException.class, () -> rangeList.freeRange(1, AIRLINE));
