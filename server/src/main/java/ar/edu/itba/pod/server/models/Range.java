@@ -116,18 +116,18 @@ public class Range implements Comparable<Range>{
      * @return a list of the resulting ranges, with two non-empty ranges or one empty range
      * @throws IllegalArgumentException if length is negative or zero
      */
-    public synchronized List<Range> book(final int length, final List<Flight> flights, final Airline airline) {
+    public synchronized Pair<Range,Range> book(final int length, final List<Flight> flights, final Airline airline) {
         if(length<=0){
             throw new IllegalArgumentException();
         }
         if(length == size()){
             final Range ans = new Range(this.start, this.end, this.sector, new ArrayList<>(counters),new ArrayList<>(flights), airline);
-            return List.of(ans);
+            return new Pair<>(ans);
         }
         //return the two sub ranges
         final Range first = new Range(this.start, this.start + length-1, this.sector,new ArrayList<>(this.counters.subList(0,length)),new ArrayList<>(flights), airline);
         final Range last = new Range(this.start + length, this.end, this.sector, this.counters.subList(length,counters.size()));//use safe constructor
-        return List.of(first,last);
+        return new Pair<>(first,last);
     }
 
     @Override
