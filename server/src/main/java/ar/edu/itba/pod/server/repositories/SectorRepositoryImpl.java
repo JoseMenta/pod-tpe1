@@ -7,6 +7,8 @@ import ar.edu.itba.pod.server.models.Sector;
 import lombok.Getter;
 import org.slf4j.Logger;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -40,7 +42,7 @@ public class SectorRepositoryImpl implements SectorRepository {
         return Optional.ofNullable(sectors.putIfAbsent(sectorId,sector)).orElse(sector);
     }
 
-    public ConcurrentHashMap<String, Sector> getSectors() {
-        return sectors;
+    public List<Sector> getSectors() {
+        return new ArrayList<>(sectors.values());
     }
 }

@@ -6,28 +6,29 @@ import ar.edu.itba.pod.grpc.admin.SectorRequest;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class AddSectorAction extends Action {
+    //    -DserverAddress=localhost:50051 -Daction=addSector -Dsector=C
     public static final String SECTOR = "sector";
-    public AddSectorAction(List<String> expectedArguments) {
-        super(expectedArguments);
+    public AddSectorAction() {
+        super(List.of(SECTOR), Collections.emptyList());
     }
 
     @Override
     public void run(ManagedChannel channel) throws InterruptedException {
-        Map<String, String> arguments = parseArguments();
         AdminServiceGrpc.AdminServiceBlockingStub stub =
                 AdminServiceGrpc.newBlockingStub(channel);
-        final String sector = arguments.get(SECTOR);
+        final String sector = this.arguments.get(SECTOR);
         try{
             SectorRequest request = SectorRequest.newBuilder().setSector(sector).build();
             stub.addSector(request);
+            System.out.printf("Sector %s added successfully\n",sector);
         }catch (StatusRuntimeException e){
-            switch (e.getMessage()){
-                case "1" -> System.out.printf("Sector %s has already been added\n",sector);
+            switch (getError(e)){
+                case ALREADY_EXISTS -> System.out.printf("Sector %s has already been added\n",sector);
                 default -> System.out.printf("An unknown error occurred while adding sector %s\n",sector);
             }
         } finally {

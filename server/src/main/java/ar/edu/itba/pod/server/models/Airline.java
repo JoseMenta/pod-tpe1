@@ -51,9 +51,7 @@ public class Airline {
      */
     public synchronized BlockingQueue<Notification> subscribe() {
         if (messageQueue != null) {
-            final AirlineMultiSubscriptionException e = new AirlineMultiSubscriptionException();
-            LOGGER.error("Airline {} has already a subscriptor", name, e);
-            throw e;
+            throw new AirlineMultiSubscriptionException();
         }
         LOGGER.info("Airline {} subscription added", name);
         messageQueue = new LinkedBlockingQueue<>(MESSAGE_QUEUE_SIZE);
@@ -67,9 +65,7 @@ public class Airline {
      */
     public synchronized void unsubscribe() throws InterruptedException {
         if (messageQueue == null) {
-            final AirlineNullSubscriptionException e = new AirlineNullSubscriptionException();
-            LOGGER.error("Airline {} has no subscriptor", name, e);
-            throw e;
+            throw new AirlineNullSubscriptionException();
         }
         LOGGER.info("Airline {} subscription removed", name);
         messageQueue.put(new NotificationPill());

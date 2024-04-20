@@ -16,7 +16,6 @@ public class AdminClient extends Client {
 
         try (Client client = new AdminClient(host,action)){
             client.run();
-            client.close();
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {

@@ -17,7 +17,6 @@ public class QueryClient extends Client {
 
             try (Client client = new EventsClient(host, action)) {
                 client.run();
-                client.close();
             } catch (IllegalArgumentException e) {
                 throw new RuntimeException(e);
             } catch (InterruptedException e) {

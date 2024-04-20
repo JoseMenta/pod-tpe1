@@ -7,6 +7,7 @@ import ar.edu.itba.pod.grpc.checkin.PassengerCheckInResponse;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -16,8 +17,8 @@ public class PassengerCheckInAction extends Action {
     public static final String BOOKING = "booking";
     public static final String SECTOR = "sector";
     public static final String COUNTER = "counter";
-    public PassengerCheckInAction(List<String> expectedArguments) {
-        super(expectedArguments);
+    public PassengerCheckInAction() {
+        super(List.of(BOOKING, SECTOR, COUNTER), Collections.emptyList());
     }
 
     private void printResponse(final String booking, final String sector, final PassengerCheckInResponse response) {
@@ -38,7 +39,6 @@ public class PassengerCheckInAction extends Action {
 
     @Override
     public void run(ManagedChannel channel) throws InterruptedException {
-        Map<String, String> arguments = parseArguments();
         final String booking = arguments.get(BOOKING);
         final String sector = arguments.get(SECTOR);
         final String counter = arguments.get(COUNTER);
@@ -48,20 +48,18 @@ public class PassengerCheckInAction extends Action {
             final PassengerCheckInRequest request = PassengerCheckInRequest.newBuilder()
                     .setBooking(booking)
                     .setSector(sector)
-                    .setCounterFrom(counter)
+                    .setCounterFrom(Integer.parseInt(counter))
                     .build();
             final PassengerCheckInResponse response = stub.passengerCheckIn(request);
             printResponse(booking, sector, response);
         } catch (StatusRuntimeException e) {
-            switch (e.getMessage()) {
-                case "2" -> System.out.printf("Sector %s does not exist\n", sector);
-                case "11" -> System.out.printf("Passenger with booking %s has already started the check-in process\n", booking);
-                case "12" -> System.out.printf("There is no passenger with booking %s\n", booking);
-                case "18" -> System.out.printf("Flight %s is not checking in the range of counters starting at %s\n", booking, counter);
+            switch (getError(e)) {
+                case SECTOR_NOT_FOUND -> System.out.printf("Sector %s does not exist\n", sector);
+                case PASSENGERS_WAITING -> System.out.printf("Passenger with booking %s has already started the check-in process\n", booking);
+                case PASSENGER_NOT_FOUND -> System.out.printf("There is no passenger with booking %s\n", booking);
+                case FLIGHT_NOT_IN_RANGE -> System.out.printf("Flight %s is not checking in the range of counters starting at %s\n", booking, counter);
                 default -> System.out.printf("An unknown error occurred while checking in the passenger with booking %s\n", booking);
             }
-        } finally {
-            channel.shutdown().awaitTermination(10, TimeUnit.SECONDS);
         }
     }
 }

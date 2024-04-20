@@ -4,6 +4,7 @@ import ar.edu.itba.pod.server.models.HistoryCheckIn;
 import ar.edu.itba.pod.server.models.Sector;
 
 import java.util.Optional;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,6 +15,6 @@ public interface SectorRepository {
 
     Sector createSectorIfAbsent(final String sectorId, final HistoryCheckIn historyCheckIn);
 
-    ConcurrentHashMap<String, Sector> getSectors();
+    List<Sector> getSectors();
 
 }

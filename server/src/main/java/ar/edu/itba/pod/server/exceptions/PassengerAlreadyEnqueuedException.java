@@ -9,6 +9,6 @@ public class PassengerAlreadyEnqueuedException extends RuntimeException {
 
     public PassengerAlreadyEnqueuedException() {
         super("11");
-        LOGGER.error("Passenger already enqueued");
+        LOGGER.error("PassengerAlreadyEnqueuedException", this);
     }
 }

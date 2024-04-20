@@ -64,18 +64,13 @@ public class AirportServiceImpl implements AirportService {
     @Override
     public void addBooking(String booking, String flight, String airline) {
         final Airline airline1 = airlineRepository.createAirlineIfAbsent(airline);
-        final Optional<Flight> flightOptional = flightRepository.getFlightByFlightNumber(flight);
-        if (flightOptional.isPresent() && !airline1.equals(flightOptional.get().getAirline())){
-            throw new FlightAssignedToOtherAirlineException();
-        }
         final Flight flight1 = flightRepository.createFlightIfAbsent(flight,airline1);
         passengerRepository.createPassenger(booking,airline1,flight1);
     }
 
     @Override
     public List<Sector> listSectors() {
-        // TODO Check if it is okay this
-        return new ArrayList<>(sectorRepository.getSectors().values());
+        return  sectorRepository.getSectors();
     }
 
     @Override
@@ -94,40 +89,41 @@ public class AirportServiceImpl implements AirportService {
         if(sectorOptional.isEmpty()){
             throw new SectorNotFoundException();
         }
-
-        List<Flight> flightList = new ArrayList<>();
-        for(String flight : flights){
-            Optional<Flight> flightOptional = flightRepository.getFlightByFlightNumber(flight);
-            // No se agregaron pasajeros esperados con el código de vuelo, para al menos un de los vuelos solicitados
-            if(flightOptional.isEmpty()){
+        synchronized (sectorOptional.get()) {
+            List<Flight> flightList = new ArrayList<>();
+            for (String flight : flights) {
+                Optional<Flight> flightOptional = flightRepository.getFlightByFlightNumber(flight);
+                // No se agregaron pasajeros esperados con el código de vuelo, para al menos un de los vuelos solicitados
+                if (flightOptional.isEmpty()) {
+                    throw new FlightAssignedToOtherAirlineException();
+                }
+                // Se agregaron pasajeros esperados con el código de vuelo pero con otra aerolínea, para al menos uno de los vuelos solicitados
+                if (!Objects.equals(flightOptional.get().getAirline().getName(), airline)) {
+                    throw new FlightAssignedToOtherAirlineException();
+                }
+                // Ya existe al menos un mostrador asignado para al menos uno de los vuelos solicitados
+                if (flightOptional.get().getStatus() == Flight.Status.ASIGNED) {
+                    throw new FlightAlreadyAssigned();
+                }
+                // Ya existe una solicitud pendiente de un rango de mostradores para al menos uno de los vuelos solicitados
+                if (flightOptional.get().getStatus() == Flight.Status.WAITING) {
+                    throw new FlightInPendingQueueException();
+                }
+                // Ya se asignó y luego se liberó un rango de mostradores para al menos uno de los vuelos solicitados
+                if (flightOptional.get().getRange() != null) {
+                    throw new FlightAlreadyAssigned();
+                }
+                flightList.add(flightOptional.get());
+            }
+            if (flightList.isEmpty()) {
+                throw new FlightsNotHavePassengersException();
+            }
+            Optional<Airline> airlineOptional = airlineRepository.getAirlineByName(airline);
+            if (airlineOptional.isEmpty()) {
                 throw new FlightAssignedToOtherAirlineException();
             }
-            // Se agregaron pasajeros esperados con el código de vuelo pero con otra aerolínea, para al menos uno de los vuelos solicitados
-            if(!Objects.equals(flightOptional.get().getAirline().getName(), airline)){
-                throw new FlightAssignedToOtherAirlineException();
-            }
-            // Ya existe al menos un mostrador asignado para al menos uno de los vuelos solicitados
-            if(flightOptional.get().getStatus() == Flight.Status.ASIGNED){
-                throw new FlightAlreadyAssigned();
-            }
-            // Ya existe una solicitud pendiente de un rango de mostradores para al menos uno de los vuelos solicitados
-            if(flightOptional.get().getStatus() == Flight.Status.WAITING){
-                throw new FlightInPendingQueueException();
-            }
-            // Ya se asignó y luego se liberó un rango de mostradores para al menos uno de los vuelos solicitados
-            if(flightOptional.get().getRange() != null){
-                throw new FlightAlreadyAssigned();
-            }
-            flightList.add(flightOptional.get());
+            return sectorOptional.get().book(count, flightList, airlineOptional.get());
         }
-        if (flightList.isEmpty()){
-            throw new FlightsNotHavePassengersException();
-        }
-        Optional<Airline> airlineOptional = airlineRepository.getAirlineByName(airline);
-        if(airlineOptional.isEmpty()){
-            throw new FlightAssignedToOtherAirlineException();
-        }
-        return sectorOptional.get().book(count, flightList, airlineOptional.get());
     }
 
     @Override
@@ -154,7 +150,6 @@ public class AirportServiceImpl implements AirportService {
         return sectorRepository.getSectorById(sector).orElseThrow(SectorNotFoundException::new).getPendingRequests();
     }
 
-    // TODO: Preguntar si la lista tiene que obtener el valor de la cantidad de gente antes o es li mismo.
     @Override
     public Flight fetchCounter(String booking) {
         return passengerRepository.getPassengerByBookingId(booking).orElseThrow(PassengerNotFoundException::new).getFlight();
@@ -197,7 +192,7 @@ public class AirportServiceImpl implements AirportService {
     public List<Range> checkCountersStatus(Optional<String> sector) {
         if(sector.isEmpty()){
             List<Range> auxList = new ArrayList<>();
-            for(Sector sectorData : sectorRepository.getSectors().values()){
+            for(Sector sectorData : sectorRepository.getSectors()){
                 auxList.addAll(sectorData.getRanges());
             }
             return auxList;

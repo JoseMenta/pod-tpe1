@@ -1,19 +1,18 @@
 package ar.edu.itba.pod.client.eventsClient;
 
 import ar.edu.itba.pod.client.Action;
-import ar.edu.itba.pod.client.adminClient.AdminActions;
 
-import java.util.List;
+import java.util.function.Supplier;
 
 public enum EventsActions {
-    RESGISTER("register", new RegisterAction(List.of(RegisterAction.AIRLINE))),
-    UNREGISTER("unregister", new UnregisterAction(List.of(UnregisterAction.AIRLINE)));
+    REGISTER("register", RegisterAction::new),
+    UNREGISTER("unregister", UnregisterAction::new);
 
     private final String actionName;
 
-    private final Action action;
+    private final Supplier<Action> action;
 
-    EventsActions(String actionName, Action action) {
+    EventsActions(String actionName, Supplier<Action> action) {
         this.actionName = actionName;
         this.action = action;
     }
@@ -28,6 +27,6 @@ public enum EventsActions {
     }
 
     public Action getActionClass() {
-        return action;
+        return action.get();
     }
 }

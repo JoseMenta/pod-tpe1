@@ -2,18 +2,18 @@ package ar.edu.itba.pod.client.adminClient;
 
 import ar.edu.itba.pod.client.Action;
 
-import java.util.List;
+import java.util.function.Supplier;
 
 public enum AdminActions {
-    ADDSECTOR("addSector", new AddSectorAction(List.of(AddSectorAction.SECTOR))),
-    ADDCOUNTER("addCounters", new AddCounterAction(List.of(AddCounterAction.SECTOR, AddCounterAction.COUNTERS))),
-    MANIFEST("manifest", new ManifestAction(List.of(ManifestAction.IN_PATH)));
+    ADD_SECTOR("addSector", AddSectorAction::new),
+    ADD_COUNTER("addCounters", AddCounterAction::new),
+    MANIFEST("manifest", ManifestAction::new);
 
     private final String actionName;
 
-    private final Action action;
+    private final Supplier<Action> action;
 
-    AdminActions(String actionName, Action action) {
+    AdminActions(String actionName, Supplier<Action> action) {
         this.actionName = actionName;
         this.action = action;
     }
@@ -28,6 +28,6 @@ public enum AdminActions {
     }
 
     public Action getActionClass() {
-        return action;
+        return action.get();
     }
 }

@@ -2,21 +2,20 @@ package ar.edu.itba.pod.client.counterClient;
 
 import ar.edu.itba.pod.client.Action;
 
-import java.util.Collections;
-import java.util.List;
+import java.util.function.Supplier;
 
 public enum CounterActions {
-    LISTSECTOR("listSectors",new ListSectorsAction(Collections.emptyList())),
-    LISTCOUNTERS("listCounters",new ListCountersAction(List.of(ListCountersAction.SECTOR,ListCountersAction.COUNTER_FROM,ListCountersAction.COUNTER_TO))),
-    ASSIGNCOUNTERS("assignCounters",new AssignCounterAction(List.of(AssignCounterAction.SECTOR,AssignCounterAction.COUNTER_COUNT,AssignCounterAction.AIRLINE,AssignCounterAction.FLIGHTS))),
-    FREECOUNTERS("freeCounters", new FreeCounterAction(List.of(FreeCounterAction.SECTOR,FreeCounterAction.COUNTER_FROM,FreeCounterAction.AIRLINE))),
-    CHECKINCOUNTERS("checkinCounters",new CheckInAction(List.of(CheckInAction.SECTOR,CheckInAction.COUNTER_FROM,CheckInAction.AIRLINE))),
-    LISTPENDINGASSIGNMENTS("listPendingAssignments",new ListPendingAssignmentAction(List.of(ListPendingAssignmentAction.SECTOR)));
+    LIST_SECTOR("listSectors",ListSectorsAction::new),
+    LIST_COUNTERS("listCounters",ListCountersAction::new),
+    ASSIGN_COUNTERS("assignCounters",AssignCounterAction::new),
+    FREE_COUNTERS("freeCounters", FreeCounterAction::new),
+    CHECKIN_COUNTERS("checkinCounters",CheckInAction::new),
+    LIST_PENDING_ASSIGNMENTS("listPendingAssignments",ListPendingAssignmentAction::new);
     private final String actionName;
 
-    private final Action action;
+    private final Supplier<Action> action;
 
-    CounterActions(String actionName, Action action) {
+    CounterActions(String actionName, Supplier<Action> action) {
         this.actionName = actionName;
         this.action = action;
     }
@@ -30,6 +29,6 @@ public enum CounterActions {
     }
 
     public Action getActionClass() {
-        return action;
+        return action.get();
     }
 }

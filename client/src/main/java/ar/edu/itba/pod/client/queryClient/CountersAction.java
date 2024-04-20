@@ -1,7 +1,6 @@
 package ar.edu.itba.pod.client.queryClient;
 
 import ar.edu.itba.pod.client.Action;
-import ar.edu.itba.pod.grpc.counter.CounterServiceGrpc;
 import ar.edu.itba.pod.grpc.query.CheckInStatusRequest;
 import ar.edu.itba.pod.grpc.query.CheckInStatusResponse;
 import ar.edu.itba.pod.grpc.query.QueryServiceGrpc;
@@ -13,23 +12,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
 public class CountersAction extends Action {
-    public static final String OUTPATH = "outPath";
+    public static final String OUT_PATH = "outPath";
     public static final String SECTOR = "sector";
 
-    public CountersAction(List<String> expectedArguments) {
-        super(expectedArguments);
+    public CountersAction() {
+        super(List.of(OUT_PATH), List.of(SECTOR));
     }
 
     @Override
     public void run(ManagedChannel channel) throws InterruptedException {
-        Map<String, String> arguments = parseArguments();
-
         final CountDownLatch finishLatch = new CountDownLatch(1);
         QueryServiceGrpc.QueryServiceStub stub = QueryServiceGrpc.newStub(channel);
 
@@ -41,7 +36,7 @@ public class CountersAction extends Action {
                 try {
                     if(fileOutput == null){
                         BufferedWriter fileOutput = Files.newBufferedWriter(
-                                Paths.get(arguments.get(OUTPATH)),
+                                Paths.get(arguments.get(OUT_PATH)),
                                 StandardOpenOption.APPEND,
                                 StandardOpenOption.CREATE
                         );
@@ -61,8 +56,8 @@ public class CountersAction extends Action {
 
             @Override
             public void onError(final Throwable t) {
-                switch (t.getMessage()){
-                    case "15" -> System.out.printf("Range %s was not assigned in sector \n", arguments.get(SECTOR));
+                switch (getError(t)){
+                    case RANGE_NOT_ASSIGNED -> System.out.printf("Range %s was not assigned in sector \n", arguments.get(SECTOR));
                     default -> System.out.println("An unknown error occurred while getting the counters");
                 }
                 finishLatch.countDown();
@@ -73,7 +68,6 @@ public class CountersAction extends Action {
                 finishLatch.countDown();
             }
         };
-
         stub.checkInStatus(CheckInStatusRequest.newBuilder().setSector(arguments.get(SECTOR)).build(), observer);
         finishLatch.await();
     }

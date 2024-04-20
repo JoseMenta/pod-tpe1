@@ -1,32 +1,49 @@
 package ar.edu.itba.pod.client;
 
+import ar.edu.itba.pod.grpc.commons.Error;
 import io.grpc.ManagedChannel;
+import io.grpc.StatusRuntimeException;
 
 import java.nio.channels.Channel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class Action {
 
-    private final List<String> expectedArguments;
+    protected final Map<String, String> arguments;
 
-    public Action(List<String> expectedArguments) {
-        this.expectedArguments = expectedArguments;
-    }
-
-    public Map<String, String> parseArguments(){
-        Map<String, String> arguments = new HashMap<>();
+    public Action(List<String> expectedArguments, List<String> optionalArguments) {
+        arguments = new HashMap<>();
         for (String arg : expectedArguments) {
             String aux = System.getProperty(arg);
             if (aux == null) {
-                throw new IllegalArgumentException("Arguments not valid");
+                throw new IllegalArgumentException("Expected "+ arg + " argument");
             }else{
                 arguments.put(arg, aux);
             }
         }
-        return arguments;
+        for(String optArg : optionalArguments){
+            String aux = System.getProperty(optArg);
+            if(aux!=null){
+                arguments.put(optArg,aux);
+            }
+        }
     }
 
+    public Error getError(final StatusRuntimeException e){
+        return Optional.ofNullable(e.getStatus().getDescription())
+                .map(Integer::parseInt)
+                .map(Error::forNumber)
+                .orElse(Error.UNSPECIFIED);
+    }
+
+    public Error getError(final Throwable t){
+        if(t instanceof StatusRuntimeException e){
+            return getError(e);
+        }
+        return Error.UNSPECIFIED;
+    }
     public abstract void run(ManagedChannel channel) throws InterruptedException;
 }

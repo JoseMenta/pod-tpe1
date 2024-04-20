@@ -9,7 +9,6 @@ public interface FlightRepository {
 
     Optional<Flight> getFlightByFlightNumber(final String flightNumber);
 
-    Flight createFlight(final String flightNumber, final Airline airline);
 
     Flight createFlightIfAbsent(final String flightNumber,final Airline airline);
 }

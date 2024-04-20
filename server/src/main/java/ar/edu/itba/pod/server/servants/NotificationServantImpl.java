@@ -31,14 +31,19 @@ public class NotificationServantImpl extends NotificationServiceGrpc.Notificatio
      */
     @Override
     public void subscribeAirline(SubscriptionRequest request,
-                                 StreamObserver<SubscriptionResponse> responseObserver) throws InterruptedException {
-        BlockingQueue<Notification> notifications = airportService.register(request.getAirline());
-        Notification notification = notifications.take();
-        while (notification.createNotification() != null) {
-            responseObserver.onNext(notification.createNotification());
-            notification = notifications.take();
+                                 StreamObserver<SubscriptionResponse> responseObserver) {
+        try {
+            BlockingQueue<Notification> notifications = airportService.register(request.getAirline());
+            Notification notification = notifications.take();
+            while (notification.createNotification() != null) {
+                responseObserver.onNext(notification.createNotification());
+                notification = notifications.take();
+            }
+        }catch (InterruptedException e){
+            //
         }
         responseObserver.onCompleted();
+
     }
     /**
      * <pre>

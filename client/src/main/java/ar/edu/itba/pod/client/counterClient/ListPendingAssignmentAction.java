@@ -5,8 +5,10 @@ import ar.edu.itba.pod.grpc.counter.CounterServiceGrpc;
 import ar.edu.itba.pod.grpc.counter.ListPendingRequest;
 import ar.edu.itba.pod.grpc.counter.PendingRangeInfo;
 import io.grpc.ManagedChannel;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -14,13 +16,12 @@ import java.util.stream.Stream;
 
 public class ListPendingAssignmentAction extends Action {
     public static final String SECTOR = "sector";
-    public ListPendingAssignmentAction(List<String> expectedArguments) {
-        super(expectedArguments);
+    public ListPendingAssignmentAction() {
+        super(List.of(SECTOR), Collections.emptyList());
     }
 
     @Override
     public void run(ManagedChannel channel) throws InterruptedException {
-        Map<String, String> arguments = parseArguments();
         CounterServiceGrpc.CounterServiceStub stub =
                 CounterServiceGrpc.newStub(channel);
         System.out.printf("%-9s %-16s %-31s\n","Counters","Airline","Flights");
@@ -34,10 +35,11 @@ public class ListPendingAssignmentAction extends Action {
 
             @Override
             public void onError(Throwable t) {
-                switch (t.getMessage()){
-                    case "2" -> System.out.printf("Sector %s was not found\n",arguments.get(SECTOR));
+                switch (getError(t)){
+                    case SECTOR_NOT_FOUND -> System.out.printf("Sector %s was not found\n",arguments.get(SECTOR));
                     default -> System.out.println("An unknown error occurred while listing pending assignments");
                 }
+                finishLatch.countDown();
             }
 
             @Override

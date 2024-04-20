@@ -23,7 +23,8 @@ public class Client implements Closeable {
         if (host == null || action == null) {
             throw new IllegalArgumentException("Host and action must not be null");
         }
-        this.channel = ManagedChannelBuilder.forAddress(host, 50051)
+
+        this.channel = ManagedChannelBuilder.forTarget(host)
                 .usePlaintext()
                 .build();
         this.action = action;

@@ -11,22 +11,23 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 
 public class ManifestAction extends Action {
+//    -DserverAddress=localhost:50051 -Daction=manifest -DinPath=client/src/main/resources/bookings.csv
     public static final String IN_PATH = "inPath";
     private static final int THREAD_COUNT = 10;
-    private static final int LINE_COUNT = 200;
+    private static final int LINE_COUNT = 10;
 
-    public ManifestAction(List<String> expectedArguments) {
-        super(expectedArguments);
+    public ManifestAction() {
+        super(List.of(IN_PATH), Collections.emptyList());
     }
 
     @Override
     public void run(ManagedChannel channel) throws InterruptedException {
-        Map<String, String> arguments = parseArguments();
         final Path filePath = Path.of(arguments.get(IN_PATH));
         try(final BufferedReader reader = Files.newBufferedReader(filePath);
             final ExecutorService executorService = Executors.newFixedThreadPool(THREAD_COUNT);
@@ -46,7 +47,7 @@ public class ManifestAction extends Action {
         }
     }
 
-    private static class AddFlightsRunnable implements Runnable{
+    private class AddFlightsRunnable implements Runnable{
 
         final private AdminServiceGrpc.AdminServiceBlockingStub blockingStub;
         final private BufferedReader reader;
@@ -95,9 +96,9 @@ public class ManifestAction extends Action {
                         );
                         System.out.printf("Booking %s for %s %s added successfully\n",values[0],values[2],values[1]);
                     }catch (StatusRuntimeException e){
-                        switch (e.getMessage()){
-                            case "1" -> System.out.printf("Booking %s has already been added\n",values[0]);
-                            case "2" -> System.out.printf("Flight %s has already been registered for another airline\n",values[1]);
+                        switch (getError(e)){
+                            case ALREADY_EXISTS -> System.out.printf("Booking %s has already been added\n",values[0]);
+                            case FLIGHT_ALREADY_USED -> System.out.printf("Flight %s has already been registered for another airline\n",values[1]);
                             default -> System.out.printf("An unknown error occurred while adding booking %s for %s %s\n",values[0],values[2],values[1]);
                         }
 
