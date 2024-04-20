@@ -1,14 +1,11 @@
 package ar.edu.itba.pod.server.exceptions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ar.edu.itba.pod.grpc.commons.Error;
 
-public class PassengerAlreadyEnqueuedException extends RuntimeException {
+public class PassengerAlreadyEnqueuedException extends AirlineException {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PassengerAlreadyEnqueuedException.class);
 
     public PassengerAlreadyEnqueuedException() {
-        super("11");
-        LOGGER.error("PassengerAlreadyEnqueuedException", this);
+        super(Error.PASSENGERS_WAITING);
     }
 }

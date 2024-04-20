@@ -1,14 +1,12 @@
 package ar.edu.itba.pod.server.exceptions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class FlightNotInRangeException extends RuntimeException {
+import ar.edu.itba.pod.grpc.commons.Error;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FlightNotInRangeException.class);
+public class FlightNotInRangeException extends AirlineException {
+
 
     public FlightNotInRangeException(){
-        super("18");
-        LOGGER.error("FlightNotInRangeException", this);
+        super(Error.FLIGHT_NOT_IN_RANGE);
     }
 }

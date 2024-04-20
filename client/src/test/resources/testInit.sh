@@ -5,7 +5,11 @@ if [[ '-b' == "$1" ]]; then
 
     mvn clean package > /dev/null
 
-    cd ../../../client/target/
+    cd server/target
+
+    tar -xzf tpe1-g6-server-1.0-SNAPSHOT-bin.tar.gz
+
+    cd ../../client/target/
 
     tar -xzf tpe1-g6-client-1.0-SNAPSHOT-bin.tar.gz
 else
@@ -14,4 +18,4 @@ else
     echo "Project was not built"
 fi
 
-cd tpe1-g6-client-1.0-SNAPSHOT/
+cd tpe1-g6-client-1.0-SNAPSHOT

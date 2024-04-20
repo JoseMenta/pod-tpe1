@@ -1,13 +1,10 @@
 package ar.edu.itba.pod.server.exceptions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ar.edu.itba.pod.grpc.commons.Error;
 
-public class FlightInPendingQueueException extends RuntimeException{
-    private static final Logger LOGGER = LoggerFactory.getLogger(FlightInPendingQueueException.class);
+public class FlightInPendingQueueException extends AirlineException {
 
     public FlightInPendingQueueException(){
-        super("8");
-        LOGGER.error("FlightInPendingQueueException",this);
+        super(Error.PENDING_REQUEST_FOR_FLIGHT);
     }
 }

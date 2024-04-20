@@ -1,15 +1,11 @@
 package ar.edu.itba.pod.server.exceptions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ar.edu.itba.pod.grpc.commons.Error;
 
-public class AirlineNotFoundException extends RuntimeException{
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AirlineNotFoundException.class);
+public class AirlineNotFoundException extends AirlineException {
 
     public AirlineNotFoundException() {
-        super("19");
-        LOGGER.error("AirlineNotFoundException", this);
+        super(Error.AIRLINE_NOT_FOUND);
     }
 
 }

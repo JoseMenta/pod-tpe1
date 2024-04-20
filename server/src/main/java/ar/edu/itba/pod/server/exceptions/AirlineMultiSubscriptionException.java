@@ -1,14 +1,10 @@
 package ar.edu.itba.pod.server.exceptions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ar.edu.itba.pod.grpc.commons.Error;
 
-public class AirlineMultiSubscriptionException extends RuntimeException {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AirlineMultiSubscriptionException.class);
+public class AirlineMultiSubscriptionException extends AirlineException {
 
     public AirlineMultiSubscriptionException() {
-        super("17");
-        LOGGER.error("AirlineMultiSubscriptionException", this);
+        super(Error.AIRLINE_ALREADY_SUBSCRIBED);
     }
 }

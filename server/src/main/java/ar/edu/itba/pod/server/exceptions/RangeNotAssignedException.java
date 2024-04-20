@@ -1,14 +1,10 @@
 package ar.edu.itba.pod.server.exceptions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ar.edu.itba.pod.grpc.commons.Error;
 
-public class RangeNotAssignedException extends RuntimeException {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(RangeNotAssignedException.class);
+public class RangeNotAssignedException extends AirlineException {
 
     public RangeNotAssignedException() {
-        super("15");
-        LOGGER.error("RangeNotAssignedException", this);
+        super(Error.RANGE_NOT_ASSIGNED);
     }
 }

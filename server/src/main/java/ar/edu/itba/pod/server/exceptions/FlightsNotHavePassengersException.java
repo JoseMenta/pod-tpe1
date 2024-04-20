@@ -1,13 +1,10 @@
 package ar.edu.itba.pod.server.exceptions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ar.edu.itba.pod.grpc.commons.Error;
 
-public class FlightsNotHavePassengersException extends RuntimeException{
-    private static final Logger LOGGER = LoggerFactory.getLogger(FlightsNotHavePassengersException.class);
+public class FlightsNotHavePassengersException extends AirlineException {
 
     public FlightsNotHavePassengersException(){
-        super("6");
-        LOGGER.error("FlightsNotHavePassengersException",this);
+        super(Error.EMPTY_PASSENGERS);
     }
 }
