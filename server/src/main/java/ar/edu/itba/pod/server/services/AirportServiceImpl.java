@@ -64,31 +64,38 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public void addBooking(String booking, String flight, String airline) {
+        LOGGER.debug("Adding passenger with booking {} for flight {} of airline {}", booking, flight, airline);
         final Airline airline1 = airlineRepository.createAirlineIfAbsent(airline);
         final Flight flight1 = flightRepository.createFlightIfAbsent(flight,airline1);
         passengerRepository.createPassenger(booking,airline1,flight1);
+        LOGGER.info("Passenger with booking {} for flight {} of airline {} added", booking, flight, airline);
     }
 
     @Override
     public List<Sector> listSectors() {
-        List<Sector> sectors =   sectorRepository.getSectors();
+        LOGGER.debug("Listing sectors");
+        List<Sector> sectors = sectorRepository.getSectors();
         if (sectors.isEmpty()) {
             throw new NoSectorsInAirportException();
         }
+        LOGGER.info("Listed sectors");
         return sectors;
     }
 
     @Override
     public List<Range> listCounters(String sector, int from, int to) {
+        LOGGER.debug("Listing counters from {} to {} in sector {}", from, to, sector);
         if(to-from<=-1){
             throw new InvalidRangeException();
         }
         final Sector sector1 = sectorRepository.getSectorById(sector).orElseThrow(SectorNotFoundException::new);
+        LOGGER.info("Listed counters from {} to {} in sector {}", from, to, sector);
         return sector1.getRangesInInterval(from,to);
     }
 
     @Override
     public Pair<Optional<Range>, Integer> assignRange(String sector, String airline, List<String> flights, int count) {
+        LOGGER.info("Assigning range of {} counters in sector {} for flights {} by airline {}", count, sector, flights, airline);
         Optional<Sector> sectorOptional = sectorRepository.getSectorById(sector);
         // No existe un sector con ese nombre
         if(sectorOptional.isEmpty()){
@@ -133,16 +140,18 @@ public class AirportServiceImpl implements AirportService {
                     flight.assignRange(auxRange.first().get());
                 }
             }
+            LOGGER.info("Assigned range of {} counters in sector {} for flights {} by airline {}", count, sector, flights, airline);
             return auxRange;
         }
     }
 
     @Override
     public Range freeCounters(String sectorName, int counterFrom, String airlineName) {
-        LOGGER.info("Freeing counters from {} in sector {} by airline {}", counterFrom, sectorName, airlineName);
+        LOGGER.debug("Freeing counters from {} in sector {} by airline {}", counterFrom, sectorName, airlineName);
         Sector sector = sectorRepository.getSectorById(sectorName).orElseThrow(SectorNotFoundException::new);
         Airline airline = airlineRepository.getAirlineByName(airlineName).orElseThrow(AirlineNotFoundException::new);
         try {
+            LOGGER.info("Freed counters from {} in sector {} by airline {}", counterFrom, sectorName, airlineName);
             return sector.free(counterFrom, airline);
         } catch (Exception e) {
             LOGGER.error("Error freeing counters: {}", e.getMessage(), e);
@@ -152,68 +161,91 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public Pair<List<Passenger>, List<Counter>> checkInCounters(String sector, int counterFrom, String airline) {
+        LOGGER.debug("Checking in counters from {} in sector {} by airline {}", counterFrom, sector, airline);
         Airline airline1 = airlineRepository.getAirlineByName(airline).orElseThrow(AirlineNotFoundException::new);
-        return sectorRepository.getSectorById(sector).orElseThrow(SectorNotFoundException::new).checkInCounters(counterFrom,airline1);
+        Pair<List<Passenger>, List<Counter>> pair = sectorRepository.getSectorById(sector).orElseThrow(SectorNotFoundException::new).checkInCounters(counterFrom,airline1);
+        LOGGER.info("Checked in counters from {} in sector {} by airline {}", counterFrom, sector, airline);
+        return pair;
     }
 
     @Override
     public List<RequestRange> listPendingAssignments(String sector) {
-        return sectorRepository.getSectorById(sector).orElseThrow(SectorNotFoundException::new).getPendingRequests();
+        LOGGER.debug("Listing pending assignments in sector {}", sector);
+        List<RequestRange> pendingRequests = sectorRepository.getSectorById(sector).orElseThrow(SectorNotFoundException::new).getPendingRequests();
+        LOGGER.info("Listed pending assignments in sector {}", sector);
+        return pendingRequests;
     }
 
     @Override
     public Flight fetchCounter(String booking) {
-        return passengerRepository.getPassengerByBookingId(booking).orElseThrow(PassengerNotFoundException::new).getFlight();
+        LOGGER.debug("Fetching counter for passenger with booking id {}", booking);
+        Flight flight = passengerRepository.getPassengerByBookingId(booking).orElseThrow(PassengerNotFoundException::new).getFlight();
+        LOGGER.info("Fetched counter for passenger with booking id {}", booking);
+        return flight;
     }
 
     @Override
     public Pair<Passenger, Integer> addPassengerToQueue(String booking, String sectorName, int startCounter) {
+        LOGGER.debug("Adding passenger with booking id {} to queue in sector {} starting at counter {}", booking, sectorName, startCounter);
         final Passenger passenger = passengerRepository.getPassengerByBookingId(booking).orElseThrow(PassengerNotFoundException::new);
         final Sector sector = sectorRepository.getSectorById(sectorName).orElseThrow(SectorNotFoundException::new);
         final int waitingAhead = sector.addPassengerToQueue(passenger,startCounter);
+        LOGGER.info("Added passenger with booking id {} to queue in sector {} starting at counter {}", booking, sectorName, startCounter);
         return new Pair<>(passenger, waitingAhead);
     }
 
     @Override
     public Passenger checkPassengerStatus(String booking) {
-        LOGGER.info("Checking passenger status with booking id {}",booking);
+        LOGGER.debug("Checking passenger status with booking id {}",booking);
         Passenger passenger = passengerRepository.getPassengerByBookingId(booking).orElseThrow(PassengerNotFoundException::new);
         Flight flight = passenger.getFlight();
         Range range = flight.getRange();
         if (range == null) {
             throw new RangeNotAssignedException();
         }
+        LOGGER.info("Checked passenger status with booking id {}",booking);
         return passenger;
     }
 
     @Override
     public BlockingQueue<Notification> register(String airline) {
+        LOGGER.debug("Registering airline {} to receive notifications", airline);
         Airline airline1 = airlineRepository.getAirlineByName(airline).orElseThrow(AirlineNotFoundException::new);
         BlockingQueue<Notification> notifications = airline1.subscribe();
         airline1.log(new SubscriptionNotification(airline1));
+        LOGGER.info("Registered airline {} to receive notifications", airline);
         return notifications;
     }
 
     @Override
     public void unregister(String airline) throws InterruptedException {
+        LOGGER.debug("Unregistering airline {} from receiving notifications", airline);
         airlineRepository.getAirlineByName(airline).orElseThrow(AirlineNotFoundException::new).unsubscribe();
+        LOGGER.info("Unregistered airline {} from receiving notifications", airline);
     }
 
     @Override
     public List<Range> checkCountersStatus(Optional<String> sector) {
+        LOGGER.debug("Checking counters status {}", sector.map(s -> "in sector " + s).orElse("in all sectors"));
         if(sector.isEmpty()){
             List<Range> auxList = new ArrayList<>();
             for(Sector sectorData : sectorRepository.getSectors()){
                 auxList.addAll(sectorData.getRanges());
             }
+            LOGGER.info("Checked counters status for all sectors");
             return auxList;
         }else{
-            return sectorRepository.getSectorById(sector.get()).orElseThrow(SectorNotFoundException::new).getRanges();
+            List<Range> ranges = sectorRepository.getSectorById(sector.get()).orElseThrow(SectorNotFoundException::new).getRanges();
+            LOGGER.info("Checked counters status in sector {}", sector.get());
+            return ranges;
         }
     }
 
     @Override
     public List<Passenger> queryCheckInHistory(Optional<String> sector, Optional<String> airline) {
-        return this.historyCheckIn.getHistoryCheckIn(sector,airline);
+        LOGGER.debug("Querying check-in history {} {}", sector.map(s -> "in sector " + s).orElse("in all sectors"), airline.map(a -> "for airline " + a).orElse("for all airlines"));
+        List<Passenger> passengers = this.historyCheckIn.getHistoryCheckIn(sector,airline);
+        LOGGER.info("Queried check-in history {} {}", sector.map(s -> "in sector " + s).orElse("in all sectors"), airline.map(a -> "for airline " + a).orElse("for all airlines"));
+        return passengers;
     }
 }
