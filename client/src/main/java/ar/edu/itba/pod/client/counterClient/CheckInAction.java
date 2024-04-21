@@ -35,6 +35,7 @@ public class CheckInAction extends Action {
             switch (getError(e)){
                 case SECTOR_NOT_FOUND -> System.out.printf("Sector %s was not found\n",arguments.get(SECTOR));
                 case INVALID_RANGE -> System.out.printf("Range starting at %s was not found in the sector %s\n",arguments.get(COUNTER_FROM),arguments.get(SECTOR));
+                case AIRLINE_NOT_FOUND -> System.out.printf("Airline %s was not found\n",arguments.get(AIRLINE));
                 case RANGE_FROM_OTHER_AIRLINE -> System.out.printf("Range starting at %s is not from airline %s\n",arguments.get(COUNTER_FROM),arguments.get(AIRLINE));
                 default -> System.out.println("An unknown error occurred while checking-in in the counter");
             }

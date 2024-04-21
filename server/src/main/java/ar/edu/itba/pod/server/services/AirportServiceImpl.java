@@ -71,7 +71,11 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public List<Sector> listSectors() {
-        return  sectorRepository.getSectors();
+        List<Sector> sectors =   sectorRepository.getSectors();
+        if (sectors.isEmpty()) {
+            throw new NoSectorsInAirportException();
+        }
+        return sectors;
     }
 
     @Override
@@ -148,7 +152,7 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public Pair<List<Passenger>, List<Counter>> checkInCounters(String sector, int counterFrom, String airline) {
-        Airline airline1 = airlineRepository.getAirlineByName(airline).orElseThrow(AirlineNotInRangeException::new);
+        Airline airline1 = airlineRepository.getAirlineByName(airline).orElseThrow(AirlineNotFoundException::new);
         return sectorRepository.getSectorById(sector).orElseThrow(SectorNotFoundException::new).checkInCounters(counterFrom,airline1);
     }
 
