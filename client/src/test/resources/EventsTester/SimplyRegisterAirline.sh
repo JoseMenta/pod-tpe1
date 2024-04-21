@@ -9,8 +9,10 @@ cd client/target/tpe1-g6-client-1.0-SNAPSHOT/
 chmod u+x adminClient.sh
 chmod u+x eventsClient.sh
 
+###########################################################
+# RESULTADO ESPERADO EN extectedOutOut.txt                #
+###########################################################
 
-
-./adminClient.sh -DserverAddress=localhost:50051 -Daction=manifest -DinPath=../../src/main/resources/bookings.csv
+./adminClient.sh -DserverAddress=localhost:50051 -Daction=manifest -DinPath=../../src/main/resources/oneBooking.csv
 
 ./eventsClient.sh -DserverAddress=localhost:50051 -Daction=register -Dairline=AmericanAirlines
