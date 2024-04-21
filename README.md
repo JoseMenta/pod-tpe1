@@ -82,10 +82,10 @@ Para la ejecucion del cliente de administracion del aeropuerto se debe ejecutar 
 ```Bash
 ./adminClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=manifest -DinPath=<path al archivo de entrada>
 ```
-Debemos tener en cuenta que el archivo de entrada debe tener el siguiente formato:
+Debemos tener en cuenta que el archivo de entrada debe tener el siguiente formato(CSV):
 ```CSV
-booking;flight;airline
-1;1;Aerolinea1
+booking,flight,airline
+1,1,Aerolinea1
 ```
 ### 4.2. Servicio de reserva de mostradores
 Para la ejecucion del cliente de reserva de mostradores se debe ejecutar el siguiente comando:
