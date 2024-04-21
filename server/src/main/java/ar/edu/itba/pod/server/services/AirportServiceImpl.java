@@ -70,7 +70,11 @@ public class AirportServiceImpl implements AirportService {
 
     @Override
     public List<Sector> listSectors() {
-        return  sectorRepository.getSectors();
+        List<Sector> sectors =   sectorRepository.getSectors();
+        if (sectors.isEmpty()) {
+            throw new NoSectorsInAirportException();
+        }
+        return sectors;
     }
 
     @Override
