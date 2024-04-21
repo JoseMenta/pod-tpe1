@@ -58,6 +58,7 @@ public class AirportServiceImpl implements AirportService {
         Sector sector = sectorRepository.getSectorById(sectorName).orElseThrow(SectorNotFoundException::new);
         Range range = rangeRepository.createRange(amount, sector);
         sector.addRange(range);
+        LOGGER.info("Added {} counters to sector {}", amount, sectorName);
         return range;
     }
 
