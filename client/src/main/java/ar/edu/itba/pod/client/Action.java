@@ -32,14 +32,14 @@ public abstract class Action {
         }
     }
 
-    public Error getError(final StatusRuntimeException e){
+    protected Error getError(final StatusRuntimeException e){
         return Optional.ofNullable(e.getStatus().getDescription())
                 .map(Integer::parseInt)
                 .map(Error::forNumber)
                 .orElse(Error.UNSPECIFIED);
     }
 
-    public Error getError(final Throwable t){
+    protected Error getError(final Throwable t){
         if(t instanceof StatusRuntimeException e){
             return getError(e);
         }
