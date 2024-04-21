@@ -48,6 +48,11 @@ public class ListPendingAssignmentAction extends Action {
 
             @Override
             public void onCompleted() {
+                if(headerPrinted){
+                    System.out.printf("%-9s %-16s %-31s\n","Counters","Airline","Flights");
+                    System.out.printf("%s\n","#".repeat(58));
+                    headerPrinted = false;
+                }
                 finishLatch.countDown();
             }
         };

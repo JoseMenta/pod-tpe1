@@ -50,7 +50,7 @@ public class RegisterAction extends Action {
                 switch (getError(t)){
                     case EMPTY_PASSENGERS -> System.out.printf("Passenger not exists for airline %s\n",arguments.get(AIRLINE));
                     case AIRLINE_ALREADY_SUBSCRIBED -> System.out.printf("Airline %s already subscribed\n",arguments.get(AIRLINE));
-                    default -> System.out.println("An unknown error occurred while getting the counters");
+                    default -> System.out.println("An unknown error occurred while registering");
                 }
                 finishLatch.countDown();
             }

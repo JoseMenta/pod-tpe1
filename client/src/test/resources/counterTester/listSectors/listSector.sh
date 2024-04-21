@@ -20,3 +20,5 @@ chmod u+x counterClient.sh
 ./adminClient.sh -DserverAddress=localhost:50051 -Daction=addCounters -Dsector=C -Dcounters=2
 
 ./counterClient.sh -DserverAddress=localhost:50051 -Daction=listSectors
+
+pkill -P "$server_pid"

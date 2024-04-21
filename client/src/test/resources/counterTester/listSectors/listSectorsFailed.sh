@@ -14,3 +14,5 @@ chmod u+x counterClient.sh
 
 
 ./counterClient.sh -DserverAddress=localhost:50051 -Daction=listSectors
+
+pkill -P "$server_pid"

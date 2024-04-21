@@ -22,3 +22,5 @@ chmod u+x counterClient.sh
 
 chmod u+x passengerClient.sh
 ./passengerClient.sh -DserverAddress=localhost:50051 -Daction=passengerCheckin -Dbooking=ABC123 -Dsector=C -Dcounter=1
+
+pkill -P "$server_pid"
