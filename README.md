@@ -22,16 +22,18 @@
         - [4.2.4. Liberar un rango de mostradores](#424-liberar-un-rango-de-mostradores)
         - [4.2.5. Realizar un check-in para cada mostrador](#425-realizar-un-check-in-para-cada-mostrador)
         - [4.2.6. Consultar las asignaciones pendientes](#426-consultar-las-asignaciones-pendientes)
-        - [4.2.7. Obtener el rango de mostradores asignado para check-in](#427-obtener-el-rango-de-mostradores-asignado-para-check-in)
-        - [4.2.8. Ingresar a la cola del rango de mostradores](#428-ingresar-a-la-cola-del-rango-de-mostradores)
-        - [4.2.9. Consultar el estado de check-in](#429-consultar-el-estado-de-check-in)
-    - [4.3. Servicio de notificaciones de aerolineas](#43-servicio-de-notificaciones-de-aerolineas)
-        - [4.3.1. Registrar a una aerolínea para ser notificada](#431-registrar-a-una-aerolínea-para-ser-notificada)
-        - [4.3.2. Anular el registro de una aerolínea](#432-anular-el-registro-de-una-aerolínea)
-    - [4.4. Servicio de Consulta de Mostradores](#44-servicio-de-consulta-de-mostradores)
-        - [4.4.1. Consultar el estado de los mostradores, filtrando por sector](#441-consultar-el-estado-de-los-mostradores-filtrando-por-sector)
-        - [4.4.2. Consultar los check-ins realizados, filtrando por sector y aerolínea](#442-consultar-los-check-ins-realizados-filtrando-por-sector-y-aerolínea)
+    - [4.3. Servicio de Check-in de Pasajeros](#43-servicio-de-check-in-de-pasajeros)
+        - [4.3.1. Obtener el rango de mostradores asignado para check-in](#431-obtener-el-rango-de-mostradores-asignado-para-check-in)
+        - [4.3.2. Ingresar a la cola del rango de mostradores](#432-ingresar-a-la-cola-del-rango-de-mostradores)
+        - [4.3.3. Consultar el estado de check-in](#433-consultar-el-estado-de-check-in)
+    - [4.4. Servicio de notificaciones de aerolineas](#44-servicio-de-notificaciones-de-aerolineas)
+        - [4.4.1. Registrar a una aerolínea para ser notificada](#441-registrar-a-una-aerolínea-para-ser-notificada)
+        - [4.4.2. Anular el registro de una aerolínea](#442-anular-el-registro-de-una-aerolínea)
+    - [4.5. Servicio de Consulta de Mostradores](#45-servicio-de-consulta-de-mostradores)
+        - [4.5.1. Consultar el estado de los mostradores, filtrando por sector](#451-consultar-el-estado-de-los-mostradores-filtrando-por-sector)
+        - [4.5.2. Consultar los check-ins realizados, filtrando por sector y aerolínea](#452-consultar-los-check-ins-realizados-filtrando-por-sector-y-aerolínea)
 - [5. Aclaraciones sobre el proyecto](#5-aclaraciones-sobre-el-proyecto)
+
 
 # Aiport service <!-- omit in toc -->
 En este proyecto se implemento un servicio de aeropuerto en el cual se pueden realizar la gestion de pasajeros, de aerolineas y de vuelos que tiene el mismo.
@@ -110,39 +112,40 @@ Para la ejecucion del cliente de reserva de mostradores se debe ejecutar el sigu
 ```
 #### 4.2.6. Consultar las asignaciones pendientes
 
+### 4.3. Servicio de Check-in de Pasajeros
 ```Bash
 ./counterClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=listPendingAssignments -Dsector=<sector>
 ```
-#### 4.2.7. Obtener el rango de mostradores asignado para check-in
+#### 4.3.1. Obtener el rango de mostradores asignado para check-in
 ```Bash
 ./passengerClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=fetchCounter -Dbooking=<booking id>
 ```
-#### 4.2.8. Ingresar a la cola del rango de mostradores
+#### 4.3.2. Ingresar a la cola del rango de mostradores
 ```Bash
 ./passengerClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=passengerCheckin -Dbooking=<booking id> -Dsector=<sector> -Dcounter=<counter>
 ```
-#### 4.2.9. Consultar el estado de check-in
+#### 4.3.3. Consultar el estado de check-in
 ```Bash
 ./passengerClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=passengerStatus -Dbooking=<booking id>
 ```
-### 4.3. Servicio de notificaciones de aerolineas
+### 4.4. Servicio de notificaciones de aerolineas
 Para la ejecucion del cliente de notificaciones de aerolineas se deben ejecutar los siguientes comandos:
-#### 4.3.1. Registrar a una aerolínea para ser notificada
+#### 4.4.1. Registrar a una aerolínea para ser notificada
 ```Bash
 ./eventsClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=register -Dairline=<nombre de la aerolinea>
 ```
 
-#### 4.3.2. Anular el registro de una aerolínea
+#### 4.4.2. Anular el registro de una aerolínea
 ```Bash
 ./eventsClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=unregister -Dairline=<nombre de la aerolinea>
 ```
-### 4.4. Servicio de Consulta de Mostradores
+### 4.5. Servicio de Consulta de Mostradores
 Para la ejecucion del cliente de consulta de mostradores se deben ejecutar los siguientes comandos:
-#### 4.4.1. Consultar el estado de los mostradores, filtrando por sector
+#### 4.5.1. Consultar el estado de los mostradores, filtrando por sector
 ```Bash
 ./queryClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=counters -DoutPath=<path de salida> [-Dsector=<sector>]
 ```
-#### 4.4.2. Consultar los check-ins realizados, filtrando por sector y aerolínea
+#### 4.5.2. Consultar los check-ins realizados, filtrando por sector y aerolínea
 ```Bash
 ./queryClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=checkins -DoutPath=<path de salida> [-Dsector=<sector>] [-Dairline=<aerolinea>]
 ```
