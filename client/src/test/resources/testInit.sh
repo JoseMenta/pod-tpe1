@@ -18,4 +18,4 @@ else
     echo "Project was not built"
 fi
 
-cd tpe1-g6-client-1.0-SNAPSHOT/
+cd tpe1-g6-client-1.0-SNAPSHOT

@@ -1,6 +1,6 @@
 package ar.edu.itba.pod.server.services;
 
-import ar.edu.itba.pod.server.exceptions.FlightAlreadyAssigned;
+import ar.edu.itba.pod.server.exceptions.FlightAlreadyAssignedException;
 import ar.edu.itba.pod.server.exceptions.InvalidRangeException;
 import ar.edu.itba.pod.server.exceptions.SectorNotFoundException;
 import ar.edu.itba.pod.server.exceptions.FlightAssignedToOtherAirlineException;
@@ -95,7 +95,7 @@ public class AirportServiceImpl implements AirportService {
                 Optional<Flight> flightOptional = flightRepository.getFlightByFlightNumber(flight);
                 // No se agregaron pasajeros esperados con el código de vuelo, para al menos un de los vuelos solicitados
                 if (flightOptional.isEmpty()) {
-                    throw new FlightAssignedToOtherAirlineException();
+                    throw new FlightNotFoundException();
                 }
                 // Se agregaron pasajeros esperados con el código de vuelo pero con otra aerolínea, para al menos uno de los vuelos solicitados
                 if (!Objects.equals(flightOptional.get().getAirline().getName(), airline)) {
@@ -103,7 +103,7 @@ public class AirportServiceImpl implements AirportService {
                 }
                 // Ya existe al menos un mostrador asignado para al menos uno de los vuelos solicitados
                 if (flightOptional.get().getStatus() == Flight.Status.ASIGNED) {
-                    throw new FlightAlreadyAssigned();
+                    throw new FlightAlreadyAssignedException();
                 }
                 // Ya existe una solicitud pendiente de un rango de mostradores para al menos uno de los vuelos solicitados
                 if (flightOptional.get().getStatus() == Flight.Status.WAITING) {
@@ -111,7 +111,7 @@ public class AirportServiceImpl implements AirportService {
                 }
                 // Ya se asignó y luego se liberó un rango de mostradores para al menos uno de los vuelos solicitados
                 if (flightOptional.get().getRange() != null) {
-                    throw new FlightAlreadyAssigned();
+                    throw new FlightAlreadyAssignedException();
                 }
                 flightList.add(flightOptional.get());
             }
@@ -122,7 +122,13 @@ public class AirportServiceImpl implements AirportService {
             if (airlineOptional.isEmpty()) {
                 throw new FlightAssignedToOtherAirlineException();
             }
-            return sectorOptional.get().book(count, flightList, airlineOptional.get());
+            Pair<Optional<Range>, Integer> auxRange = sectorOptional.get().book(count, flightList, airlineOptional.get());
+            for(Flight flight : flightList){
+                if(auxRange.first().isPresent()){
+                    flight.assignRange(auxRange.first().get());
+                }
+            }
+            return auxRange;
         }
     }
 

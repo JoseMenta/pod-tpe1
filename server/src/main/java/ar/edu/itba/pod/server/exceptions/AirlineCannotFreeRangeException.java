@@ -1,14 +1,10 @@
 package ar.edu.itba.pod.server.exceptions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ar.edu.itba.pod.grpc.commons.Error;
 
-public class AirlineCannotFreeRangeException extends RuntimeException {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(AirlineCannotFreeRangeException.class);
+public class AirlineCannotFreeRangeException extends AirlineException {
 
     public AirlineCannotFreeRangeException() {
-        super("10");
-        LOGGER.error("AirlineCannotFreeRangeException", this);
+        super(Error.RANGE_FROM_OTHER_AIRLINE);
     }
 }

@@ -48,6 +48,7 @@ public class AssignCounterAction extends Action {
         }catch (StatusRuntimeException e){
             switch (getError(e)){
                 case SECTOR_NOT_FOUND -> System.out.printf("Sector %s was not found\n",arguments.get(SECTOR));
+                case FLIGHT_NOT_FOUND -> System.out.printf("There are no passengers expected for at least one of the flights %s\n",arguments.get(FLIGHTS));
                 case FLIGHT_ALREADY_USED -> System.out.printf("There were passengers added for one of flights %s but for other airline",arguments.get(FLIGHTS));
                 case EMPTY_PASSENGERS -> System.out.printf("There are no passengers for flights %s\n",arguments.get(FLIGHTS));
                 case FLIGHT_ALREADY_ASSIGNED -> System.out.printf("There is already a counter assignment for one of the flights %s\n",arguments.get(FLIGHTS));

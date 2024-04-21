@@ -1,13 +1,11 @@
 package ar.edu.itba.pod.server.exceptions;
 
-import org.slf4j.Logger;
+import ar.edu.itba.pod.grpc.commons.Error;
 
-public class SectorNotFoundException extends RuntimeException {
+public class SectorNotFoundException extends AirlineException {
 
-    private final static Logger LOGGER = org.slf4j.LoggerFactory.getLogger(SectorNotFoundException.class);
 
     public SectorNotFoundException(){
-        super("2");
-        LOGGER.error("SectorNotFoundException", this);
+        super(Error.SECTOR_NOT_FOUND);
     }
 }

@@ -4,7 +4,6 @@ import ar.edu.itba.pod.server.exceptions.*;
 import com.google.rpc.Code;
 import io.grpc.*;
 import io.grpc.protobuf.StatusProto;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,12 +30,13 @@ public class GlobalExceptionHandlerInterceptor implements ServerInterceptor {
         errorCodesByException.put(AirlineMultiSubscriptionException.class, Code.ALREADY_EXISTS);
         errorCodesByException.put(AirlineNullSubscriptionException.class, Code.NOT_FOUND);
         errorCodesByException.put(EmptyHistoryCheckInException.class, Code.NOT_FOUND);
-        errorCodesByException.put(FlightAlreadyAssigned.class, Code.ALREADY_EXISTS);
+        errorCodesByException.put(FlightAlreadyAssignedException.class, Code.ALREADY_EXISTS);
         errorCodesByException.put(FlightInPendingQueueException.class, Code.FAILED_PRECONDITION);
         errorCodesByException.put(FlightsNotHavePassengersException.class, Code.FAILED_PRECONDITION);
         errorCodesByException.put(FreeNonBookedRangeException.class, Code.FAILED_PRECONDITION);
         errorCodesByException.put(InvalidRangeStartException.class, Code.INVALID_ARGUMENT);
         errorCodesByException.put(RangeHasPassengersException.class, Code.FAILED_PRECONDITION);
+        errorCodesByException.put(FlightNotFoundException.class, Code.NOT_FOUND);
     }
 
     @Override

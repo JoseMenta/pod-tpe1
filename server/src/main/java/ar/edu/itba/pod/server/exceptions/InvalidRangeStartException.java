@@ -1,13 +1,10 @@
 package ar.edu.itba.pod.server.exceptions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ar.edu.itba.pod.grpc.commons.Error;
 
-public class InvalidRangeStartException extends RuntimeException {
-    private static final Logger LOGGER = LoggerFactory.getLogger(InvalidRangeStartException.class);
+public class InvalidRangeStartException extends AirlineException {
 
     public InvalidRangeStartException() {
-        super("3");
-        LOGGER.error("InvalidRangeStartException",this);
+        super(Error.INVALID_RANGE);
     }
 }

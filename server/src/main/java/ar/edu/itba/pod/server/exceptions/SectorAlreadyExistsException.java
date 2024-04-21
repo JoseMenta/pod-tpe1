@@ -1,14 +1,11 @@
 package ar.edu.itba.pod.server.exceptions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import ar.edu.itba.pod.grpc.commons.Error;
 
-public class SectorAlreadyExistsException extends RuntimeException{
+public class SectorAlreadyExistsException extends AirlineException {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SectorAlreadyExistsException.class);
 
     public SectorAlreadyExistsException(){
-        super("1");
-        LOGGER.error("SectorAlreadyExistsException", this);
+        super(Error.ALREADY_EXISTS);
     }
 }

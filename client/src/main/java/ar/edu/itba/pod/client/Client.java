@@ -19,7 +19,6 @@ public class Client implements Closeable {
 
 
     public Client(final String host,Action action) {
-        logger.info("Creating client for host {}", host);
         if (host == null || action == null) {
             throw new IllegalArgumentException("Host and action must not be null");
         }

@@ -7,14 +7,18 @@ import ar.edu.itba.pod.grpc.notification.UnRegisterRequest;
 import ar.edu.itba.pod.server.interfaces.Notification;
 import ar.edu.itba.pod.server.interfaces.services.AirportService;
 import com.google.protobuf.Empty;
+import io.grpc.stub.ServerCallStreamObserver;
 import io.grpc.stub.StreamObserver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class NotificationServantImpl extends NotificationServiceGrpc.NotificationServiceImplBase{
 
     private final AirportService airportService;
-
+    private final Logger LOGGER = LoggerFactory.getLogger(NotificationServantImpl.class);
     public NotificationServantImpl(final AirportService airportService) {
         this.airportService = airportService;
     }
@@ -32,18 +36,30 @@ public class NotificationServantImpl extends NotificationServiceGrpc.Notificatio
     @Override
     public void subscribeAirline(SubscriptionRequest request,
                                  StreamObserver<SubscriptionResponse> responseObserver) {
+        final ServerCallStreamObserver<SubscriptionResponse> rsob = (ServerCallStreamObserver<SubscriptionResponse>) responseObserver;
         try {
+
             BlockingQueue<Notification> notifications = airportService.register(request.getAirline());
             Notification notification = notifications.take();
-            while (notification.createNotification() != null) {
-                responseObserver.onNext(notification.createNotification());
-                notification = notifications.take();
+            while (notification == null || notification.createNotification() != null) {
+
+                if(notification != null && !rsob.isCancelled()){
+                    rsob.onNext(notification.createNotification());
+                }else {
+                    LOGGER.info("Loop");
+
+                    if(rsob.isCancelled()){
+                        LOGGER.info("Client cancelled the request");
+                        airportService.unregister(request.getAirline());
+                        return;
+                    }
+                }
+                notification = notifications.poll(1000, TimeUnit.MILLISECONDS);
             }
         }catch (InterruptedException e){
-            //
+            LOGGER.error("Error while getting notifications",e);
         }
-        responseObserver.onCompleted();
-
+        rsob.onCompleted();
     }
     /**
      * <pre>
