@@ -22,9 +22,8 @@ chmod u+x adminClient.sh
 ./adminClient.sh -DserverAddress=localhost:50051 -Daction=manifest -DinPath=../../src/test/resources/counterClient/listCounters/bookings.csv >/dev/null
 
 chmod u+x counterClient.sh
-./counterClient.sh -DserverAddress=localhost:50051 -Daction=assignCounters -Dsector=C -Dflights='AA123|AA124' -Dairline=AmericanAirlines -DcounterCount=2 >/dev/null
+./counterClient.sh -DserverAddress=localhost:50051 -Daction=assignCounters -Dsector=C -Dflights='AA123|AA124' -Dairline=AmericanAirlines -DcounterCount=3 >/dev/null
 ./counterClient.sh -DserverAddress=localhost:50051 -Daction=assignCounters -Dsector=A -Dflights='AC987' -Dairline=AirCanada -DcounterCount=3 >/dev/null
-./counterClient.sh -DserverAddress=localhost:50051 -Daction=assignCounters -Dsector=C -Dflights='AA125' -Dairline=AmericanAirlines -DcounterCount=3 >/dev/null
 
 chmod u+x passengerClient.sh
 ./passengerClient.sh -DserverAddress=localhost:50051 -Daction=passengerCheckin -Dbooking=XYZ234 -Dsector=C -Dcounter=1 >/dev/null
@@ -33,10 +32,7 @@ chmod u+x passengerClient.sh
 
 chmod u+x queryClient.sh
 
->/tmp/test_results
-./queryClient.sh -DserverAddress=localhost:50051 -Daction=counters -DoutPath=/tmp/test_results
-
+./queryClient.sh -DserverAddress=localhost:50051 -Daction=checkins -DoutPath=/tmp/test_results
 cat /tmp/test_results
-rm /tmp/test_results
 
 pkill -P "$server_pid"
