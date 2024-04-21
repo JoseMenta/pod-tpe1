@@ -19,7 +19,7 @@ chmod u+x adminClient.sh
 ./adminClient.sh -DserverAddress=localhost:50051 -Daction=addCounters -Dsector=C -Dcounters=3 >/dev/null
 ./adminClient.sh -DserverAddress=localhost:50051 -Daction=addCounters -Dsector=A -Dcounters=3 >/dev/null
 ./adminClient.sh -DserverAddress=localhost:50051 -Daction=addCounters -Dsector=C -Dcounters=3 >/dev/null
-./adminClient.sh -DserverAddress=localhost:50051 -Daction=manifest -DinPath=../../src/test/resources/counterClient/listCounters/bookings.csv >/dev/null
+./adminClient.sh -DserverAddress=localhost:50051 -Daction=manifest -DinPath=../../src/test/resources/counterTester/listCounters/bookings.csv >/dev/null
 
 chmod u+x counterClient.sh
 ./counterClient.sh -DserverAddress=localhost:50051 -Daction=assignCounters -Dsector=A -Dflights='AA123|AA124' -Dairline=AmericanAirlines -DcounterCount=3 >/dev/null
