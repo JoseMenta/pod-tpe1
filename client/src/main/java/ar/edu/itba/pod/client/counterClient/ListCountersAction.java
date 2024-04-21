@@ -31,17 +31,21 @@ public class ListCountersAction extends Action {
     public void run(ManagedChannel channel) throws InterruptedException {
         CounterServiceGrpc.CounterServiceStub stub =
                 CounterServiceGrpc.newStub(channel);
-        System.out.printf("%-9s %-16s %-19s %-11s\n","Counters","Airline","Flights","People");
-        System.out.printf("%s\n","#".repeat(58));
         final CountDownLatch finishLatch = new CountDownLatch(1);
         StreamObserver<CountersResponse> observer = new StreamObserver<CountersResponse>() {
+            boolean headerPrinted = false;
             @Override
             public void onNext(CountersResponse value) {
+                if(!headerPrinted){
+                    System.out.printf("%-9s %-16s %-19s %-11s\n","Counters","Airline","Flights","People");
+                    System.out.printf("%s\n","#".repeat(58));
+                    headerPrinted = true;
+                }
                 System.out.printf("%-9s %-16s %-19s %-11s\n",
-                        String.format("(%d-%d)",value.getRange().getStart(),value.getRange().getEnd()),
-                        value.getAirline(),
-                        String.join("|", value.getFlightsList()),
-                        value.getPeopleInLine());
+                        value.hasRange()?String.format("(%d-%d)",value.getRange().getStart(),value.getRange().getEnd()):"-",
+                        value.hasAirline()?value.getAirline():"-",
+                        value.getFlightsCount()!=0?String.join("|", value.getFlightsList()):"-",
+                        value.hasPeopleInLine()?value.getPeopleInLine():"-");
             }
             @Override
             public void onError(Throwable t) {

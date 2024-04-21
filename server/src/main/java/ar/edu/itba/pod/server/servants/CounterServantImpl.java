@@ -51,7 +51,7 @@ public class CounterServantImpl extends CounterServiceGrpc.CounterServiceImplBas
             if(counters.getAirline().isPresent()) {
                 responseObserver.onNext(CountersResponse.newBuilder()
                         .setAirline(counters.getAirline().get().getName())
-                        .setPeopleInLine(counters.size())
+                        .setPeopleInLine(counters.getWaitingCount())
                         .addAllFlights(counters.getFlights().stream().map(Flight::getCode).toList())
                         .setRange(RangeMapper.mapToRangeMessage(counters))
                         .build());
