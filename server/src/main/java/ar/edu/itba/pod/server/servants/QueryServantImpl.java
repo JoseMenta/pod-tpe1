@@ -8,10 +8,7 @@ import ar.edu.itba.pod.server.models.Range;
 import ar.edu.itba.pod.server.models.Sector;
 import io.grpc.stub.StreamObserver;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 public class QueryServantImpl extends QueryServiceGrpc.QueryServiceImplBase {
 
@@ -41,7 +38,7 @@ public class QueryServantImpl extends QueryServiceGrpc.QueryServiceImplBase {
     public void queryCounters(QueryCountersRequest request, StreamObserver<QueryCountersResponse> responseObserver) {
         Optional<String> name_sector = request.hasSector() ? Optional.of(request.getSector()) : Optional.empty();
 
-        airportService.checkCountersStatus(name_sector).forEach(r ->{
+        airportService.checkCountersStatus(name_sector).stream().sorted(Comparator.comparing(r->r.getSector().getName())).forEach(r ->{
                     QueryCountersResponse.Builder checkInStatusBuilder = QueryCountersResponse.newBuilder()
                             .setSector(r.getSector().getName())
                             .setRange(

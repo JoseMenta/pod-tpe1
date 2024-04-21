@@ -16,10 +16,7 @@ import ar.edu.itba.pod.server.repositories.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 
 public class AirportServiceImpl implements AirportService {
@@ -232,10 +229,13 @@ public class AirportServiceImpl implements AirportService {
             for(Sector sectorData : sectorRepository.getSectors()){
                 auxList.addAll(sectorData.getRanges());
             }
+            if(auxList.isEmpty()){
+                throw new RangeNotAssignedException();
+            }
             LOGGER.info("Checked counters status for all sectors");
             return auxList;
         }else{
-            List<Range> ranges = sectorRepository.getSectorById(sector.get()).orElseThrow(SectorNotFoundException::new).getRanges();
+            List<Range> ranges = sectorRepository.getSectorById(sector.get()).map(Sector::getRanges).orElse(Collections.emptyList());
             LOGGER.info("Checked counters status in sector {}", sector.get());
             return ranges;
         }

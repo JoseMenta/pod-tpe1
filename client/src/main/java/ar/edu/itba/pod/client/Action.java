@@ -34,7 +34,13 @@ public abstract class Action {
 
     protected Error getError(final StatusRuntimeException e){
         return Optional.ofNullable(e.getStatus().getDescription())
-                .map(Integer::parseInt)
+                .map(s -> {
+                    try {
+                        return Integer.parseInt(s);
+                    }catch (Exception ex){
+                        return  Error.UNSPECIFIED.getNumber();
+                    }
+                })
                 .map(Error::forNumber)
                 .orElse(Error.UNSPECIFIED);
     }
