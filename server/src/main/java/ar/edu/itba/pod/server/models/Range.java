@@ -190,6 +190,7 @@ public class Range implements Comparable<Range>{
             Passenger passenger = this.passengerQueue.poll();
 
             if(passenger != null){
+                passenger.checkIn(counter);
                 passenger.getAirline().log(new CounterCheckInNotification(passenger));
                 historyCheckIn.logHistory(passenger);
                 checkedIn.add(passenger);

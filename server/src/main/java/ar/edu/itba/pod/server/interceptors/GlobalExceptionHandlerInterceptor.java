@@ -37,6 +37,7 @@ public class GlobalExceptionHandlerInterceptor implements ServerInterceptor {
         errorCodesByException.put(InvalidRangeStartException.class, Code.INVALID_ARGUMENT);
         errorCodesByException.put(RangeHasPassengersException.class, Code.FAILED_PRECONDITION);
         errorCodesByException.put(FlightNotFoundException.class, Code.NOT_FOUND);
+        errorCodesByException.put(NoSectorsInAirportException.class, Code.NOT_FOUND);
     }
 
     @Override

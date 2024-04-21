@@ -30,12 +30,16 @@ public class ListSectorsAction extends Action {
         //TODO: check if a BlockingStub should be used
         CounterServiceGrpc.CounterServiceStub stub =
                 CounterServiceGrpc.newStub(channel);
-        System.out.printf("%-9s %-9s\n","Sectors","Counters");
-        System.out.printf("%s\n","#".repeat(19));
         final CountDownLatch finishLatch = new CountDownLatch(1);
         StreamObserver<SectorResponse> observer = new StreamObserver<SectorResponse>() {
+            boolean first = true;
             @Override
             public void onNext(SectorResponse value) {
+                if (first){
+                    System.out.printf("%-9s %-9s\n","Sectors","Counters");
+                    System.out.printf("%s\n","#".repeat(19));
+                    first = false;
+                }
                 System.out.printf("%-9s %s\n",value.getName(),value.getRangesCount()==0?"-":value.getRangesList()
                                                         .stream().map(r->String.format("(%d-%d)",r.getStart(),r.getEnd()))
                                                         .collect(Collectors.joining()));

@@ -40,7 +40,7 @@ public class AssignCounterAction extends Action {
                         arguments.get(SECTOR),
                         arguments.get(AIRLINE),arguments.get(FLIGHTS));
             }else{
-                System.out.printf("%s counters in Sector %s is pending with %d other pending ahead\n",
+                System.out.printf("%s counters in Sector %s is pending with %d other pendings ahead\n",
                         arguments.get(COUNTER_COUNT),
                         arguments.get(SECTOR),
                         rangeInfo.getPendingCount());

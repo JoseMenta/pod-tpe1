@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Tests the case where an assignment includes a flight that does not have any passengers
+
 chmod u+x client/src/test/resources/testInit.sh
 ./client/src/test/resources/testInit.sh "$@"
 
