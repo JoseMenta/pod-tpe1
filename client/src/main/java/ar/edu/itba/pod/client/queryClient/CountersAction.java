@@ -1,8 +1,8 @@
 package ar.edu.itba.pod.client.queryClient;
 
 import ar.edu.itba.pod.client.Action;
-import ar.edu.itba.pod.grpc.query.CheckInStatusRequest;
-import ar.edu.itba.pod.grpc.query.CheckInStatusResponse;
+import ar.edu.itba.pod.grpc.query.QueryCountersRequest;
+import ar.edu.itba.pod.grpc.query.QueryCountersResponse;
 import ar.edu.itba.pod.grpc.query.QueryServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.stub.StreamObserver;
@@ -28,11 +28,11 @@ public class CountersAction extends Action {
         final CountDownLatch finishLatch = new CountDownLatch(1);
         QueryServiceGrpc.QueryServiceStub stub = QueryServiceGrpc.newStub(channel);
 
-        final StreamObserver<CheckInStatusResponse> observer = new StreamObserver<CheckInStatusResponse>() {
+        final StreamObserver<QueryCountersResponse> observer = new StreamObserver<QueryCountersResponse>() {
 
             BufferedWriter fileOutput;
             @Override
-            public void onNext(final CheckInStatusResponse checkIn) {
+            public void onNext(final QueryCountersResponse checkIn) {
                 try {
                     if(fileOutput == null){
                         BufferedWriter fileOutput = Files.newBufferedWriter(
@@ -68,7 +68,7 @@ public class CountersAction extends Action {
                 finishLatch.countDown();
             }
         };
-        stub.checkInStatus(CheckInStatusRequest.newBuilder().setSector(arguments.get(SECTOR)).build(), observer);
+        stub.queryCounters(QueryCountersRequest.newBuilder().setSector(arguments.get(SECTOR)).build(), observer);
         finishLatch.await();
     }
 }

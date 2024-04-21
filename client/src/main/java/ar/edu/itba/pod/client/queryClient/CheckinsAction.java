@@ -3,7 +3,6 @@ package ar.edu.itba.pod.client.queryClient;
 import ar.edu.itba.pod.client.Action;
 import ar.edu.itba.pod.grpc.query.CheckInHistoryRequest;
 import ar.edu.itba.pod.grpc.query.CheckInHistoryResponse;
-import ar.edu.itba.pod.grpc.query.CheckInStatusRequest;
 import ar.edu.itba.pod.grpc.query.QueryServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;

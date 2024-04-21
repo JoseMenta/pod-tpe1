@@ -38,11 +38,11 @@ public class QueryServantImpl extends QueryServiceGrpc.QueryServiceImplBase {
     }
 
     @Override
-    public void checkInStatus(CheckInStatusRequest request, StreamObserver<CheckInStatusResponse> responseObserver) {
+    public void queryCounters(QueryCountersRequest request, StreamObserver<QueryCountersResponse> responseObserver) {
         Optional<String> name_sector = request.hasSector() ? Optional.of(request.getSector()) : Optional.empty();
 
         airportService.checkCountersStatus(name_sector).forEach(r ->{
-                    CheckInStatusResponse.Builder checkInStatusBuilder = CheckInStatusResponse.newBuilder()
+                    QueryCountersResponse.Builder checkInStatusBuilder = QueryCountersResponse.newBuilder()
                             .setSector(r.getSector().getName())
                             .setRange(
                                     RangeMessage.newBuilder()
@@ -57,7 +57,7 @@ public class QueryServantImpl extends QueryServiceGrpc.QueryServiceImplBase {
                     }
                     responseObserver.onNext(checkInStatusBuilder.build());
                 }
-            );
+        );
         responseObserver.onCompleted();
     }
 }

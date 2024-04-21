@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public enum QueryActions {
-    COUNTERS("counters", CountersAction::new),
+    COUNTERS("queryCounters", CountersAction::new),
     CHECKINS("checkins", CheckinsAction::new);
 
     private final String actionName;
