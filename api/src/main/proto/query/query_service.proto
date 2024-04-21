@@ -12,7 +12,7 @@ package query; //TODO: revisar
 
 service QueryService{
   rpc CheckInHistory(CheckInHistoryRequest) returns(stream CheckInHistoryResponse); // 5
-  rpc CheckInStatus(CheckInStatusRequest) returns(stream CheckInStatusResponse); // 15
+  rpc QueryCounters(QueryCountersRequest) returns(stream QueryCountersResponse); // 15
 }
 
 message CheckInHistoryResponse{
@@ -28,11 +28,11 @@ message CheckInHistoryRequest{
   optional string airline = 2;
 }
 
-message CheckInStatusRequest{
+message QueryCountersRequest{
   optional string sector = 1;
 }
 
-message CheckInStatusResponse{
+message QueryCountersResponse{
   string sector = 1;
   RangeMessage range = 2;
   optional string airline = 3;

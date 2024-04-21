@@ -1,8 +1,8 @@
 package ar.edu.itba.pod.client.queryClient;
 
 import ar.edu.itba.pod.client.Action;
-import ar.edu.itba.pod.grpc.query.CheckInStatusRequest;
-import ar.edu.itba.pod.grpc.query.CheckInStatusResponse;
+import ar.edu.itba.pod.grpc.query.QueryCountersRequest;
+import ar.edu.itba.pod.grpc.query.QueryCountersResponse;
 import ar.edu.itba.pod.grpc.query.QueryServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.stub.StreamObserver;
@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
 public class CountersAction extends Action {
@@ -28,27 +29,35 @@ public class CountersAction extends Action {
         final CountDownLatch finishLatch = new CountDownLatch(1);
         QueryServiceGrpc.QueryServiceStub stub = QueryServiceGrpc.newStub(channel);
 
-        final StreamObserver<CheckInStatusResponse> observer = new StreamObserver<CheckInStatusResponse>() {
+        final StreamObserver<QueryCountersResponse> observer = new StreamObserver<QueryCountersResponse>() {
 
-            BufferedWriter fileOutput;
-            @Override
-            public void onNext(final CheckInStatusResponse checkIn) {
+            private void openWriterAndWriteHeader() {
                 try {
-                    if(fileOutput == null){
-                        BufferedWriter fileOutput = Files.newBufferedWriter(
-                                Paths.get(arguments.get(OUT_PATH)),
-                                StandardOpenOption.APPEND,
-                                StandardOpenOption.CREATE
-                        );
+                    writer = Files.newBufferedWriter(
+                            Paths.get(arguments.get(OUT_PATH)),
+                            StandardOpenOption.APPEND,
+                            StandardOpenOption.CREATE
+                    );
 
-                        fileOutput.write(String.format("%-8s %-10s %-17s %-20s %-8s\n", "Sector", "Counters", "Airline", "Flights", "People"));
-                        fileOutput.write("###############################################################");
+                    writer.write(String.format("%-7s %-9s %-16s %-19s %-8s\n", "Sector", "Counters", "Airline", "Flights", "People"));
+                    writer.write(String.format("%s\n", "#".repeat(63)));
+                }catch (Exception e){
+                    //
                 }
-                String flights = String.join("|", String.join("|", checkIn.getFlightList()));
-                String rango = String.format("(%s-%s)", checkIn.getRange().getStart(), checkIn.getRange().getEnd() );
-                fileOutput.write(String.format("%-7s %-9s %-16s %-19s %-7s\n",
-                        checkIn.getSector(), rango,
-                        checkIn.getAirline(), flights, checkIn.getWaiting()));
+            }
+            BufferedWriter writer;
+            @Override
+            public void onNext(final QueryCountersResponse checkIn) {
+                try {
+                    if(writer == null) {
+                        openWriterAndWriteHeader();
+                    }
+                    String rango = String.format("(%s-%s)", checkIn.getRange().getStart(), checkIn.getRange().getEnd() );
+                    writer.write(String.format("%-7s %-9s %-16s %-19s %-7s\n",
+                            checkIn.getSector(), rango,
+                            checkIn.hasAirline()?checkIn.getAirline():"-",
+                            checkIn.getFlightCount()!=0?String.join("|", String.join("|", checkIn.getFlightList())):"-",
+                            checkIn.hasWaiting()?checkIn.getWaiting():"-"));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -57,7 +66,7 @@ public class CountersAction extends Action {
             @Override
             public void onError(final Throwable t) {
                 switch (getError(t)){
-                    case RANGE_NOT_ASSIGNED -> System.out.printf("Range %s was not assigned in sector \n", arguments.get(SECTOR));
+                    case RANGE_NOT_ASSIGNED -> System.out.println("No counters were assigned in the airport");
                     default -> System.out.println("An unknown error occurred while getting the counters");
                 }
                 finishLatch.countDown();
@@ -65,10 +74,20 @@ public class CountersAction extends Action {
 
             @Override
             public void onCompleted() {
+                if(writer == null){
+                    openWriterAndWriteHeader();
+                }
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 finishLatch.countDown();
             }
         };
-        stub.checkInStatus(CheckInStatusRequest.newBuilder().setSector(arguments.get(SECTOR)).build(), observer);
+        QueryCountersRequest.Builder builder = QueryCountersRequest.newBuilder();
+        Optional.ofNullable(arguments.get(SECTOR)).ifPresent(builder::setSector);
+        stub.queryCounters(builder.build(), observer);
         finishLatch.await();
     }
 }
