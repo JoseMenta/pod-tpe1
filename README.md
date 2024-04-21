@@ -153,8 +153,8 @@ Para la ejecucion del cliente de consulta de mostradores se deben ejecutar los s
 Este mismo proyecto es realizado para la materia Programación de Objetos Distribuidos del ITBA.
 
 **Los integrantes del grupo son:**
-- Lautaro Hernando
-- Axel Facundo Preiti Tasat
-- Gaston Francois
-- Jose Rodolfo Mentasti
+- 62248 - [José Rodolfo Mentasti](https://github.com/JoseMenta)
+- 62618 - [Axel Facundo Preiti Tasat](https://github.com/AxelPreitiT)
+- 62500 - [Gastón Ariel Francois](https://github.com/francoisgaston)
+- 62329 - [Lautaro Hernando](https://github.com/laucha12)
 
