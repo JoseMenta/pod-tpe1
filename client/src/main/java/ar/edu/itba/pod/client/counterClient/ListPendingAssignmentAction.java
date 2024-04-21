@@ -24,12 +24,16 @@ public class ListPendingAssignmentAction extends Action {
     public void run(ManagedChannel channel) throws InterruptedException {
         CounterServiceGrpc.CounterServiceStub stub =
                 CounterServiceGrpc.newStub(channel);
-        System.out.printf("%-9s %-16s %-31s\n","Counters","Airline","Flights");
-        System.out.printf("%s\n","#".repeat(58));
         final CountDownLatch finishLatch = new CountDownLatch(1);
         StreamObserver<PendingRangeInfo> observer = new StreamObserver<PendingRangeInfo>() {
+            boolean headerPrinted = true;
             @Override
             public void onNext(PendingRangeInfo value) {
+                if(headerPrinted){
+                    System.out.printf("%-9s %-16s %-31s\n","Counters","Airline","Flights");
+                    System.out.printf("%s\n","#".repeat(58));
+                    headerPrinted = false;
+                }
                 System.out.printf("%-9d %-16s %-31s\n",value.getSize(),value.getAirline(),String.join("|",value.getFlightsList()));
             }
 
