@@ -23,10 +23,13 @@ chmod u+x adminClient.sh
 
 chmod u+x counterClient.sh
 ./counterClient.sh -DserverAddress=localhost:50051 -Daction=assignCounters -Dsector=C -Dflights='AA123|AA124' -Dairline=AmericanAirlines -DcounterCount=3 >/dev/null
+./counterClient.sh -DserverAddress=localhost:50051 -Daction=assignCounters -Dsector=A -Dflights='AC987' -Dairline=AirCanada -DcounterCount=3 >/dev/null
+./counterClient.sh -DserverAddress=localhost:50051 -Daction=assignCounters -Dsector=C -Dflights='AA125' -Dairline=AmericanAirlines -DcounterCount=3 >/dev/null
 
 chmod u+x passengerClient.sh
 ./passengerClient.sh -DserverAddress=localhost:50051 -Daction=passengerCheckin -Dbooking=XYZ234 -Dsector=C -Dcounter=1 >/dev/null
 ./passengerClient.sh -DserverAddress=localhost:50051 -Daction=passengerCheckin -Dbooking=DEF345 -Dsector=C -Dcounter=1 >/dev/null
+./passengerClient.sh -DserverAddress=localhost:50051 -Daction=passengerCheckin -Dbooking=ABC123 -Dsector=A -Dcounter=4 >/dev/null
 
 chmod u+x queryClient.sh
 

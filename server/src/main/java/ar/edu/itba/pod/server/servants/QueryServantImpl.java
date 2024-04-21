@@ -26,11 +26,15 @@ public class QueryServantImpl extends QueryServiceGrpc.QueryServiceImplBase {
         airportService.queryCheckInHistory(sector, airline).forEach(h ->
             responseObserver.onNext(
                 CheckInHistoryResponse.newBuilder()
-                    .setSector(h.getFlight().getRange().getSector().getName())
-                    .setAirline(h.getAirline().getName())
-                    .setFlight(h.getFlight().getCode())
-                    .setBooking(h.getBooking()).build())
+                        .setSector(h.getFlight().getRange().getSector().getName())
+                        .setAirline(h.getAirline().getName())
+                        .setFlight(h.getFlight().getCode())
+                        .setBooking(h.getBooking())
+                        .setCounter(h.getCounter().getId())
+                        .build())
+
         );
+        responseObserver.onCompleted();
 
     }
 
@@ -39,7 +43,7 @@ public class QueryServantImpl extends QueryServiceGrpc.QueryServiceImplBase {
         Optional<String> name_sector = request.hasSector() ? Optional.of(request.getSector()) : Optional.empty();
 
         airportService.checkCountersStatus(name_sector).stream().sorted(Comparator.comparing(r->r.getSector().getName())).forEach(r ->{
-                    QueryCountersResponse.Builder checkInStatusBuilder = QueryCountersResponse.newBuilder()
+                    QueryCountersResponse.Builder queryCounterBuilder = QueryCountersResponse.newBuilder()
                             .setSector(r.getSector().getName())
                             .setRange(
                                     RangeMessage.newBuilder()
@@ -47,12 +51,12 @@ public class QueryServantImpl extends QueryServiceGrpc.QueryServiceImplBase {
                             )
                             .addAllFlight(r.getFlights().stream().map(Flight::getCode).toList());
                     if(r.getAirline().isPresent()){
-                        checkInStatusBuilder.setAirline(r.getAirline().get().getName());
+                        queryCounterBuilder.setAirline(r.getAirline().get().getName());
                     }
-                    if(!r.getPassangerQueue().isEmpty()){
-                        checkInStatusBuilder.setWaiting(r.getPassangerQueue().size());
+                    if(r.isOccupied()){
+                        queryCounterBuilder.setWaiting(r.getPassangerQueue().size());
                     }
-                    responseObserver.onNext(checkInStatusBuilder.build());
+                    responseObserver.onNext(queryCounterBuilder.build());
                 }
         );
         responseObserver.onCompleted();
