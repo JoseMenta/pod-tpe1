@@ -56,6 +56,7 @@ public class PassengerCheckInAction extends Action {
             switch (getError(e)) {
                 case SECTOR_NOT_FOUND -> System.out.printf("Sector %s does not exist\n", sector);
                 case PASSENGERS_WAITING -> System.out.printf("Passenger with booking %s has already started the check-in process\n", booking);
+                case PASSENGER_ALREADY_CHECKED_IN -> System.out.printf("Passenger with booking %s has already checked in\n", booking);
                 case PASSENGER_NOT_FOUND -> System.out.printf("There is no passenger with booking %s\n", booking);
                 case FLIGHT_NOT_IN_RANGE -> System.out.printf("Booking %s is not checking in the range of counters starting at %s\n", booking, counter);
                 default -> System.out.printf("An unknown error occurred while checking in the passenger with booking %s\n", booking);

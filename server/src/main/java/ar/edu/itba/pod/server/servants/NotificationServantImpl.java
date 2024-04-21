@@ -46,8 +46,6 @@ public class NotificationServantImpl extends NotificationServiceGrpc.Notificatio
                 if(notification != null && !rsob.isCancelled()){
                     rsob.onNext(notification.createNotification());
                 }else {
-                    LOGGER.info("Loop");
-
                     if(rsob.isCancelled()){
                         LOGGER.info("Client cancelled the request");
                         airportService.unregister(request.getAirline());

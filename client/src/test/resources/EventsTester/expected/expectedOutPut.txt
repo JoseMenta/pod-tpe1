@@ -1,0 +1,9 @@
+AmericanAirlines registered successfully for check-in events
+2 counters (3-4) in Sector C are now checking in passengers from AmericanAirlines AA123|AA124|AA125 flights
+Booking ABC123 for flight AA123 from AmericanAirlines is now waiting to check-in on counters (3-4) in Sector C with 0 people in line
+Booking ABC124 for flight AA123 from AmericanAirlines is now waiting to check-in on counters (3-4) in Sector C with 1 people in line
+Check-in successful of ABC123 for flight AA123 at counter 3 in Sector C
+Check-in successful of ABC124 for flight AA123 at counter 4 in Sector C
+Ended check-in for flights AA123|AA124|AA125 on counters (3-4) from Sector C
+7 counters in Sector C for flights AA888|AA999 is pending with 4 other pendings ahead
+7 counters in Sector C for flights AA888|AA999 is pending with 3 other pendings ahead
