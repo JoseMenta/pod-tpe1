@@ -37,7 +37,7 @@ public class Range implements Comparable<Range>{
         this.sector = sector;
         this.counters = new ArrayList<>(counters);
         this.flights = Collections.emptyList();
-        this.passengerQueue = new ArrayDeque<>(); //TODO: ver si hay algo parecido a Collections.emptyList()
+        this.passengerQueue = new ArrayDeque<>();
         this.airline = null;
     }
 
@@ -49,7 +49,7 @@ public class Range implements Comparable<Range>{
         this.sector = sector;
         this.counters = counters;
         this.flights = flights;
-        this.passengerQueue = new ArrayDeque<>(); //TODO: ver si hay algo parecido a Collections.emptyList()
+        this.passengerQueue = new ArrayDeque<>();
         this.airline = airline;
     }
 
