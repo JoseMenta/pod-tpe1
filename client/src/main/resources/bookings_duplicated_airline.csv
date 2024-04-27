@@ -1,4 +1,4 @@
-booking,flight,airline
-ABC122,AC987,AirCanada
-ABC127,AC989,AirCanada
-XYZ235,AC987,AmericanAirlines
+booking;flight;airline
+ABC122;AC987;AirCanada
+ABC127;AC989;AirCanada
+XYZ235;AC987;AmericanAirlines

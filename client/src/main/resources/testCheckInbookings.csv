@@ -1,6 +1,6 @@
-booking,flight,airline
-ABC123,AC987,AirCanada
-XYZ234,AA123,AmericanAirlines
-ABC124,AC987,AirCanada
-ABC125,AD987,AirCanada
-ABC126,AE987,AirCanada
+booking;flight;airline
+ABC123;AC987;AirCanada
+XYZ234;AA123;AmericanAirlines
+ABC124;AC987;AirCanada
+ABC125;AD987;AirCanada
+ABC126;AE987;AirCanada
