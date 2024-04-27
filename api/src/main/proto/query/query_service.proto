@@ -8,7 +8,7 @@ import "google/protobuf/empty.proto";
 import "commons/error.proto";
 import "commons/range.proto";
 
-package query; //TODO: revisar
+package query;
 
 service QueryService{
   rpc CheckInHistory(CheckInHistoryRequest) returns(stream CheckInHistoryResponse); // 5

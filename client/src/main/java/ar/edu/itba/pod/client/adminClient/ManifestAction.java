@@ -18,6 +18,8 @@ import java.util.concurrent.*;
 
 public class ManifestAction extends Action {
 //    -DserverAddress=localhost:50051 -Daction=manifest -DinPath=client/src/main/resources/bookings.csv
+
+    private static final String FILE_SEPARATOR = ";";
     public static final String IN_PATH = "inPath";
     private static final int THREAD_COUNT = 10;
     private static final int LINE_COUNT = 10;
@@ -85,7 +87,7 @@ public class ManifestAction extends Action {
                 }
                 for (String line : lines){
                     //Assume csv is correct
-                    String[] values = line.split(",");
+                    String[] values = line.split(FILE_SEPARATOR);
                     try{
                         blockingStub.addFlight(
                                 FlightMessage.newBuilder()

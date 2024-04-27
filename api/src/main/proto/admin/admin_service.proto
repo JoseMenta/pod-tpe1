@@ -8,7 +8,7 @@ import "commons/error.proto";
 import "commons/range.proto";
 import "google/protobuf/empty.proto";
 
-package admin; //TODO: revisar
+package admin;
 
 
 service AdminService {
