@@ -20,7 +20,6 @@ public class ListSectorsAction extends Action {
 
     @Override
     public void run(ManagedChannel channel) throws InterruptedException {
-        //TODO: check if a BlockingStub should be used
         CounterServiceGrpc.CounterServiceStub stub =
                 CounterServiceGrpc.newStub(channel);
         final CountDownLatch finishLatch = new CountDownLatch(1);

@@ -78,7 +78,6 @@ public class Sector {
         return waitingAhead;
     }
 
-    //TODO: revisar synchronized aca, creo que puede no ir porque no estoy agregando un rango (entonces no se ven las pendientes)
     //Va porque si se esta liberando uno, tiene que ser consistente lo que se muestra en el listado con lo que pasa (no se puede mostrar como ocupado y liberar o viceversa)
     public synchronized List<Range> getRangesInInterval(final int from, final int to){
         return rangeList.getRangesInInterval(from,to);

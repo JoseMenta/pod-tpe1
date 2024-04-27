@@ -21,7 +21,6 @@ public class CounterAssignmentNotification implements Notification {
         return SubscriptionResponse.newBuilder()
                 .setCounterAssigned(
                         CounterAssignedNotification.newBuilder()
-                                //TODO: revisar get()
                                 .setAirline(range.getAirline().get().getName())
                                 .addAllFlights(range.getFlights().stream().map(Flight::getCode).toList())
                                 .setRange(

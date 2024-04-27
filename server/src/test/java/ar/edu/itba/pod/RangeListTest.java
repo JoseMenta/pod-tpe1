@@ -16,10 +16,9 @@ import java.util.Optional;
 
 public class RangeListTest {
 
-    //TODO: revisar static
     private static final Counter COUNTER = new Counter(1);
     private static final List<Counter> COUNTERS = List.of(COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER,COUNTER);
-    private static final Sector SECTOR = new Sector("A",new HistoryCheckIn());//TODO: change after merge
+    private static final Sector SECTOR = new Sector("A",new HistoryCheckIn());
     private static final List<Flight> FLIGHTS = List.of(new Flight("AAAAA",new Airline("A")));
     private static final Airline AIRLINE = new Airline("air");
     private static final Flight FLIGHT = new Flight("12345",AIRLINE);
