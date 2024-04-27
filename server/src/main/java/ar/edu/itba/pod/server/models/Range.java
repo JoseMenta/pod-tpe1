@@ -203,7 +203,7 @@ public class Range implements Comparable<Range>{
         return new Pair<>(checkedIn,countersFree);
     }
 
-    public synchronized Queue<Passenger> getPassangerQueue(){
-        return this.passengerQueue;
+    public synchronized int getPassengerQueueSize(){
+        return this.passengerQueue.size();
     }
 }

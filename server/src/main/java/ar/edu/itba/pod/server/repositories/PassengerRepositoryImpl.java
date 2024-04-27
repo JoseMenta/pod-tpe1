@@ -27,19 +27,11 @@ public class PassengerRepositoryImpl implements PassengerRepository {
         Passenger passenger = new Passenger(airline,bookingId,flight);
         Passenger possiblePassenger =  passengers.putIfAbsent(bookingId,passenger);
         if (possiblePassenger != null) {
-            passengers.put(bookingId,possiblePassenger);//return to previous state
             LOGGER.error("Passenger with booking id {} already exists",bookingId);
             throw new PassengerAlreadyExistsException();
         }
         LOGGER.info("Create passenger with booking id {}",bookingId);
         return passenger;
-    }
-
-    @Override
-    public Passenger createPassengerIfAbsent(String bookingId, Airline airline, Flight flight) {
-        LOGGER.info("Create passenger ifAbsent with booking id {}",bookingId);
-        Passenger passenger = new Passenger(airline,bookingId,flight);
-        return Optional.ofNullable(passengers.putIfAbsent(bookingId,passenger)).orElse(passenger);
     }
 
 }

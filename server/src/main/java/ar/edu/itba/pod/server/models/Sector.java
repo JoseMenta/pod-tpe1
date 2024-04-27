@@ -9,16 +9,16 @@ import ar.edu.itba.pod.server.models.ds.Pair;
 import ar.edu.itba.pod.server.models.ds.RangeList;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Sector {
     @Getter
     private final String name;
-    private final Queue<RequestRange> pendingRequests;
+    private final List<RequestRange> pendingRequests;
     private final HistoryCheckIn historyCheckIn;
     private final RangeList rangeList;
 
@@ -30,7 +30,7 @@ public class Sector {
             throw new IllegalArgumentException("Name can't contain spaces");
         }
         this.name = name;
-        this.pendingRequests = new ConcurrentLinkedQueue<>();
+        this.pendingRequests = new ArrayList<>();
         this.historyCheckIn = historyCheckIn;
         this.rangeList = new RangeList();
     }
@@ -44,12 +44,10 @@ public class Sector {
         if(length <= 0 || flightList == null || airline == null){
             throw new IllegalArgumentException("Invalid arguments");
         }
-        if(this.pendingRequests.isEmpty()) {
-            Optional<Range> range = this.rangeList.bookRange(length, flightList, airline);
-            if (range.isPresent()) {
-                airline.log(new CounterAssignmentNotification(range.get()));
-                return new Pair<>(range, null);
-            }
+        Optional<Range> range = this.rangeList.bookRange(length, flightList, airline);
+        if (range.isPresent()) {
+            airline.log(new CounterAssignmentNotification(range.get()));
+            return new Pair<>(range, null);
         }
         flightList.forEach(Flight::waitingRange);
         final int pendingRequestsAhead = this.pendingRequests.size();
@@ -99,22 +97,15 @@ public class Sector {
         return range.checkIn(this.historyCheckIn);
     }
 
-    private synchronized void bookPendingRequestsIfPossible(){
-        boolean flag = true;
-        while (flag) {
-            RequestRange requestRange = this.pendingRequests.peek();
-            if (requestRange == null) {
-                flag = false;
-            } else {
-                Optional<Range> range = this.rangeList.bookRange(requestRange.length(), requestRange.flightList(), requestRange.airline());
-                if (range.isPresent()) {
-                    this.pendingRequests.poll();
-
-                    AtomicInteger index = new AtomicInteger();
-                    pendingRequests.forEach(r -> r.airline().log(new PendingAssignmentNotification(r.flightList(), this,r.length(), index.getAndIncrement())));
-                }else{
-                    flag = false;
-                }
+    private synchronized void bookPendingRequestsIfPossible(){//TODO: revisar que lo haga bien
+        ListIterator<RequestRange> iterator = pendingRequests.listIterator();
+        while (iterator.hasNext()){
+            RequestRange requestRange = iterator.next();
+            Optional<Range> range = this.rangeList.bookRange(requestRange.length(), requestRange.flightList(), requestRange.airline());
+            if (range.isPresent()) {
+                iterator.remove();
+                AtomicInteger index = new AtomicInteger(0);
+                pendingRequests.forEach(r -> r.airline().log(new PendingAssignmentNotification(r.flightList(), this,r.length(), index.getAndIncrement())));
             }
         }
     }

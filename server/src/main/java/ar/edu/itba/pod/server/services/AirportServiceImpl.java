@@ -24,6 +24,8 @@ public class AirportServiceImpl implements AirportService {
     private final RangeRepository rangeRepository;
     private final SectorRepository sectorRepository;
     private final HistoryCheckIn historyCheckIn;
+    
+    private final Object assignRangeLock = new Object();
 
     public AirportServiceImpl(){
         this.airlineRepository = new AirlineRepositoryImpl();
@@ -85,6 +87,11 @@ public class AirportServiceImpl implements AirportService {
         return sector1.getRangesInInterval(from,to);
     }
 
+    //Synchronization is general for all sectors and not only for one sector.
+    //This is because using a sector for the checks if a flight is already assigned to a sector does not
+    //prevent the flight for being assigned to another sector
+    //Synchronization for all sectors prevent this case, because if a flight is being assigned to two sectors, only
+    //one sector will be in the assignment method
     @Override
     public Pair<Optional<Range>, Integer> assignRange(String sector, String airline, List<String> flights, int count) {
         LOGGER.info("Assigning range of {} counters in sector {} for flights {} by airline {}", count, sector, flights, airline);
@@ -93,7 +100,7 @@ public class AirportServiceImpl implements AirportService {
         if(sectorOptional.isEmpty()){
             throw new SectorNotFoundException();
         }
-        synchronized (sectorOptional.get()) {
+        synchronized (assignRangeLock) {
             List<Flight> flightList = new ArrayList<>();
             for (String flight : flights) {
                 Optional<Flight> flightOptional = flightRepository.getFlightByFlightNumber(flight);

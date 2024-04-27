@@ -11,5 +11,4 @@ public interface PassengerRepository {
 
     Passenger createPassenger(final String bookingId, final Airline airline,final Flight flight);
 
-    Passenger createPassengerIfAbsent(final String bookingId, final Airline airline,final Flight flight);
 }

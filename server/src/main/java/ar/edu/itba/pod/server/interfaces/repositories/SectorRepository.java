@@ -11,8 +11,6 @@ public interface SectorRepository {
 
     Sector createSector(final String sectorId, final HistoryCheckIn historyCheckIn);
 
-    Sector createSectorIfAbsent(final String sectorId, final HistoryCheckIn historyCheckIn);
-
     List<Sector> getSectors();
 
 }

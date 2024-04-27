@@ -53,7 +53,7 @@ public class QueryServantImpl extends QueryServiceGrpc.QueryServiceImplBase {
                         queryCounterBuilder.setAirline(r.getAirline().get().getName());
                     }
                     if(r.isOccupied()){
-                        queryCounterBuilder.setWaiting(r.getPassangerQueue().size());
+                        queryCounterBuilder.setWaiting(r.getPassengerQueueSize());
                     }
                     responseObserver.onNext(queryCounterBuilder.build());
                 }
