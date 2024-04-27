@@ -15,7 +15,7 @@ cd ../../../client/target/tpe1-g6-client-1.0-SNAPSHOT/
 
 chmod u+x queryClient.sh
 
-./queryClient.sh -DserverAddress=localhost:50051 -Daction=counters -DoutPath=/tmp/test_results
+./queryClient.sh -DserverAddress=localhost:50051 -Daction=queryCounters -DoutPath=/tmp/test_results
 cat /tmp/test_results
 
 pkill -P "$server_pid"

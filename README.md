@@ -146,7 +146,7 @@ Para la ejecucion del cliente de notificaciones de aerolineas se deben ejecutar 
 Para la ejecucion del cliente de consulta de mostradores se deben ejecutar los siguientes comandos:
 #### 4.5.1. Consultar el estado de los mostradores, filtrando por sector
 ```Bash
-./queryClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=counters -DoutPath=<path de salida> [-Dsector=<sector>]
+./queryClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=queryCounters -DoutPath=<path de salida> [-Dsector=<sector>]
 ```
 #### 4.5.2. Consultar los check-ins realizados, filtrando por sector y aerolínea
 ```Bash

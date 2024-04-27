@@ -41,7 +41,7 @@ public class ListCountersAction extends Action {
                     System.out.printf("%s\n","#".repeat(58));
                     headerPrinted = true;
                 }
-                System.out.printf("%-9s %-16s %-19s %-11s\n",
+                System.out.printf("%s\t%s\t%s\t%s\n",
                         value.hasRange()?String.format("(%d-%d)",value.getRange().getStart(),value.getRange().getEnd()):"-",
                         value.hasAirline()?value.getAirline():"-",
                         value.getFlightsCount()!=0?String.join("|", value.getFlightsList()):"-",
@@ -58,6 +58,11 @@ public class ListCountersAction extends Action {
             }
             @Override
             public void onCompleted() {
+                if(!headerPrinted){
+                    System.out.printf("%-9s %-16s %-19s %-11s\n","Counters","Airline","Flights","People");
+                    System.out.printf("%s\n","#".repeat(58));
+                    headerPrinted = true;
+                }
                 finishLatch.countDown();
             }
         };

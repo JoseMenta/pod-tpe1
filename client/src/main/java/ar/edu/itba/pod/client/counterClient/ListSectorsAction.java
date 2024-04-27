@@ -40,7 +40,7 @@ public class ListSectorsAction extends Action {
                     System.out.printf("%s\n","#".repeat(19));
                     first = false;
                 }
-                System.out.printf("%-9s %s\n",value.getName(),value.getRangesCount()==0?"-":value.getRangesList()
+                System.out.printf("%s\t%s\n",value.getName(),value.getRangesCount()==0?"-":value.getRangesList()
                                                         .stream().map(r->String.format("(%d-%d)",r.getStart(),r.getEnd()))
                                                         .collect(Collectors.joining()));
             }

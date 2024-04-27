@@ -34,7 +34,7 @@ chmod u+x passengerClient.sh
 chmod u+x queryClient.sh
 
 >/tmp/test_results
-./queryClient.sh -DserverAddress=localhost:50051 -Daction=counters -DoutPath=/tmp/test_results -Dsector=C
+./queryClient.sh -DserverAddress=localhost:50051 -Daction=queryCounters -DoutPath=/tmp/test_results -Dsector=C
 
 cat /tmp/test_results
 rm /tmp/test_results

@@ -39,6 +39,9 @@ public class Airline {
     }
 
     public Airline(String name) {
+        if (name.contains(" ")) {
+            throw new IllegalArgumentException("Name can't contain spaces");
+        }
         this.name = name;
         messageQueue = null;
     }

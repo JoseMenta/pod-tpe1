@@ -26,15 +26,15 @@ public class ListPendingAssignmentAction extends Action {
                 CounterServiceGrpc.newStub(channel);
         final CountDownLatch finishLatch = new CountDownLatch(1);
         StreamObserver<PendingRangeInfo> observer = new StreamObserver<PendingRangeInfo>() {
-            boolean headerPrinted = true;
+            boolean headerPrinted = false;
             @Override
             public void onNext(PendingRangeInfo value) {
-                if(headerPrinted){
+                if(!headerPrinted){
                     System.out.printf("%-9s %-16s %-31s\n","Counters","Airline","Flights");
                     System.out.printf("%s\n","#".repeat(58));
-                    headerPrinted = false;
+                    headerPrinted = true;
                 }
-                System.out.printf("%-9d %-16s %-31s\n",value.getSize(),value.getAirline(),String.join("|",value.getFlightsList()));
+                System.out.printf("%d\t%s\t%s\n",value.getSize(),value.getAirline(),String.join("|",value.getFlightsList()));
             }
 
             @Override
@@ -48,10 +48,10 @@ public class ListPendingAssignmentAction extends Action {
 
             @Override
             public void onCompleted() {
-                if(headerPrinted){
+                if(!headerPrinted){
                     System.out.printf("%-9s %-16s %-31s\n","Counters","Airline","Flights");
                     System.out.printf("%s\n","#".repeat(58));
-                    headerPrinted = false;
+                    headerPrinted = true;
                 }
                 finishLatch.countDown();
             }

@@ -52,7 +52,7 @@ public class CheckinsAction extends Action {
                     if(writer == null){
                         openWriterAndWriteHeader();
                     }
-                    writer.write(String.format("%-7s %-9s %-17s %-10s %-16s\n",
+                    writer.write(String.format("%s\t%s\t%s\t%s\t%s\n",
                             value.getSector(),
                             value.getCounter(),
                             value.getAirline(),

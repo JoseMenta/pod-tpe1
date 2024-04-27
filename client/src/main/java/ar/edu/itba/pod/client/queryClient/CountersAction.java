@@ -53,7 +53,7 @@ public class CountersAction extends Action {
                         openWriterAndWriteHeader();
                     }
                     String rango = String.format("(%s-%s)", checkIn.getRange().getStart(), checkIn.getRange().getEnd() );
-                    writer.write(String.format("%-7s %-9s %-16s %-19s %-7s\n",
+                    writer.write(String.format("%s\t%s\t%s\t%s\t%s\n",
                             checkIn.getSector(), rango,
                             checkIn.hasAirline()?checkIn.getAirline():"-",
                             checkIn.getFlightCount()!=0?String.join("|", String.join("|", checkIn.getFlightList())):"-",
