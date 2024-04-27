@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Assertions;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.SequencedCollection;
 
 
 public class RangeListTest {
@@ -23,7 +22,6 @@ public class RangeListTest {
     private static final Sector SECTOR = new Sector("A",new HistoryCheckIn());//TODO: change after merge
     private static final List<Flight> FLIGHTS = List.of(new Flight("AAAAA",new Airline("A")));
     private static final Airline AIRLINE = new Airline("air");
-    // TODO: Flight code can have any length
     private static final Flight FLIGHT = new Flight("12345",AIRLINE);
     private static final Passenger PASSENGER = new Passenger(AIRLINE, "bookId", FLIGHT);
     private static final Range RANGE11 = new Range(1,1,SECTOR,COUNTERS);

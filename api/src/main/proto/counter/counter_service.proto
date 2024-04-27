@@ -8,7 +8,7 @@ import "google/protobuf/empty.proto";
 import "commons/error.proto";
 import "commons/range.proto";
 
-package counter; //TODO: revisar
+package counter;
 
 service CounterService{
   rpc ListSectors(google.protobuf.Empty) returns (stream SectorResponse);//5

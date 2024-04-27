@@ -8,7 +8,7 @@ import "google/protobuf/empty.proto";
 import "commons/error.proto";
 import "commons/range.proto";
 
-package notification; //TODO: revisar
+package notification;
 
 service NotificationService{
   rpc SubscribeAirline(SubscriptionRequest) returns (stream SubscriptionResponse); //6, 17
