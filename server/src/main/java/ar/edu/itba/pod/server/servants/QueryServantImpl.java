@@ -4,11 +4,10 @@ import ar.edu.itba.pod.grpc.commons.RangeMessage;
 import ar.edu.itba.pod.grpc.query.*;
 import ar.edu.itba.pod.server.interfaces.services.AirportService;
 import ar.edu.itba.pod.server.models.Flight;
-import ar.edu.itba.pod.server.models.Range;
-import ar.edu.itba.pod.server.models.Sector;
 import io.grpc.stub.StreamObserver;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Optional;
 
 public class QueryServantImpl extends QueryServiceGrpc.QueryServiceImplBase {
 

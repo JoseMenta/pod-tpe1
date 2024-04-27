@@ -5,14 +5,11 @@ import ar.edu.itba.pod.grpc.counter.CounterServiceGrpc;
 import ar.edu.itba.pod.grpc.counter.ListPendingRequest;
 import ar.edu.itba.pod.grpc.counter.PendingRangeInfo;
 import io.grpc.ManagedChannel;
-import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.stream.Stream;
 
 public class ListPendingAssignmentAction extends Action {
     public static final String SECTOR = "sector";

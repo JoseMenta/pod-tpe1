@@ -1,6 +1,5 @@
 package ar.edu.itba.pod.client;
 
-import io.grpc.Channel;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import lombok.Getter;
@@ -8,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 @Getter

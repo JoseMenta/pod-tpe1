@@ -2,18 +2,12 @@ package ar.edu.itba.pod.client.eventsClient;
 
 import ar.edu.itba.pod.client.Action;
 import ar.edu.itba.pod.grpc.notification.NotificationServiceGrpc;
-import ar.edu.itba.pod.grpc.notification.SubscriptionRequest;
-import ar.edu.itba.pod.grpc.notification.SubscriptionResponse;
 import ar.edu.itba.pod.grpc.notification.UnRegisterRequest;
-import com.google.protobuf.Empty;
 import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
-import io.grpc.stub.StreamObserver;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CountDownLatch;
 
 public class UnregisterAction extends Action {
     public static final String AIRLINE = "airline";

@@ -3,7 +3,6 @@ package ar.edu.itba.pod.server.models.Notifications;
 import ar.edu.itba.pod.grpc.notification.SubscriptionResponse;
 import ar.edu.itba.pod.server.interfaces.Notification;
 import ar.edu.itba.pod.server.models.Flight;
-import ar.edu.itba.pod.server.models.Range;
 import ar.edu.itba.pod.server.models.Sector;
 
 import java.util.List;

@@ -2,7 +2,6 @@ package ar.edu.itba.pod.server.models;
 
 import ar.edu.itba.pod.server.exceptions.EmptyHistoryCheckInException;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

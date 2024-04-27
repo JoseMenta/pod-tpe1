@@ -1,20 +1,14 @@
 package ar.edu.itba.pod.client.eventsClient;
 
 import ar.edu.itba.pod.client.Action;
-import ar.edu.itba.pod.grpc.counter.CounterServiceGrpc;
-import ar.edu.itba.pod.grpc.counter.CountersResponse;
-import ar.edu.itba.pod.grpc.counter.ListPendingRequest;
 import ar.edu.itba.pod.grpc.notification.NotificationServiceGrpc;
 import ar.edu.itba.pod.grpc.notification.SubscriptionRequest;
 import ar.edu.itba.pod.grpc.notification.SubscriptionResponse;
 import io.grpc.ManagedChannel;
-import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 
 public class RegisterAction extends Action {

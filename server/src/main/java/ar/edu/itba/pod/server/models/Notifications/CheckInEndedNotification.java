@@ -4,7 +4,6 @@ import ar.edu.itba.pod.grpc.commons.RangeMessage;
 import ar.edu.itba.pod.grpc.notification.SubscriptionResponse;
 import ar.edu.itba.pod.server.interfaces.Notification;
 import ar.edu.itba.pod.server.models.Flight;
-import ar.edu.itba.pod.server.models.Passenger;
 import ar.edu.itba.pod.server.models.Range;
 
 public class CheckInEndedNotification implements Notification {

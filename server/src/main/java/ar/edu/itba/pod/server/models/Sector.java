@@ -1,8 +1,10 @@
 package ar.edu.itba.pod.server.models;
 
 import ar.edu.itba.pod.server.exceptions.*;
-import ar.edu.itba.pod.server.exceptions.InvalidRangeException;
-import ar.edu.itba.pod.server.models.Notifications.*;
+import ar.edu.itba.pod.server.models.Notifications.CheckInEndedNotification;
+import ar.edu.itba.pod.server.models.Notifications.CounterAssignmentNotification;
+import ar.edu.itba.pod.server.models.Notifications.PassengerQueuedNotification;
+import ar.edu.itba.pod.server.models.Notifications.PendingAssignmentNotification;
 import ar.edu.itba.pod.server.models.ds.Pair;
 import ar.edu.itba.pod.server.models.ds.RangeList;
 import lombok.Getter;

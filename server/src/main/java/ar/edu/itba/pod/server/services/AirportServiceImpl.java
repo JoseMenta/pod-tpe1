@@ -1,12 +1,7 @@
 package ar.edu.itba.pod.server.services;
 
-import ar.edu.itba.pod.server.exceptions.FlightAlreadyAssignedException;
-import ar.edu.itba.pod.server.exceptions.InvalidRangeException;
-import ar.edu.itba.pod.server.exceptions.SectorNotFoundException;
-import ar.edu.itba.pod.server.exceptions.FlightAssignedToOtherAirlineException;
 import ar.edu.itba.pod.server.exceptions.*;
 import ar.edu.itba.pod.server.interfaces.Notification;
-
 import ar.edu.itba.pod.server.interfaces.repositories.*;
 import ar.edu.itba.pod.server.interfaces.services.AirportService;
 import ar.edu.itba.pod.server.models.*;

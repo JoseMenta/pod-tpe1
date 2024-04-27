@@ -9,8 +9,6 @@ import io.grpc.StatusRuntimeException;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class PassengerStatusAction extends Action {
     public static final String BOOKING = "booking";

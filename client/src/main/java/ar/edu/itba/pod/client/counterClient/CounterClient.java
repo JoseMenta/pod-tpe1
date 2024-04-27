@@ -2,7 +2,6 @@ package ar.edu.itba.pod.client.counterClient;
 
 import ar.edu.itba.pod.client.Action;
 import ar.edu.itba.pod.client.Client;
-import ar.edu.itba.pod.client.adminClient.AdminActions;
 
 public class CounterClient extends Client {
 

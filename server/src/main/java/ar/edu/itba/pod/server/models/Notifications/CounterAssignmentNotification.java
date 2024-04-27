@@ -7,8 +7,6 @@ import ar.edu.itba.pod.server.interfaces.Notification;
 import ar.edu.itba.pod.server.models.Flight;
 import ar.edu.itba.pod.server.models.Range;
 
-import java.util.List;
-
 public class CounterAssignmentNotification implements Notification {
 
     private final Range range;

@@ -4,7 +4,6 @@ import ar.edu.itba.pod.server.exceptions.AirlineMultiSubscriptionException;
 import ar.edu.itba.pod.server.exceptions.AirlineNullSubscriptionException;
 import ar.edu.itba.pod.server.interfaces.Notification;
 import ar.edu.itba.pod.server.models.Notifications.NotificationPill;
-import ar.edu.itba.pod.server.models.ds.LogMessage;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -4,7 +4,6 @@ import ar.edu.itba.pod.server.exceptions.SectorAlreadyExistsException;
 import ar.edu.itba.pod.server.interfaces.repositories.SectorRepository;
 import ar.edu.itba.pod.server.models.HistoryCheckIn;
 import ar.edu.itba.pod.server.models.Sector;
-import lombok.Getter;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;

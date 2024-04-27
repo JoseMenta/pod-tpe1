@@ -5,7 +5,6 @@ import ar.edu.itba.pod.server.interfaces.services.AirportService;
 import ar.edu.itba.pod.server.servants.*;
 import ar.edu.itba.pod.server.services.AirportServiceImpl;
 import io.grpc.ServerBuilder;
-import io.grpc.ServerInterceptors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
