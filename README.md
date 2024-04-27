@@ -87,8 +87,8 @@ Para la ejecucion del cliente de administracion del aeropuerto se debe ejecutar 
 ```
 Debemos tener en cuenta que el archivo de entrada debe tener el siguiente formato(CSV):
 ```CSV
-booking,flight,airline
-1,1,Aerolinea1
+booking;flight;airline
+1;1;Aerolinea1
 ```
 ### 4.2. Servicio de reserva de mostradores
 Para la ejecucion del cliente de reserva de mostradores se debe ejecutar el siguiente comando:
@@ -167,7 +167,10 @@ Dentro del servidor se encuentran test unitarios para la estructura de datos lla
 mvn test
 ```
 
-## 6. Aclaraciones sobre el proyecto
+## 6. Logger
+Tanto el servidor como el cliente imprimen los logs en un archivo diferenciado dentro de la carpeta logs, para consultarlos dirigirse a ``logs/pod-client.log`` y ``logs/pod-server.log``.
+
+## 7. Aclaraciones sobre el proyecto
 Este mismo proyecto es realizado para la materia Programación de Objetos Distribuidos del ITBA.
 
 **Los integrantes del grupo son:**
