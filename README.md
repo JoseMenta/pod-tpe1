@@ -32,7 +32,10 @@
     - [4.5. Servicio de Consulta de Mostradores](#45-servicio-de-consulta-de-mostradores)
         - [4.5.1. Consultar el estado de los mostradores, filtrando por sector](#451-consultar-el-estado-de-los-mostradores-filtrando-por-sector)
         - [4.5.2. Consultar los check-ins realizados, filtrando por sector y aerolínea](#452-consultar-los-check-ins-realizados-filtrando-por-sector-y-aerolínea)
-- [5. Aclaraciones sobre el proyecto](#5-aclaraciones-sobre-el-proyecto)
+- [5. Tests](#5-tests)
+  - [5.1 Test de cliente](#51-test-de-cliente)
+  - [5.2 Test de servidor](#52-test-de-servidor)
+- [6. Aclaraciones sobre el proyecto](#6-aclaraciones-sobre-el-proyecto)
 
 
 # ✈️ Aiport service <!-- omit in toc -->
@@ -149,7 +152,22 @@ Para la ejecucion del cliente de consulta de mostradores se deben ejecutar los s
 ```Bash
 ./queryClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=checkins -DoutPath=<path de salida> [-Dsector=<sector>] [-Dairline=<aerolinea>]
 ```
-## 5. Aclaraciones sobre el proyecto
+## 5. Tests
+
+### 5.1 Test de cliente
+Dentro de la carpeta ``cliente/src/test`` se encuentran test de integracion para cada uno de los servicios que se pueden realizar en los clientes. Para correr los tests se debe ejecutar el siguiente comando:
+```Bash
+./test*.sh
+```
+Esto mismo lo que hara es buildear el servidor como el cliente y luego correr la invocacion al mismo.
+> **Nota** : Los tests son pruebas para corroborar que las invocaciones de los clientes son las esperadas en cada una de los casos, y la evaluacion de si es certero o no se debe evaluar viendo la salida del mismo.
+### 5.2 Test de servidor
+Dentro del servidor se encuentran test unitarios para la estructura de datos llamada  ``RangeList`` que se utiliza para la asignacion de mostradores. Para correr los tests se debe ejecutar el siguiente comando:
+```Bash
+mvn test
+```
+
+## 6. Aclaraciones sobre el proyecto
 Este mismo proyecto es realizado para la materia Programación de Objetos Distribuidos del ITBA.
 
 **Los integrantes del grupo son:**
