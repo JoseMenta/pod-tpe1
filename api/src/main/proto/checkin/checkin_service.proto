@@ -8,7 +8,7 @@ import "google/protobuf/empty.proto";
 import "commons/error.proto";
 import "commons/range.proto";
 
-package checkin; //TODO: revisar
+package checkin;
 
 service CheckInService{
  rpc CheckInRangeQuery(CheckInRangeRequest) returns (CheckInRangeResponse);//12
