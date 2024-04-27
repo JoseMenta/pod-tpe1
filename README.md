@@ -155,11 +155,9 @@ Para la ejecucion del cliente de consulta de mostradores se deben ejecutar los s
 ## 5. Tests
 
 ### 5.1 Test de cliente
-Dentro de la carpeta ``cliente/src/test`` se encuentran test de integracion para cada uno de los servicios que se pueden realizar en los clientes. Para correr los tests se debe ejecutar el siguiente comando:
-```Bash
-./test*.sh
-```
-Esto mismo lo que hara es buildear el servidor como el cliente y luego correr la invocacion al mismo.
+Dentro de la carpeta ``cliente/src/test`` se encuentran test de integracion para cada uno de los servicios que se pueden realizar en los clientes.
+Cada uno de los tests se puede correr con el flag ``-b`` el mismo test va a buildear tanto el servidor como el cliente para su funcionamiento.
+
 > **Nota** : Los tests son pruebas para corroborar que las invocaciones de los clientes son las esperadas en cada una de los casos, y la evaluacion de si es certero o no se debe evaluar viendo la salida del mismo.
 ### 5.2 Test de servidor
 Dentro del servidor se encuentran test unitarios para la estructura de datos llamada  ``RangeList`` que se utiliza para la asignacion de mostradores. Para correr los tests se debe ejecutar el siguiente comando:

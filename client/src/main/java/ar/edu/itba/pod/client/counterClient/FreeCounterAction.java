@@ -30,7 +30,7 @@ public class FreeCounterAction extends Action {
                     .setStart(Integer.parseInt(arguments.get(COUNTER_FROM)))
                     .setSector(arguments.get(SECTOR))
                     .build());
-            System.out.printf("Ended check-in for flights %s on %d counters (%d-%d) in sector %s\n",
+            System.out.printf("Ended check-in for flights %s on %d counters (%d-%d) in Sector %s\n",
                     String.join("|", response.getFlightsList()),
                     response.getRange().getEnd() - response.getRange().getStart()+1,
                     response.getRange().getStart(),response.getRange().getEnd(),
