@@ -10,7 +10,7 @@ public class Flight {
     private Range range;
     @Getter
     private Status status;
-    public enum Status {NOT_ASSIGNED, WAITING, ASSIGNED}
+    public enum Status {NOT_ASSIGNED, WAITING, ASSIGNED,CHECKED_IN}
     @Getter
     private final Airline airline;
 
@@ -26,6 +26,10 @@ public class Flight {
     public synchronized void assignRange(Range range) {
         this.status = Status.ASSIGNED;
         this.range = range;
+    }
+
+    public synchronized void endCheckIn(){
+        this.status = Status.CHECKED_IN;
     }
 
     public synchronized void waitingRange(){

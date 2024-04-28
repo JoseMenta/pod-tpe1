@@ -21,7 +21,6 @@ public class Range implements Comparable<Range>{
     private final Sector sector;
     private final List<Counter> counters;
 
-    @Getter
     private final List<Flight> flights;
     private final Queue<Passenger> passengerQueue;
 
@@ -51,6 +50,10 @@ public class Range implements Comparable<Range>{
         this.flights = flights;
         this.passengerQueue = new ArrayDeque<>();
         this.airline = airline;
+    }
+
+    public List<Flight> getFlights(){
+        return Collections.unmodifiableList(flights);
     }
 
     //Not synchronized because flights is inmutable

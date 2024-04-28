@@ -119,7 +119,7 @@ public class Sector {
             throw new InvalidRangeException();
         }
         airline.log(new CheckInEndedNotification(rangeToFree));
-
+        rangeToFree.getFlights().forEach(Flight::endCheckIn);
         bookPendingRequestsIfPossible();
         return rangeToFree;
     }

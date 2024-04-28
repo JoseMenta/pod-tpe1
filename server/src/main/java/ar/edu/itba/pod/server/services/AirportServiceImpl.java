@@ -121,7 +121,7 @@ public class AirportServiceImpl implements AirportService {
                     throw new FlightInPendingQueueException();
                 }
                 // Ya se asignó y luego se liberó un rango de mostradores para al menos uno de los vuelos solicitados
-                if (flightOptional.get().getRange() != null) {
+                if (flightOptional.get().getStatus().equals(Flight.Status.CHECKED_IN)) {
                     throw new FlightAlreadyCheckedInException();
                 }
                 flightList.add(flightOptional.get());
