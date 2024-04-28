@@ -35,7 +35,8 @@
 - [5. Tests](#5-tests)
   - [5.1 Test de cliente](#51-test-de-cliente)
   - [5.2 Test de servidor](#52-test-de-servidor)
-- [6. Aclaraciones sobre el proyecto](#6-aclaraciones-sobre-el-proyecto)
+- [6. Logs](#6-logs)
+- [7. Aclaraciones sobre el proyecto](#7-aclaraciones-sobre-el-proyecto)
 
 
 # ✈️ Aiport service <!-- omit in toc -->
@@ -156,7 +157,7 @@ Para la ejecucion del cliente de consulta de mostradores se deben ejecutar los s
 
 ### 5.1 Test de cliente
 Dentro de la carpeta ``cliente/src/test`` se encuentran test de integracion para cada uno de los servicios que se pueden realizar en los clientes.
-Cada uno de los tests se puede correr con el flag ``-b`` el mismo test va a buildear tanto el servidor como el cliente para su funcionamiento.
+Cada uno de los tests se puede correr con el flag ``-b`` el cual va a buildear tanto el servidor como el cliente para su funcionamiento.
 
 > **Nota** : Los tests son pruebas para corroborar que las invocaciones de los clientes son las esperadas en cada una de los casos, y la evaluacion de si es certero o no se debe evaluar viendo la salida del mismo.
 ### 5.2 Test de servidor
@@ -165,7 +166,7 @@ Dentro del servidor se encuentran test unitarios para la estructura de datos lla
 mvn test
 ```
 
-## 6. Logger
+## 6. Logs
 Tanto el servidor como el cliente imprimen los logs en un archivo diferenciado dentro de la carpeta logs, para consultarlos dirigirse a ``logs/pod-client.log`` y ``logs/pod-server.log``.
 
 ## 7. Aclaraciones sobre el proyecto

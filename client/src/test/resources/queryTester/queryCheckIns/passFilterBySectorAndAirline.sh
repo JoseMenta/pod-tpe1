@@ -38,9 +38,7 @@ chmod u+x passengerClient.sh
 
 chmod u+x queryClient.sh
 
->/tmp/test_results
 ./queryClient.sh -DserverAddress=localhost:50051 -Daction=checkins -DoutPath=/tmp/test_results -Dairline=AmericanAirlines -Dsector=A
 cat /tmp/test_results
-rm /tmp/test_results
 
 pkill -P "$server_pid"

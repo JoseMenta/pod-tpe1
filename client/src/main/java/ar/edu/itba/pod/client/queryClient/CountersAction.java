@@ -35,7 +35,7 @@ public class CountersAction extends Action {
                 try {
                     writer = Files.newBufferedWriter(
                             Paths.get(arguments.get(OUT_PATH)),
-                            StandardOpenOption.APPEND,
+                            StandardOpenOption.WRITE,
                             StandardOpenOption.CREATE
                     );
 
