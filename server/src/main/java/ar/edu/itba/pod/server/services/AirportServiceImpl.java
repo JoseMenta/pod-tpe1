@@ -113,16 +113,16 @@ public class AirportServiceImpl implements AirportService {
                     throw new FlightAssignedToOtherAirlineException();
                 }
                 // Ya existe al menos un mostrador asignado para al menos uno de los vuelos solicitados
-                if (flightOptional.get().getStatus() == Flight.Status.ASIGNED) {
+                if (flightOptional.get().getStatus().equals(Flight.Status.ASSIGNED)) {
                     throw new FlightAlreadyAssignedException();
                 }
                 // Ya existe una solicitud pendiente de un rango de mostradores para al menos uno de los vuelos solicitados
-                if (flightOptional.get().getStatus() == Flight.Status.WAITING) {
+                if (flightOptional.get().getStatus().equals(Flight.Status.WAITING)) {
                     throw new FlightInPendingQueueException();
                 }
                 // Ya se asignó y luego se liberó un rango de mostradores para al menos uno de los vuelos solicitados
                 if (flightOptional.get().getRange() != null) {
-                    throw new FlightAlreadyAssignedException();
+                    throw new FlightAlreadyCheckedInException();
                 }
                 flightList.add(flightOptional.get());
             }

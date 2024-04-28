@@ -39,6 +39,7 @@ public class GlobalExceptionHandlerInterceptor implements ServerInterceptor {
         errorCodesByException.put(FlightNotFoundException.class, Code.NOT_FOUND);
         errorCodesByException.put(NoSectorsInAirportException.class, Code.NOT_FOUND);
         errorCodesByException.put(PassengerAlreadyCheckedInException.class, Code.ALREADY_EXISTS);
+        errorCodesByException.put(FlightAlreadyCheckedInException.class,Code.ALREADY_EXISTS);
     }
 
     @Override

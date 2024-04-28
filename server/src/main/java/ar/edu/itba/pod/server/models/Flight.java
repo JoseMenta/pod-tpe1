@@ -10,7 +10,7 @@ public class Flight {
     private Range range;
     @Getter
     private Status status;
-    public enum Status {NOTASIGNED, WAITING, ASIGNED}
+    public enum Status {NOT_ASSIGNED, WAITING, ASSIGNED}
     @Getter
     private final Airline airline;
 
@@ -20,11 +20,11 @@ public class Flight {
         this.code =code;
         this.airline = airline;
         this.range= null;
-        this.status= Status.NOTASIGNED;
+        this.status= Status.NOT_ASSIGNED;
     }
 
     public synchronized void assignRange(Range range) {
-        this.status = Status.ASIGNED;
+        this.status = Status.ASSIGNED;
         this.range = range;
     }
 
