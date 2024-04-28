@@ -44,7 +44,4 @@ public class AdminServantImpl extends AdminServiceGrpc.AdminServiceImplBase {
     responseObserver.onNext(Empty.newBuilder().build());
     responseObserver.onCompleted();
     }
-
-
-
 }

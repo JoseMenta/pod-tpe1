@@ -39,11 +39,6 @@ public class CounterServantImpl extends CounterServiceGrpc.CounterServiceImplBas
 
     }
 
-    /**
-     * <pre>
-     *2,3
-     * </pre>
-     */
     @Override
     public void listCounters(CounterRequest request,
                              StreamObserver<CountersResponse> responseObserver) {
@@ -64,11 +59,7 @@ public class CounterServantImpl extends CounterServiceGrpc.CounterServiceImplBas
         responseObserver.onCompleted();
     }
 
-    /**
-     * <pre>
-     *2,4,6,7,8,9
-     * </pre>
-     */
+
     @Override
     public void bookRange(RangeBookingRequest request,
                           StreamObserver<RangeInfo> responseObserver) {
@@ -86,11 +77,7 @@ public class CounterServantImpl extends CounterServiceGrpc.CounterServiceImplBas
     }
 
 
-    /**
-     * <pre>
-     *2,3,10,11
-     * </pre>
-     */
+
     @Override
     public void freeCounterRange(FreeRangeRequest request,
                                  StreamObserver<FreeRangeResponse> responseObserver) {
@@ -104,11 +91,7 @@ public class CounterServantImpl extends CounterServiceGrpc.CounterServiceImplBas
         responseObserver.onCompleted();
     }
 
-    /**
-     * <pre>
-     * 2,3,10
-     * </pre>
-     */
+
     @Override
     public void checkInCounters(CheckInCountersRequest request,
                                 StreamObserver<CheckInCountersResponse> responseObserver) {
@@ -131,11 +114,7 @@ public class CounterServantImpl extends CounterServiceGrpc.CounterServiceImplBas
          responseObserver.onCompleted();
     }
 
-    /**
-     * <pre>
-     * 2
-     * </pre>
-     */
+
     @Override
     public void listPendingAssignments(ListPendingRequest request,
                                        StreamObserver<PendingRangeInfo> responseObserver) {
