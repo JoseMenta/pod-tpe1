@@ -96,7 +96,7 @@ public class Sector {
         return range.checkIn(this.historyCheckIn);
     }
 
-    private synchronized void bookPendingRequestsIfPossible(){//TODO: revisar que lo haga bien
+    private synchronized void bookPendingRequestsIfPossible(){
         ListIterator<RequestRange> iterator = pendingRequests.listIterator();
         while (iterator.hasNext()){
             RequestRange requestRange = iterator.next();
