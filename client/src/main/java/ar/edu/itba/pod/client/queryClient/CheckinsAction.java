@@ -35,8 +35,9 @@ public class CheckinsAction extends Action {
                 try {
                     writer = Files.newBufferedWriter(
                             Paths.get(arguments.get(OUT_PATH)),
-                            StandardOpenOption.WRITE,
-                            StandardOpenOption.CREATE
+                            StandardOpenOption.CREATE,
+                            StandardOpenOption.TRUNCATE_EXISTING,
+                            StandardOpenOption.WRITE
                     );
 
                     writer.write(String.format("%-7s %-9s %-17s %-10s %-16s\n","Sector","Counter","Airline","Flight","Booking"));

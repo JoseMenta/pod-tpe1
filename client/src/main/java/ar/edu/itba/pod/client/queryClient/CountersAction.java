@@ -35,8 +35,9 @@ public class CountersAction extends Action {
                 try {
                     writer = Files.newBufferedWriter(
                             Paths.get(arguments.get(OUT_PATH)),
-                            StandardOpenOption.WRITE,
-                            StandardOpenOption.CREATE
+                            StandardOpenOption.CREATE,
+                            StandardOpenOption.TRUNCATE_EXISTING,
+                            StandardOpenOption.WRITE
                     );
 
                     writer.write(String.format("%-7s %-9s %-16s %-19s %-8s\n", "Sector", "Counters", "Airline", "Flights", "People"));

@@ -42,10 +42,10 @@
 # ✈️ Aiport service <!-- omit in toc -->
 En este proyecto se implemento un servicio de aeropuerto en el cual se pueden realizar la gestion de pasajeros, de aerolineas y de vuelos que tiene el mismo.
 
-Tanto el cliente como el servidor estan implementados en JAVA y se utiliza grpc para la comunicacion entre ellos.
+Tanto el cliente como el servidor estan implementados en Java y se utiliza gRPC para la comunicacion entre ellos.
 
 ## 1. Requisitos
-- JAVA 21.
+- Java 21.
 - Maven.
 
 ## 2. Compilacion
@@ -53,115 +53,150 @@ Tanto el cliente como el servidor estan implementados en JAVA y se utiliza grpc 
 Para la compilacion del proyecto se deben seguir los siguientes pasos:
 
 1. Clonar el repositorio.
-2. Ubicarse en la carpeta del proyecto:``cd pod-tpe1``
-3. Compilar el proyecto: ``mvn clean package``
-    - Luego de la compilacion se generaran los siguientes archivos:
-        - ``tpe1-g6-server-1.0-SNAPSHOT-bin.tar.gz``: Este archivo contiene el servidor.
-        - ``tpe1-g6-client-1.0-SNAPSHOT-bin.tar.gz``: Este archivo contiene el cliente.
+2. Ubicarse en la carpeta del proyecto:
+   ```Bash 
+    cd pod-tpe1
+   ```
+3. Compilar el proyecto: 
+    ````Bash
+    mvn clean package
+   ````
+Luego de la compilacion se generaran los siguientes archivos:
+   - ``server/target/tpe1-g6-server-1.0-SNAPSHOT-bin.tar.gz``: Este archivo contiene el servidor.
+   - ``client/target/tpe1-g6-client-1.0-SNAPSHOT-bin.tar.gz``: Este archivo contiene el cliente.
 ## 3. Ejecucion del servidor
 Para la ejecucion del servidor se deben seguir los siguientes pasos:
-1. Descomprimir el archivo ``tpe1-g6-server-1.0-SNAPSHOT-bin.tar.gz``.
-2. Ubicarse dentro de la carpeta ``tpe1-g6-server-1.0-SNAPSHOT``
-3. Darle permisos de ejecucion al archivo: ``chmod u+x run-server.sh``
-3. Ejecutar ``./run-server.sh [-Dport=PORT]`` donde PORT es el puerto en el cual se desea que el servidor escuche. Si no se especifica el puerto por defecto es el 50051.
-
+1. Ir al directorio del servidor 
+    ```Bash 
+    cd server/target
+   ```
+2. Descomprimir el archivo
+    ```Bash
+    tar -xzf tpe1-g6-server-1.0-SNAPSHOT-bin.tar.gz
+    ```
+3. Ubicarse dentro de la carpeta ``tpe1-g6-server-1.0-SNAPSHOT``
+    ```Bash
+    cd tpe1-g6-server-1.0-SNAPSHOT
+    ```
+4. Darle permisos de ejecucion al archivo
+    ```Bash
+    chmod u+x run-server.sh
+    ```
+5. Ejecutar el servidor, donde PORT es el puerto en el cual se desea que escuche. Si no se especifica el puerto por defecto es el 50051.
+    ```Bash
+    ./run-server.sh [-Dport=PORT]
+    ```
 ## 4. Ejecucion del cliente
 Para la ejecucion del client se deben seguir los siguientes pasos:
-1. Descomprimir el archivo ``tpe1-g6-client-1.0-SNAPSHOT-bin.tar.gz``.
-2. Ubicarse dentro de la carpeta ``tpe1-g6-client-1.0-SNAPSHOT``
-3. Darle permisos de ejecucion al archivo: ``chmod u+x *Client.sh``
-
+1. Ir al directorio del cliente
+    ```Bash 
+    cd client/target
+   ```
+2. Descomprimir el archivo
+    ```Bash
+    tar -xzf tpe1-g6-client-1.0-SNAPSHOT-bin.tar.gz
+    ```
+3. Ubicarse dentro de la carpeta ``tpe1-g6-client-1.0-SNAPSHOT``
+    ```Bash
+    cd tpe1-g6-client-1.0-SNAPSHOT
+    ```
+4. Darle permisos de ejecucion a los archivos
+    ```Bash
+    chmod u+x *Client.sh
+    ```
 ### 4.1. Servicio de Administración del Aeropuerto
 Para la ejecucion del cliente de administracion del aeropuerto se debe ejecutar el siguiente comando:
 
 #### 4.1.1. Agregar sector
 ```Bash
-./adminClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=addSector -Dsector=<sector>
+sh adminClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=addSector -Dsector=<sector>
 ```
 #### 4.1.2. Agregar rango de mostradores
 ```Bash
-./adminClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=addCounters -Dsector=<sector> -Dcounters=<cantidad de mostradores>
+sh adminClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=addCounters -Dsector=<sector> -Dcounters=<cantidad de mostradores>
 ```
 #### 4.1.3. Agregar pasajeros esperados
 ```Bash
-./adminClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=manifest -DinPath=<path al archivo de entrada>
+sh adminClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=manifest -DinPath=<path al archivo de entrada>
 ```
 Debemos tener en cuenta que el archivo de entrada debe tener el siguiente formato(CSV):
 ```CSV
 booking;flight;airline
-1;1;Aerolinea1
+ABC123;AC987;AirCanada
 ```
 ### 4.2. Servicio de reserva de mostradores
-Para la ejecucion del cliente de reserva de mostradores se debe ejecutar el siguiente comando:
+
 
 #### 4.2.1. Consultar los sectores
 ```Bash
-./counterClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=listSectors
+sh counterClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=listSectors
 ```
 #### 4.2.2. Consultar un rango de mostradores
 ```Bash
-./counterClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=listCounters -Dsector=<sector> -DcounterFrom=<inicio del rango> -DcounterTo=<fin del rango>
+sh counterClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=listCounters -Dsector=<sector> -DcounterFrom=<inicio del rango> -DcounterTo=<fin del rango>
 ```
 #### 4.2.3. Asignar un rango de mostradores
 ```Bash
-./counterClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=assignCounters -Dsector=<sector> -Dflights=<lista de vuelos> -Dairline=<aerolinea> -DcounterCount=<cantidad>
+sh counterClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=assignCounters -Dsector=<sector> -Dflights=<lista de vuelos> -Dairline=<aerolinea> -DcounterCount=<cantidad>
 ```
 #### 4.2.4. Liberar un rango de mostradores
 ```Bash
-./counterClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=freeCounters -Dsector=<sector> -DcounterFrom=<inicio del rango> -Dairline=<aerolinea>
+sh counterClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=freeCounters -Dsector=<sector> -DcounterFrom=<inicio del rango> -Dairline=<aerolinea>
 ```
 #### 4.2.5. Realizar un check-in para cada mostrador
 ```Bash
-./counterClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=checkinCounters -Dsector=<sector> -DcounterFrom=<inicio del rango> -Dairline=<aerolinea>
+sh counterClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=checkinCounters -Dsector=<sector> -DcounterFrom=<inicio del rango> -Dairline=<aerolinea>
 ```
 #### 4.2.6. Consultar las asignaciones pendientes
+```Bash
+sh counterClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=listPendingAssignments -Dsector=<sector>
+```
 
 ### 4.3. Servicio de Check-in de Pasajeros
-```Bash
-./counterClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=listPendingAssignments -Dsector=<sector>
-```
+Para la ejecución del cliente de check-in de pasajeros se debe ejecutar el siguiente comando:
 #### 4.3.1. Obtener el rango de mostradores asignado para check-in
 ```Bash
-./passengerClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=fetchCounter -Dbooking=<booking id>
+sh passengerClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=fetchCounter -Dbooking=<booking id>
 ```
 #### 4.3.2. Ingresar a la cola del rango de mostradores
 ```Bash
-./passengerClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=passengerCheckin -Dbooking=<booking id> -Dsector=<sector> -Dcounter=<counter>
+sh passengerClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=passengerCheckin -Dbooking=<booking id> -Dsector=<sector> -Dcounter=<counter>
 ```
 #### 4.3.3. Consultar el estado de check-in
 ```Bash
-./passengerClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=passengerStatus -Dbooking=<booking id>
+sh passengerClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=passengerStatus -Dbooking=<booking id>
 ```
 ### 4.4. Servicio de notificaciones de aerolineas
 Para la ejecucion del cliente de notificaciones de aerolineas se deben ejecutar los siguientes comandos:
 #### 4.4.1. Registrar a una aerolínea para ser notificada
 ```Bash
-./eventsClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=register -Dairline=<nombre de la aerolinea>
+sh eventsClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=register -Dairline=<nombre de la aerolinea>
 ```
 
 #### 4.4.2. Anular el registro de una aerolínea
 ```Bash
-./eventsClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=unregister -Dairline=<nombre de la aerolinea>
+sh eventsClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=unregister -Dairline=<nombre de la aerolinea>
 ```
 ### 4.5. Servicio de Consulta de Mostradores
 Para la ejecucion del cliente de consulta de mostradores se deben ejecutar los siguientes comandos:
 #### 4.5.1. Consultar el estado de los mostradores, filtrando por sector
 ```Bash
-./queryClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=queryCounters -DoutPath=<path de salida> [-Dsector=<sector>]
+sh queryClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=queryCounters -DoutPath=<path de salida> [-Dsector=<sector>]
 ```
 #### 4.5.2. Consultar los check-ins realizados, filtrando por sector y aerolínea
 ```Bash
-./queryClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=checkins -DoutPath=<path de salida> [-Dsector=<sector>] [-Dairline=<aerolinea>]
+sh queryClient.sh -DserverAddress=<IP>:<Puerto en donde corre el servidor> -Daction=checkins -DoutPath=<path de salida> [-Dsector=<sector>] [-Dairline=<aerolinea>]
 ```
 ## 5. Tests
 
 ### 5.1 Test de cliente
-Dentro de la carpeta ``cliente/src/test`` se encuentran test de integracion para cada uno de los servicios que se pueden realizar en los clientes.
+Dentro de la carpeta ``client/src/test/resources`` se encuentran test de integracion para cada uno de los servicios que se pueden realizar en los clientes.
 Cada uno de los tests se puede correr con el flag ``-b`` el cual va a buildear tanto el servidor como el cliente para su funcionamiento.
+**Los tests se deben correr desde la raíz del proyecto**
 
-> **Nota** : Los tests son pruebas para corroborar que las invocaciones de los clientes son las esperadas en cada una de los casos, y la evaluacion de si es certero o no se debe evaluar viendo la salida del mismo.
+> **Nota** : Los tests son pruebas diseñadas para verificar que las invocaciones de los clientes se comporten según lo esperado en diferentes escenarios. La certeza de su funcionamiento se determina al evaluar la salida resultante de estas pruebas.
 ### 5.2 Test de servidor
-Dentro del servidor se encuentran test unitarios para la estructura de datos llamada  ``RangeList`` que se utiliza para la asignacion de mostradores. Para correr los tests se debe ejecutar el siguiente comando:
+Dentro del servidor se encuentran test unitarios para la estructura de datos llamada  ``RangeList`` que se utiliza para la asignación de mostradores. Para correr los tests se debe ejecutar el siguiente comando:
 ```Bash
 mvn test
 ```
