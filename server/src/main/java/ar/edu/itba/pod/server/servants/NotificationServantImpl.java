@@ -27,12 +27,7 @@ public class NotificationServantImpl extends NotificationServiceGrpc.Notificatio
 
 
 
-    /**
-     * <pre>
-     *6, 17
-     * </pre>
-     *
-     */
+
     @Override
     public void subscribeAirline(SubscriptionRequest request,
                                  StreamObserver<SubscriptionResponse> responseObserver) {
@@ -59,11 +54,7 @@ public class NotificationServantImpl extends NotificationServiceGrpc.Notificatio
         }
         rsob.onCompleted();
     }
-    /**
-     * <pre>
-     * 16
-     * </pre>
-     */
+
     @Override
     public void unsubscribeAirline(UnRegisterRequest request,
                                    StreamObserver<Empty> responseObserver) {
